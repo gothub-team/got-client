@@ -4,7 +4,7 @@ This library is built on react hooks and react-redux. It manages several aspects
 
 ## Documentation
 - [API](https://api.gothub.io/api)
-- [Views and data output](./docs/guide-views.md)
+- [Views and data output](./docs/guide-view.md)
 - [Stacks and editing](./docs/guide-stack.md)
 - [Edge Metadata](./docs/guide-metadata.md)
 - [Rights](./docs/guide-rights.md)
@@ -47,7 +47,7 @@ export const App = () => (
 ```
 
 ## Setup
-To setup our got environment, we simple need to configure the setup function with a host for our API to connect to, the redux store and the name of got's state in said store.
+To setup our got environment, we simply need to configure the setup function with a host for our API to connect to, the redux store and the name of got's state in said store.
 
 ```js
 import { setup } from '@gothub-team/got-react';
