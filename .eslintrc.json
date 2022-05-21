@@ -1,0 +1,144 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "es2020": true
+    },
+    "extends": [
+        "airbnb-base",
+        "plugin:node/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "sourceType": "module",
+        "allowImportExportEverywhere": true
+    },
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "overrides": [
+        {
+            "files": [
+                "**/*.spec.js",
+                "**/*.spec.jsx",
+                "**/tests/*"
+            ],
+            "env": {
+                "jest": true
+            }
+        }
+    ],
+    "ignorePatterns": [
+        "dist"
+    ],
+    "rules": {
+        "max-len": [
+            0
+        ],
+        "indent": [
+            "error",
+            4,
+            {
+                "ignoredNodes": [
+                    "JSXElement"
+                ]
+            }
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quote-props": [
+            "error",
+            "consistent"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "comma-dangle": [
+            "error",
+            "always-multiline"
+        ],
+        "arrow-parens": [
+            "error",
+            "as-needed"
+        ],
+        "multiline-ternary": [
+            "error",
+            "always-multiline"
+        ],
+        "object-curly-newline": [
+            "error",
+            {
+                "minProperties": 5,
+                "consistent": true
+            }
+        ],
+        "no-confusing-arrow": [
+            0
+        ],
+        "no-use-before-define": [
+            0
+        ],
+        "no-underscore-dangle": [
+            0
+        ],
+        "no-nested-ternary": [
+            0
+        ],
+        "no-case-declarations": [
+            0
+        ],
+        "no-return-assign": [
+            0
+        ],
+        "no-console": [
+            0
+        ],
+        "no-alert": [
+            0
+        ],
+        "global-require": [
+            0
+        ],
+        "no-unused-expressions": [
+            0
+        ],
+        "no-unused-vars": [
+            1
+        ],
+        "no-promise-executor-return": [
+            0
+        ],
+        "no-async-promise-executor": [
+            0
+        ],
+        "no-bitwise": [
+            0
+        ],
+        "prefer-promise-reject-errors": [
+            0
+        ],
+        "import/no-named-as-default-member": [
+            0
+        ],
+        "import/prefer-default-export": [
+            0
+        ],
+        "import/extensions": [
+            "error",
+            "always"
+        ],
+        "node/no-unsupported-features/es-syntax": [
+            0
+        ],
+        "node/no-unpublished-import": [
+            0
+        ],
+        "node/no-unpublished-require": [
+            0
+        ]
+    }
+}

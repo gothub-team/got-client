@@ -1,0 +1,41 @@
+{
+    "name": "@gothub-team/got",
+    "version": "0.21.16",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build:util": "yarn workspace @gothub-team/got-util build",
+        "build:core": "yarn workspace @gothub-team/got-core build",
+        "build:store": "yarn workspace @gothub-team/got-store build",
+        "build:react": "yarn workspace @gothub-team/got-react build",
+        "build": "yarn build:util; yarn build:core; yarn build:store; yarn build:react;",
+        "test:util": "yarn workspace @gothub-team/got-util test",
+        "test:core": "yarn workspace @gothub-team/got-core test",
+        "test:store": "yarn workspace @gothub-team/got-store test",
+        "test:react": "yarn workspace @gothub-team/got-react test",
+        "test": "yarn test:store; yarn test:util;",
+        "lint": "eslint ./",
+        "publish:util": "yarn workspace @gothub-team/got-util npm publish --access public",
+        "publish:core": "yarn workspace @gothub-team/got-core npm publish --access public",
+        "publish:store": "yarn workspace @gothub-team/got-store npm publish --access public",
+        "publish:react": "yarn workspace @gothub-team/got-react npm publish --access public",
+        "publish:all": "yarn publish:util; yarn publish:core; yarn publish:store; yarn publish:react;",
+        "patch:util": "yarn workspace @gothub-team/got-util version patch",
+        "patch:core": "yarn workspace @gothub-team/got-core version patch",
+        "patch:store": "yarn workspace @gothub-team/got-store version patch",
+        "patch:react": "yarn workspace @gothub-team/got-react version patch",
+        "bump:patch": "yarn patch:util; yarn patch:core; yarn patch:store; yarn patch:react; yarn tag:version",
+        "tag:version": "yarn version patch; VERSION=$(jq -r '.version' ./package.json); git commit -am \"v$VERSION\"; git tag -a \"v$VERSION\" -m \"v$VERSION\"; git push"
+    },
+    "devDependencies": {
+        "@babel/node": "^7.17.10",
+        "@types/jest": "^27.5.1",
+        "eslint": "^8.15.0",
+        "eslint-config-airbnb": "^19.0.4",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-node": "^11.1.0"
+    },
+    "packageManager": "yarn@3.2.1"
+}

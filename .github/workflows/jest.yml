@@ -1,0 +1,23 @@
+# This workflow will do a clean install of node dependencies and run all test suites on node 14
+name: Jest Tests
+on:
+  push:
+    branches: ['**']
+jobs:
+  jest: 
+    runs-on: ubuntu-18.04
+    if: "github.repository_owner == 'gothub-team' && !contains(github.event.head_commit.message, 'ci skip')"
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 17.x
+    - run: |
+        yarn
+        yarn build
+        yarn test:util
+        yarn test:core
+        yarn test:store
+        yarn test:react
+      env:
+        NPM_AUTH_TOKEN: ${{secrets.GH_PACKAGES_TOKEN}}

@@ -1,0 +1,37 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  publish:
+    name: "Publish to GitHub Packages"
+    runs-on: ubuntu-18.04
+    if: "github.repository_owner == 'gothub-team' && !contains(github.event.head_commit.message, 'ci skip')"
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 17.x
+    - run: |
+        git config --local user.email github-actions@github.com
+        git config --local user.name github-actions
+        yarn
+        yarn build
+        yarn bump:patch
+        yarn publish:all
+        git push
+      env:
+        NPM_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+
+
