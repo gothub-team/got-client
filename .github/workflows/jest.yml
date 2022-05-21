@@ -20,4 +20,4 @@ jobs:
         yarn test:store
         yarn test:react
       env:
-        NPM_AUTH_TOKEN: ${{secrets.GH_PACKAGES_TOKEN}}
+        NPM_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
