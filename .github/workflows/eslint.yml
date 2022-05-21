@@ -16,5 +16,3 @@ jobs:
         yarn
         yarn build
         yarn lint
-      env:
-        NPM_AUTH_TOKEN: ${{secrets.GH_PACKAGES_TOKEN}}
