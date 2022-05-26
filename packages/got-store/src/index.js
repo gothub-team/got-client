@@ -101,6 +101,11 @@ export const createStore = ({
             },
         });
     };
+    const clearAll = () => {
+        dispatch({
+            type: GOT_ACTION_CLEAR_ALL,
+        });
+    };
 
     const selectVar = (...stack) => name => state => selectPathFromStack(['vars', name], stack, mergeLeft, state);
     const getVar = (...stack) => name => select(selectVar(...stack)(name));
@@ -456,6 +461,7 @@ export const createStore = ({
                 return clear(graphName);
             }
         },
+        clearAll,
 
         selectVar: (...stack) => name => state => {
             if (validateError({
@@ -785,7 +791,7 @@ export const reducers = {
     [GOT_ACTION_CLEAR]: ({
         graphName,
     }) => R.dissoc(graphName),
-    [GOT_ACTION_CLEAR_ALL]: () => ({}),
+    [GOT_ACTION_CLEAR_ALL]: () => R.always({}),
     [GOT_ACTION_SET_VAR]: ({
         graphName,
         name,

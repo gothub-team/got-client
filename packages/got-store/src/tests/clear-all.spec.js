@@ -1,3 +1,4 @@
+import { gotReducer, GOT_ACTION_CLEAR_ALL } from '../index.js';
 import { createTestStore } from './shared.js';
 
 describe('store:clear-all', () => {
@@ -17,6 +18,24 @@ describe('store:clear-all', () => {
             type: 'GOT/CLEAR_ALL',
         });
         expect(onError).not.toBeCalled();
+        /* #endregion */
+    });
+    test('reducer should return empty object', () => {
+        /* #region Test Bed Creation */
+        const graphName1 = 'graph1';
+        const state = {
+            [graphName1]: {},
+        };
+        /* #endregion */
+
+        /* #region Execution and Validation */
+        const action = {
+            type: GOT_ACTION_CLEAR_ALL,
+        };
+
+        const result = gotReducer(state, action);
+
+        expect(result).toEqual({});
         /* #endregion */
     });
     test('should clear store completely', () => {
