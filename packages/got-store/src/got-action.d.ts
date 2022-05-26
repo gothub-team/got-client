@@ -2,6 +2,9 @@ import { EdgeMetadataView, Graph, RightTypes } from '@gothub-team/got-core';
 
 export declare type GotAction =
 {
+    type: 'GOT/CLEAR_ALL',
+} |
+{
     type: 'GOT/MERGE',
     payload: {
         fromGraph: Graph,

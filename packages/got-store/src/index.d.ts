@@ -69,6 +69,10 @@ export declare interface GotStore {
      * @param graphName The graph to be cleared.
      */
     clear: (graphName: string) => () => void;
+    /**
+     * Clears the entire got store.
+     */
+    clear: () => void;
 
     /**
      * Returns the value of a given variable based on the specified graph stack with
