@@ -31,6 +31,7 @@ export const GOT_ACTION_MERGE = 'GOT/MERGE';
 export const GOT_ACTION_MERGE_OVERWRITE = 'GOT/MERGE_OVERWRITE';
 export const GOT_ACTION_MERGE_ERROR = 'GOT/MERGE_ERROR';
 export const GOT_ACTION_CLEAR = 'GOT/CLEAR';
+export const GOT_ACTION_CLEAR_ALL = 'GOT/CLEAR_ALL';
 export const GOT_ACTION_SET_VAR = 'GOT/SET_VAR';
 export const GOT_ACTION_SET_NODE = 'GOT/SET_NODE';
 export const GOT_ACTION_ADD = 'GOT/ADD';
@@ -98,6 +99,11 @@ export const createStore = ({
             payload: {
                 graphName,
             },
+        });
+    };
+    const clearAll = () => {
+        dispatch({
+            type: GOT_ACTION_CLEAR_ALL,
         });
     };
 
@@ -455,6 +461,7 @@ export const createStore = ({
                 return clear(graphName);
             }
         },
+        clearAll,
 
         selectVar: (...stack) => name => state => {
             if (validateError({
@@ -784,7 +791,7 @@ export const reducers = {
     [GOT_ACTION_CLEAR]: ({
         graphName,
     }) => R.dissoc(graphName),
-
+    [GOT_ACTION_CLEAR_ALL]: () => R.always({}),
     [GOT_ACTION_SET_VAR]: ({
         graphName,
         name,

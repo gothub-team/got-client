@@ -26,6 +26,9 @@ export declare type GotAction =
     }
 } |
 {
+    type: 'GOT/CLEAR_ALL',
+} |
+{
     type: 'GOT/SET_VAR',
     payload: {
         graphName: string,
