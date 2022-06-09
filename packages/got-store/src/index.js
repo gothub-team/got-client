@@ -396,31 +396,71 @@ export const createStore = ({
         }
     };
     const selectView = (...stack) => view => state => {
-        const [getViewTree, setViewTree] = useResult({});
+        // let totalTime = 0;
+        const assocPath = (path, val) => obj => {
+            // const res = R.assocPath(path, val, obj);
+            let o = obj;
+            for (let i = 0; i < path.length - 1; i += 1) {
+                const prop = path[i];
+                if (prop in o) {
+                    o = o[prop];
+                } else {
+                    o[prop] = {};
+                    o = o[prop];
+                }
+            }
+
+            const lastProp = path[path.length - 1];
+            o[lastProp] = val;
+
+            return obj;
+        };
+
+        const [getViewTree, setViewTree, overViewTree] = useResult({});
         const stackGetEdgeToIds = (fromType, nodeId, toType, { reverse } = {}) => reverse
             ? selectReverseEdge(...stack)(`${fromType}/${toType}`)(nodeId)(state)
             : selectEdge(...stack)(`${fromType}/${toType}`)(nodeId)(state);
         doViewGraph({
             nodes: (queryObj, nodeId, edgePath, nodeViewPath, metadata) => {
-                setViewTree(
-                    R.assocPath(nodeViewPath, {
-                        nodeId,
-                    }),
+                const assocFn = assocPath(nodeViewPath, {
+                    nodeId,
+                });
+
+                overViewTree(
+                    assocFn,
                 );
-                includeMetadata(queryObj) && edgePath && setViewTree(
-                    R.assocPath([...nodeViewPath, 'metadata'], metadata),
+
+                // const inclMeta = queryObj.metadata && edgePath; //  includeMetadata(queryObj) && edgePath;
+                // const inclNode = queryObj.node; //  includeNode(queryObj);
+                // const inclRights = queryObj.rights; //  includeRights(queryObj);
+                // const inclFiles = queryObj.files; //   includeFiles(queryObj);
+
+                // const start = performance.now();
+                // const bag = { nodeId };
+                // const meta = inclMeta && selectMetadata(...stack)(nodeId)(state);
+                // const node = inclNode && selectNode(...stack)(nodeId)(state);
+                // const rights = inclRights && selectRights(...stack)(nodeId)(state);
+                // const files = inclFiles && selectFiles(...stack)(nodeId)(state);
+                // totalTime += performance.now() - start;
+
+                const start = performance.now();
+                includeMetadata(queryObj) && edgePath && overViewTree(
+                    assocPath([...nodeViewPath, 'metadata'], metadata),
                 );
-                includeNode(queryObj) && setViewTree(
-                    R.assocPath([...nodeViewPath, 'node'], selectNode(...stack)(nodeId)(state)),
+                includeNode(queryObj) && overViewTree(
+                    assocPath([...nodeViewPath, 'node'], selectNode(...stack)(nodeId)(state)),
                 );
-                includeRights(queryObj) && setViewTree(
-                    R.assocPath([...nodeViewPath, 'rights'], selectRights(...stack)(nodeId)(state)),
+                includeRights(queryObj) && overViewTree(
+                    assocPath([...nodeViewPath, 'rights'], selectRights(...stack)(nodeId)(state)),
                 );
-                includeFiles(queryObj) && setViewTree(
-                    R.assocPath([...nodeViewPath, 'files'], selectFiles(...stack)(nodeId)(state)),
+                includeFiles(queryObj) && overViewTree(
+                    assocPath([...nodeViewPath, 'files'], selectFiles(...stack)(nodeId)(state)),
                 );
+                // totalTime += performance.now() - start;
             },
         }, view, stackGetEdgeToIds);
+
+        // console.log('time spent in node fn', totalTime);
 
         return getViewTree();
     };

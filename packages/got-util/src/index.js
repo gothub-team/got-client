@@ -3,13 +3,21 @@ import * as RA from 'ramda-adjunct';
 
 export const useResult = initialValue => {
     const reference = { current: initialValue };
+
+    const set = input => {
+        if (R.is(Function)) {
+            reference.current = input(reference.current);
+        } else {
+            reference.current = input;
+        }
+    };
+    const over = fn => {
+        reference.current = fn(reference.current);
+    };
     return [
         () => reference.current,
-        R.ifElse(
-            R.is(Function),
-            fnSet => reference.current = fnSet(reference.current),
-            newValue => reference.current = newValue,
-        ),
+        set,
+        over,
     ];
 };
 
