@@ -417,18 +417,32 @@ export const createStore = ({
         };
 
         const [getViewTree, setViewTree, overViewTree] = useResult({});
-        const stackGetEdgeToIds = (fromType, nodeId, toType, { reverse } = {}) => reverse
-            ? selectReverseEdge(...stack)(`${fromType}/${toType}`)(nodeId)(state)
-            : selectEdge(...stack)(`${fromType}/${toType}`)(nodeId)(state);
+        const stackGetEdgeToIds = (fromType, nodeId, toType, { reverse } = {}) => {
+            // const start = performance.now();
+            const res = reverse
+                ? selectReverseEdge(...stack)(`${fromType}/${toType}`)(nodeId)(state)
+                : selectEdge(...stack)(`${fromType}/${toType}`)(nodeId)(state);
+            // totalTime += performance.now() - start;
+
+            return res;
+        };
         doViewGraph({
             nodes: (queryObj, nodeId, edgePath, nodeViewPath, metadata) => {
-                const assocFn = assocPath(nodeViewPath, {
-                    nodeId,
-                });
+                const bag = { nodeId };
+                if (includeMetadata(queryObj) && edgePath) {
+                    bag.metadata = metadata;
+                }
+                if (includeNode(queryObj)) {
+                    bag.node = selectNode(...stack)(nodeId)(state);
+                }
+                if (includeRights(queryObj)) {
+                    bag.rights = selectRights(...stack)(nodeId)(state);
+                }
+                if (includeFiles(queryObj)) {
+                    bag.files = selectFiles(...stack)(nodeId)(state);
+                }
 
-                overViewTree(
-                    assocFn,
-                );
+                overViewTree(assocPath(nodeViewPath, bag));
 
                 // const inclMeta = queryObj.metadata && edgePath; //  includeMetadata(queryObj) && edgePath;
                 // const inclNode = queryObj.node; //  includeNode(queryObj);
@@ -443,19 +457,19 @@ export const createStore = ({
                 // const files = inclFiles && selectFiles(...stack)(nodeId)(state);
                 // totalTime += performance.now() - start;
 
-                const start = performance.now();
-                includeMetadata(queryObj) && edgePath && overViewTree(
-                    assocPath([...nodeViewPath, 'metadata'], metadata),
-                );
-                includeNode(queryObj) && overViewTree(
-                    assocPath([...nodeViewPath, 'node'], selectNode(...stack)(nodeId)(state)),
-                );
-                includeRights(queryObj) && overViewTree(
-                    assocPath([...nodeViewPath, 'rights'], selectRights(...stack)(nodeId)(state)),
-                );
-                includeFiles(queryObj) && overViewTree(
-                    assocPath([...nodeViewPath, 'files'], selectFiles(...stack)(nodeId)(state)),
-                );
+                // const start = performance.now();
+                // includeMetadata(queryObj) && edgePath && overViewTree(
+                //     assocPath([...nodeViewPath, 'metadata'], metadata),
+                // );
+                // includeNode(queryObj) && overViewTree(
+                //     assocPath([...nodeViewPath, 'node'], selectNode(...stack)(nodeId)(state)),
+                // );
+                // includeRights(queryObj) && overViewTree(
+                //     assocPath([...nodeViewPath, 'rights'], selectRights(...stack)(nodeId)(state)),
+                // );
+                // includeFiles(queryObj) && overViewTree(
+                //     assocPath([...nodeViewPath, 'files'], selectFiles(...stack)(nodeId)(state)),
+                // );
                 // totalTime += performance.now() - start;
             },
         }, view, stackGetEdgeToIds);
