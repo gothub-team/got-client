@@ -28,6 +28,7 @@
         "@gothub-team/got-store": "workspace:*",
         "ramda": "^0.28.0",
         "ramda-adjunct": "^3.1.0",
+        "react": ">=17.0.2",
         "react-redux": "7.2.3"
     },
     "devDependencies": {

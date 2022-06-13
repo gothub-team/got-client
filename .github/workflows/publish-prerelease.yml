@@ -17,7 +17,7 @@ jobs:
   publish:
     name: "Publish Prerelease to GitHub Packages"
     runs-on: ubuntu-latest
-    if: "github.repository_owner == 'gothub-team' && !contains(github.event.head_commit.message, '[publish prerelease]')"
+    if: "github.repository_owner == 'gothub-team' && contains(github.event.head_commit.message, '[publish prerelease]')"
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v1
