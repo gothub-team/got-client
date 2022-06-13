@@ -760,7 +760,7 @@ describe('store:Views', () => {
         });
     });
 
-    describe.only('performance', () => {
+    describe('performance', () => {
         test('should select 100 parent and 1000 child objects in under 10ms', () => {
             const runTimes = 10;
             const generateRandomString = (length = 5) => Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, length);
