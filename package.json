@@ -26,7 +26,12 @@
         "patch:core": "yarn workspace @gothub-team/got-core version patch",
         "patch:store": "yarn workspace @gothub-team/got-store version patch",
         "patch:react": "yarn workspace @gothub-team/got-react version patch",
+        "prerelease:util": "yarn workspace @gothub-team/got-util version prerelease",
+        "prerelease:core": "yarn workspace @gothub-team/got-core version prerelease",
+        "prerelease:store": "yarn workspace @gothub-team/got-store version prerelease",
+        "prerelease:react": "yarn workspace @gothub-team/got-react version prerelease",
         "bump:patch": "yarn patch:util; yarn patch:core; yarn patch:store; yarn patch:react; yarn tag:version",
+        "bump:prerelease": "yarn prerelease:util; yarn prerelease:core; yarn prerelease:store; yarn prerelease:react; yarn version prerelease",
         "tag:version": "yarn version patch; VERSION=$(jq -r '.version' ./package.json); git commit -am \"v$VERSION\"; git tag -a \"v$VERSION\" -m \"v$VERSION\"; git push"
     },
     "devDependencies": {
@@ -37,5 +42,6 @@
         "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-node": "^11.1.0"
     },
-    "packageManager": "yarn@3.2.1"
+    "packageManager": "yarn@3.2.1",
+    "stableVersion": "0.21.18"
 }

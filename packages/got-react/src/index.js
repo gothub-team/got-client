@@ -3,6 +3,7 @@ import * as RA from 'ramda-adjunct';
 import { useSelector } from 'react-redux';
 import { createApi } from '@gothub-team/got-api';
 import { createStore } from '@gothub-team/got-store';
+import { useEffect, useMemo, useRef } from 'react';
 
 export { gotReducer } from '@gothub-team/got-store';
 
@@ -60,6 +61,18 @@ export const setup = ({
     };
 };
 
+const useEqualRef = input => {
+    const ref = useRef();
+
+    useEffect(() => {
+        if (!R.equals(input, ref.current)) {
+            ref.current = input;
+        }
+    }, [input]);
+
+    return ref.current;
+};
+
 export const createHooks = ({ store, baseState = R.identity }) => ({
     useGraph: (...stack) => {
         const currentGraphName = R.nth(-1, stack);
@@ -75,12 +88,19 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
 
             return [ref, setRef];
         };
-        const useView = (view, selector = R.identity) => {
-            const nodes = useSelector(R.compose(
-                selector,
+        const useView = (view, downSelector = R.identity) => {
+            const _stack = useEqualRef(stack);
+            const _view = useEqualRef(view);
+
+            const _selectView = useMemo(() => store.selectView(...stack)(view), [_stack, _view]);
+
+            const selector = useMemo(() => R.compose(
+                downSelector,
                 store.selectView(...stack)(view),
                 baseState,
-            ), R.equals);
+            ), [downSelector, _selectView, baseState]);
+
+            const nodes = useSelector(selector, R.equals);
 
             return nodes;
         };
