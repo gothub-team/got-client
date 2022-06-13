@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got",
-    "version": "0.21.19-0",
+    "version": "0.21.19-1",
     "private": true,
     "workspaces": [
         "packages/*"
@@ -31,7 +31,7 @@
         "prerelease:store": "yarn workspace @gothub-team/got-store version prepatch",
         "prerelease:react": "yarn workspace @gothub-team/got-react version prepatch",
         "bump:patch": "yarn patch:util; yarn patch:core; yarn patch:store; yarn patch:react; yarn version patch; yarn tag:version",
-        "bump:prerelease": "yarn prerelease:util; yarn prerelease:core; yarn prerelease:store; yarn prerelease:react; yarn version prerelease; yarn tag:version",
+        "bump:prerelease": "yarn prerelease:util; yarn prerelease:core; yarn prerelease:store; yarn prerelease:react; yarn version prerelease",
         "tag:version": "VERSION=$(jq -r '.version' ./package.json); git commit -am \"v$VERSION\"; git tag -a \"v$VERSION\" -m \"v$VERSION\"; git push"
     },
     "devDependencies": {
