@@ -26,12 +26,12 @@
         "patch:core": "yarn workspace @gothub-team/got-core version patch",
         "patch:store": "yarn workspace @gothub-team/got-store version patch",
         "patch:react": "yarn workspace @gothub-team/got-react version patch",
-        "prerelease:util": "yarn workspace @gothub-team/got-util version prepatch",
-        "prerelease:core": "yarn workspace @gothub-team/got-core version prepatch",
-        "prerelease:store": "yarn workspace @gothub-team/got-store version prepatch",
-        "prerelease:react": "yarn workspace @gothub-team/got-react version prepatch",
+        "prerelease:util": "yarn workspace @gothub-team/got-util version prerelease",
+        "prerelease:core": "yarn workspace @gothub-team/got-core version prerelease",
+        "prerelease:store": "yarn workspace @gothub-team/got-store version prerelease",
+        "prerelease:react": "yarn workspace @gothub-team/got-react version prerelease",
         "bump:patch": "yarn patch:util; yarn patch:core; yarn patch:store; yarn patch:react; yarn version patch; yarn tag:version",
-        "bump:prerelease": "yarn prerelease:util; yarn prerelease:core; yarn prerelease:store; yarn prerelease:react; yarn version prerelease",
+        "bump:prerelease": "yarn prerelease:util; yarn prerelease:core; yarn prerelease:store; yarn prerelease:react; yarn version prerelease; tag:version",
         "tag:version": "VERSION=$(jq -r '.version' ./package.json); git commit -am \"v$VERSION\"; git tag -a \"v$VERSION\" -m \"v$VERSION\"; git push"
     },
     "devDependencies": {
