@@ -73,9 +73,7 @@ const useEqualRef = input => {
     return ref.current;
 };
 
-const useViewEquality = (a, b) => {
-    b.requireEqCheck ? R.equals(a.result, b.result) : true;
-};
+const useViewEquality = (a, b) => b.requireEqCheck ? R.equals(a.result, b.result) : true;
 
 export const createHooks = ({ store, baseState = R.identity }) => ({
     useGraph: (...stack) => {
