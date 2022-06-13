@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { createApi } from '@gothub-team/got-api';
 import { createStore } from '@gothub-team/got-store';
 import { useMemo, useRef } from 'react';
+import { useEqualRef, useRefUpdated } from './util.js';
 
 export { gotReducer } from '@gothub-team/got-store';
 
@@ -61,15 +62,6 @@ export const setup = ({
     };
 };
 
-const useEqualRef = input => {
-    const ref = useRef();
-    if (!R.equals(input, ref.current)) {
-        ref.current = input;
-    }
-
-    return ref.current;
-};
-
 const useViewEquality = (a, b) => b.requireEqCheck ? R.equals(a.result, b.result) : true;
 
 export const createHooks = ({ store, baseState = R.identity }) => ({
@@ -90,35 +82,36 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
         const useView = (view, downSelector = R.identity) => {
             const _stack = useEqualRef(stack);
             const _view = useEqualRef(view);
+            const selectView = useMemo(() => store.selectView(...stack)(view), [_stack, _view]);
+
+            const selectViewUpdated = useRefUpdated(selectView);
+            const downselectorUpdated = useRefUpdated(downSelector);
 
             const stateIdRef = useRef();
             const viewResRef = useRef();
-
-            const downSelectorRef = useRef();
 
             const resultRef = useRef();
 
             const select = useMemo(() => state => {
                 const stateId = R.prop('stateId', state) || Math.random();
 
-                if (stateId === stateIdRef.current && downSelector === downSelectorRef.current) {
+                if (!selectViewUpdated && !downselectorUpdated && stateId === stateIdRef.current) {
                     return {
                         requireEqCheck: false,
                         result: resultRef.current,
                     };
                 }
 
-                if (stateId !== stateIdRef.current) {
+                if (selectViewUpdated || stateId !== stateIdRef.current) {
                     stateIdRef.current = stateId;
-                    viewResRef.current = store.selectView(...stack)(view)(state);
+                    viewResRef.current = selectView(state);
                 }
 
-                downSelectorRef.current = downSelector;
                 return {
                     requireEqCheck: true,
                     result: downSelector(viewResRef.current),
                 };
-            }, [_stack, _view, downSelector]);
+            }, [selectView, downSelector]);
 
             const selector = useMemo(() => R.compose(
                 select,

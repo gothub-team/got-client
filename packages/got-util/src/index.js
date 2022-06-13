@@ -137,3 +137,8 @@ export const toPromise = observable => new Promise((resolve, reject) => {
         error: e => reject(R.append(e, getResults())),
     });
 });
+
+export const generateNewRandom = prev => {
+    const rand = Math.random();
+    return prev !== rand ? rand : generateNewRandom(prev);
+};

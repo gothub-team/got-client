@@ -105,3 +105,10 @@ export declare const forEachConfObj: (
 export declare const toPromise: (
     observable: { subscribe: (subscriber: Subscriber<any>) => void }
     ) => Promise<any[]>;
+
+/**
+ * Generates a random number between 0 and 1 that is not the given number
+ * 
+ * @returns a random number
+ */
+export declare const generateNewRandom: (prev: Number) => Number;

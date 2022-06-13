@@ -11,6 +11,7 @@ import {
     overPath,
     useSubscriber,
     useResult,
+    generateNewRandom,
 } from '@gothub-team/got-util';
 import {
     mergeOverwriteGraphsLeft,
@@ -743,11 +744,6 @@ export const createStore = ({
             }
         },
     });
-};
-
-const generateNewRandom = prev => {
-    const rand = Math.random();
-    return prev !== rand ? rand : generateNewRandom(prev);
 };
 
 export const gotReducer = (state = {}, action) => {
