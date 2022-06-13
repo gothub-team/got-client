@@ -1529,7 +1529,7 @@ describe('store:merge', () => {
 
     describe('Error handling', () => {
         // Missing Graphs in state
-        test('should do nothing if fromGraph does not exist', () => {
+        test('should not modify toGraph if fromGraph does not exist', () => {
         /* #region Test Bed Creation */
             const nodeId1 = 'node1';
             const node1 = { id: nodeId1 };
@@ -1556,7 +1556,7 @@ describe('store:merge', () => {
             merge(graphName2, graphName1); // merge stack2 into stack1
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toEqual(initialState);
+            expect(getState()[graphName1]).toEqual(initialState[graphName1]);
         /* #endregion */
         });
         test('should copy graph if toGraph does not exist', () => {
@@ -1606,7 +1606,8 @@ describe('store:merge', () => {
                 },
             };
             expect(onError).not.toBeCalled();
-            expect(getState()).toEqual(expectedState);
+            expect(getState()[graphName1]).toEqual(expectedState[graphName1]);
+            expect(getState()[graphName2]).toEqual(expectedState[graphName2]);
         /* #endregion */
         });
         // Invalid Input

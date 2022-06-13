@@ -860,7 +860,6 @@ describe('store:push', () => {
             const events = await eventsPromise;
 
             expect(events).toBeInstanceOf(Array);
-            console.log('events', events);
             expect(events[0]).toEqual({
                 type: 'GOT/UPLOAD_PROGRESS',
                 payload: {

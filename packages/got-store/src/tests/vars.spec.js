@@ -272,7 +272,7 @@ describe('store:Vars', () => {
             };
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toEqual(expectedGraph);
+            expect(getState()[graphName1]).toEqual(expectedGraph[graphName1]);
             /* #endregion */
         });
         test('should set var if value is null', () => {

@@ -750,11 +750,11 @@ export const gotReducer = (state = {}, action) => {
     const reducer = reducers[action.type];
     if (reducer) {
         return R.compose(
+            reducer(action.payload),
             R.over(
                 R.lensProp('stateId'),
                 generateNewRandom,
             ),
-            reducer(action.payload),
         )(state);
     }
 
