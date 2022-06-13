@@ -3,7 +3,7 @@ import * as RA from 'ramda-adjunct';
 import { useSelector } from 'react-redux';
 import { createApi } from '@gothub-team/got-api';
 import { createStore } from '@gothub-team/got-store';
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 
 export { gotReducer } from '@gothub-team/got-store';
 
@@ -63,12 +63,9 @@ export const setup = ({
 
 const useEqualRef = input => {
     const ref = useRef();
-
-    useEffect(() => {
-        if (!R.equals(input, ref.current)) {
-            ref.current = input;
-        }
-    }, [input]);
+    if (!R.equals(input, ref.current)) {
+        ref.current = input;
+    }
 
     return ref.current;
 };
@@ -99,12 +96,15 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
 
             const downSelectorRef = useRef();
 
+            const resultRef = useRef();
+
             const select = useMemo(() => state => {
                 const stateId = R.prop('stateId', state) || Math.random();
 
                 if (stateId === stateIdRef.current && downSelector === downSelectorRef.current) {
                     return {
                         requireEqCheck: false,
+                        result: resultRef.current,
                     };
                 }
 
@@ -126,6 +126,7 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
             ), [select, baseState]);
 
             const { result } = useSelector(selector, useViewEquality);
+            resultRef.current = result;
 
             return result;
         };
