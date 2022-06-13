@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-util",
-    "version": "0.21.19-1",
+    "version": "0.21.18",
     "description": "General utility functions used across all got packages.",
     "main": "dist/cjs/index.js",
     "types": "src/index.d.ts",
@@ -52,6 +52,5 @@
         "transform": {
             "\\.js?$": "babel-jest"
         }
-    },
-    "stableVersion": "0.21.18"
+    }
 }
