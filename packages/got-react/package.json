@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-react",
-    "version": "0.21.18",
+    "version": "0.21.19-0",
     "description": "React hooks to interact with local (in-memory) got graphs and sync them with remote got providers.",
     "main": "dist/cjs/index.js",
     "types": "src/index.d.ts",
@@ -63,5 +63,6 @@
         "transform": {
             "\\.js?$": "babel-jest"
         }
-    }
+    },
+    "stableVersion": "0.21.18"
 }
