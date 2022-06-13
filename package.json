@@ -22,6 +22,11 @@
         "publish:store": "yarn workspace @gothub-team/got-store npm publish --access public",
         "publish:react": "yarn workspace @gothub-team/got-react npm publish --access public",
         "publish:all": "yarn publish:util; yarn publish:core; yarn publish:store; yarn publish:react;",
+        "publish:util:beta": "yarn workspace @gothub-team/got-util npm publish --access public --tag beta",
+        "publish:core:beta": "yarn workspace @gothub-team/got-core npm publish --access public --tag beta",
+        "publish:store:beta": "yarn workspace @gothub-team/got-store npm publish --access public --tag beta",
+        "publish:react:beta": "yarn workspace @gothub-team/got-react npm publish --access public --tag beta",
+        "publish:all:beta": "yarn publish:util; yarn publish:core; yarn publish:store; yarn publish:react;",
         "patch:util": "yarn workspace @gothub-team/got-util version patch",
         "patch:core": "yarn workspace @gothub-team/got-core version patch",
         "patch:store": "yarn workspace @gothub-team/got-store version patch",
@@ -31,7 +36,7 @@
         "prerelease:store": "yarn workspace @gothub-team/got-store version prerelease",
         "prerelease:react": "yarn workspace @gothub-team/got-react version prerelease",
         "bump:patch": "yarn patch:util; yarn patch:core; yarn patch:store; yarn patch:react; yarn version patch; yarn tag:version",
-        "bump:prerelease": "yarn prerelease:util; yarn prerelease:core; yarn prerelease:store; yarn prerelease:react; yarn version prerelease; tag:version",
+        "bump:prerelease": "yarn prerelease:util; yarn prerelease:core; yarn prerelease:store; yarn prerelease:react; yarn version prerelease; yarn tag:version",
         "tag:version": "VERSION=$(jq -r '.version' ./package.json); git commit -am \"v$VERSION\"; git tag -a \"v$VERSION\" -m \"v$VERSION\"; git push"
     },
     "devDependencies": {

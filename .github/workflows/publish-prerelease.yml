@@ -31,7 +31,7 @@ jobs:
         yarn
         yarn build
         yarn bump:prerelease
-        yarn publish:all
+        yarn publish:all:beta
         git push
       env:
         NPM_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
