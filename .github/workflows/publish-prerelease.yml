@@ -15,7 +15,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   publish:
-    name: "Publish Prerelease to GitHub Packages"
+    name: "Publish npm packages as prerelease"
     runs-on: ubuntu-latest
     if: "github.repository_owner == 'gothub-team' && contains(github.event.head_commit.message, '[publish prerelease]')"
     steps:

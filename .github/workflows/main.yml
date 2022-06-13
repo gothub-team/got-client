@@ -15,7 +15,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   publish:
-    name: "Publish to GitHub Packages"
+    name: "Publish npm packages"
     runs-on: ubuntu-18.04
     if: "github.repository_owner == 'gothub-team' && !contains(github.event.head_commit.message, 'ci skip')"
     steps:

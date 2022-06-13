@@ -26,7 +26,7 @@
         "publish:core:beta": "yarn workspace @gothub-team/got-core npm publish --access public --tag beta",
         "publish:store:beta": "yarn workspace @gothub-team/got-store npm publish --access public --tag beta",
         "publish:react:beta": "yarn workspace @gothub-team/got-react npm publish --access public --tag beta",
-        "publish:all:beta": "yarn publish:util; yarn publish:core; yarn publish:store; yarn publish:react;",
+        "publish:all:beta": "yarn publish:util:beta; yarn publish:core:beta; yarn publish:store:beta; yarn publish:react:beta;",
         "patch:util": "yarn workspace @gothub-team/got-util version patch",
         "patch:core": "yarn workspace @gothub-team/got-core version patch",
         "patch:store": "yarn workspace @gothub-team/got-store version patch",
