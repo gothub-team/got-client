@@ -745,10 +745,25 @@ export const createStore = ({
     });
 };
 
-export const gotReducer = (state = {}, action) => R.compose(
-    reducer => reducer(action.payload)(state),
-    R.propOr(() => R.identity, action.type),
-)(reducers);
+const generateNewRandom = prev => {
+    const rand = Math.random();
+    return prev !== rand ? rand : generateNewRandom(prev);
+};
+
+export const gotReducer = (state = {}, action) => {
+    const reducer = reducers[action.type];
+    if (reducer) {
+        return R.compose(
+            R.over(
+                R.lensProp('stateId'),
+                generateNewRandom,
+            ),
+            reducer(action.payload),
+        )(state);
+    }
+
+    return state;
+};
 
 export const reducers = {
     [GOT_ACTION_MERGE]: ({

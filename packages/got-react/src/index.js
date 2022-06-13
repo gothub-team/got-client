@@ -73,6 +73,10 @@ const useEqualRef = input => {
     return ref.current;
 };
 
+const useViewEquality = (a, b) => {
+    b.requireEqCheck ? R.equals(a.result, b.result) : true;
+};
+
 export const createHooks = ({ store, baseState = R.identity }) => ({
     useGraph: (...stack) => {
         const currentGraphName = R.nth(-1, stack);
@@ -92,17 +96,40 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
             const _stack = useEqualRef(stack);
             const _view = useEqualRef(view);
 
-            const _selectView = useMemo(() => store.selectView(...stack)(view), [_stack, _view]);
+            const stateIdRef = useRef();
+            const viewResRef = useRef();
+
+            const downSelectorRef = useRef();
+
+            const select = useMemo(() => state => {
+                const stateId = R.prop('stateId', state) || Math.random();
+
+                if (stateId === stateIdRef.current && downSelector === downSelectorRef.current) {
+                    return {
+                        requireEqCheck: false,
+                    };
+                }
+
+                if (stateId !== stateIdRef.current) {
+                    stateIdRef.current = stateId;
+                    viewResRef.current = store.selectView(...stack)(view)(state);
+                }
+
+                downSelectorRef.current = downSelector;
+                return {
+                    requireEqCheck: true,
+                    result: downSelector(viewResRef.current),
+                };
+            }, [_stack, _view, downSelector]);
 
             const selector = useMemo(() => R.compose(
-                downSelector,
-                store.selectView(...stack)(view),
+                select,
                 baseState,
-            ), [downSelector, _selectView, baseState]);
+            ), [select, baseState]);
 
-            const nodes = useSelector(selector, R.equals);
+            const { result } = useSelector(selector, useViewEquality);
 
-            return nodes;
+            return result;
         };
         const useNode = (nodeId, selector = R.identity) => {
             const node = useSelector(
