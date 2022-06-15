@@ -146,20 +146,33 @@ export const toPromise = observable => new Promise((resolve, reject) => {
     });
 });
 
-export const mutAssocPath = (path, val) => obj => {
-    let o = obj;
+export const getPath = (path, input) => {
+    let obj = input;
+    for (let i = 0; i < path.length; i += 1) {
+        const key = path[i];
+        if (key in obj) {
+            obj = obj[key];
+        } else {
+            return undefined;
+        }
+    }
+    return obj;
+};
+
+export const mutAssocPath = (path, val) => input => {
+    let obj = input;
     for (let i = 0; i < path.length - 1; i += 1) {
         const prop = path[i];
-        if (prop in o) {
-            o = o[prop];
+        if (prop in obj) {
+            obj = obj[prop];
         } else {
-            o[prop] = {};
-            o = o[prop];
+            obj[prop] = {};
+            obj = obj[prop];
         }
     }
 
     const lastProp = path[path.length - 1];
-    o[lastProp] = val;
+    obj[lastProp] = val;
 
-    return obj;
+    return input;
 };

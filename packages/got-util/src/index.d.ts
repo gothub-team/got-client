@@ -116,6 +116,11 @@ export declare const toPromise: (
     ) => Promise<any[]>;
 
 /**
+ * @returns the property at a given path in the specified object or undefined if the path doesn't exist.
+ */
+ export declare const getPath: (path: string[], obj: Object) => any | undefined;
+
+/**
  * Will mutate an object and assoc the given value at the specified path, creating objects along the way if they don't exist yet.
  * 
  * @returns the mutated object

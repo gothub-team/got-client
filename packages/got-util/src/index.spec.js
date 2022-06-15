@@ -1,4 +1,4 @@
-import { mutAssocPath, mergeRight } from './index.js';
+import { mutAssocPath, mergeRight, getPath } from './index.js';
 
 describe('mergeRight', () => {
     test('should merge two objects correctly', () => {
@@ -28,6 +28,85 @@ describe('mergeRight', () => {
     });
 });
 
+describe('getPath', () => {
+    test('should get prop at path with path length = 1', () => {
+        const obj = {
+            prop: 'value',
+        };
+
+        const result = getPath(['prop'], obj);
+        const expected = 'value';
+
+        expect(result).toEqual(expected);
+    });
+    test('should return instance at path with path length = 1 ', () => {
+        const instance = { prop: 'value' };
+        const obj = {
+            prop: instance,
+        };
+
+        const result = getPath(['prop'], obj);
+
+        expect(result === instance).toBeTruthy();
+    });
+    test('should return undefined if path does not exist with path length = 1 ', () => {
+        const obj = {
+            prop: 'value',
+        };
+
+        const result = getPath(['otherProp'], obj);
+        const expected = undefined;
+
+        expect(result).toEqual(expected);
+    });
+    test('should get prop at path with path length = 3', () => {
+        const obj = {
+            some: {
+                test: {
+                    path: 'value',
+                },
+            },
+        };
+
+        const result = getPath(['some', 'test', 'path'], obj);
+        const expected = 'value';
+
+        expect(result).toEqual(expected);
+    });
+    test('should return instance at path with path length = 3 ', () => {
+        const instance = { prop: 'value' };
+        const obj = {
+            some: {
+                test: {
+                    path: instance,
+                },
+            },
+        };
+
+        const result = getPath(['some', 'test', 'path'], obj);
+
+        expect(result === instance).toBeTruthy();
+    });
+    test('should return undefined if path does not exist with path length = 3 ', () => {
+        const obj = {
+            some: {
+                test: {
+                    path: 'value',
+                },
+            },
+        };
+
+        const result1 = getPath(['invalid', 'test', 'path'], obj);
+        const result2 = getPath(['some', 'invalid', 'path'], obj);
+        const result3 = getPath(['some', 'test', 'invalid'], obj);
+        const expected = undefined;
+
+        expect(result1).toEqual(expected);
+        expect(result2).toEqual(expected);
+        expect(result3).toEqual(expected);
+    });
+});
+
 describe('mutAssocPath', () => {
     test('should assoc at path with path length = 1', () => {
         const obj = {};
@@ -39,7 +118,7 @@ describe('mutAssocPath', () => {
 
         expect(result).toEqual(expected);
     });
-    test('should not modify other properties with path length = 1 ', () => {
+    test('should not modify other properties with path length = 1', () => {
         const obj = { ogProp: 'ogValue' };
 
         const result = mutAssocPath(['prop'], 'value')(obj);
@@ -50,7 +129,7 @@ describe('mutAssocPath', () => {
 
         expect(result).toEqual(expected);
     });
-    test('should return same object instance with path length = 1 ', () => {
+    test('should return same object instance with path length = 1', () => {
         const obj = { ogProp: 'ogValue' };
 
         const result = mutAssocPath(['prop'], 'value')(obj);
@@ -71,7 +150,7 @@ describe('mutAssocPath', () => {
 
         expect(result).toEqual(expected);
     });
-    test('should not modify other properties with path length = 1 ', () => {
+    test('should not modify other properties with path length = 3', () => {
         const obj = {
             ogProp1: 'ogValue1',
             some: {
@@ -96,7 +175,7 @@ describe('mutAssocPath', () => {
 
         expect(result).toEqual(expected);
     });
-    test('should return same object instance with path length = 1 ', () => {
+    test('should return same object instance with path length = 3', () => {
         const obj = { ogProp: 'ogValue' };
 
         const result = mutAssocPath(['some', 'test', 'path'], 'value')(obj);

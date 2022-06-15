@@ -3,25 +3,13 @@ import * as R from 'ramda';
 import * as RA from 'ramda-adjunct';
 import {
     forEachCondObj,
+    getPath,
     mergeDeepLeft,
     mergeLeft,
     overPath,
     reduceObj,
     useResult,
 } from '@gothub-team/got-util';
-
-const getPath = (path, obj) => {
-    let o = obj;
-    for (let i = 0; i < path.length; i += 1) {
-        const key = path[i];
-        if (key in o) {
-            o = o[key];
-        } else {
-            return undefined;
-        }
-    }
-    return o;
-};
 
 const getPathOr = (or, path) => obj => {
     let o = obj;
@@ -257,19 +245,6 @@ export const selectPathFromStack = R.curry((path, stack, fnMergeLeft, state) => 
     });
     return acc;
 });
-
-// export const selectPathFromStack = R.curry((path, stack, fnMergeLeft, state) => R.reduce(
-//     (acc, graphName) => R.ifElse(
-//         R.hasPath([graphName, ...path]),
-//         R.compose(
-//             R.flip(fnMergeLeft)(acc),
-//             R.path([graphName, ...path]),
-//         ),
-//         R.always(acc),
-//     )(state),
-//     undefined,
-//     stack,
-// ));
 
 export const selectEdgeToIds = graph => (fromType, nodeId, toType, { reverse } = {}) => reverse
     ? R.pathOr({}, ['index', 'reverseEdges', toType, nodeId, fromType], graph)
