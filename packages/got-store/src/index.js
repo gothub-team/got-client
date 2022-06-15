@@ -397,7 +397,7 @@ export const createStore = ({
         }
     };
     const selectView = (...stack) => view => state => {
-        const [getViewTree, setViewTree, overViewTree] = useResult({});
+        const [getViewTree, , overViewTree] = useResult({});
         const stackGetEdgeToIds = (fromType, nodeId, toType, { reverse } = {}) => {
             const res = reverse
                 ? selectReverseEdge(...stack)(`${fromType}/${toType}`)(nodeId)(state)

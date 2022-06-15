@@ -1,8 +1,17 @@
+
+export declare type FnGet = () => any;
+export declare type FnSet = (value: any) => any;
+export declare type FnOver = (fn: FnSet) => any;
+
 /**
- * returns a getter and a setter function for a reference.
+ * returns a getter, a setter and an over function for a reference.
  * Setter function can be invoked with either a new value or a function to be applied to the reference.
+ * Over function can only be invoked with a function to be applied to the reference.
+ * 
+ * While the Setter function includes the same functionality as the Over function,
+ * calling the Over function repeatedly is more efficient since it doesnt have to check for input type
  */
-export declare const useResult: (initialValue: any) => [() => any, any | ((value: any) => any)];
+export declare const useResult: (initialValue: any) => [fnGet: FnGet, fnSet: FnSet, fnOver: FnOver];
 
 export declare type Subscriber<TEvent> = {
     /**
