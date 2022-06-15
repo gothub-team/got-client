@@ -145,3 +145,21 @@ export const toPromise = observable => new Promise((resolve, reject) => {
         error: e => reject(R.append(e, getResults())),
     });
 });
+
+export const mutAssocPath = (path, val) => obj => {
+    let o = obj;
+    for (let i = 0; i < path.length - 1; i += 1) {
+        const prop = path[i];
+        if (prop in o) {
+            o = o[prop];
+        } else {
+            o[prop] = {};
+            o = o[prop];
+        }
+    }
+
+    const lastProp = path[path.length - 1];
+    o[lastProp] = val;
+
+    return obj;
+};

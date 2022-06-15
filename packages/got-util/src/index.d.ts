@@ -105,3 +105,10 @@ export declare const forEachConfObj: (
 export declare const toPromise: (
     observable: { subscribe: (subscriber: Subscriber<any>) => void }
     ) => Promise<any[]>;
+
+/**
+ * Will mutate an object and assoc the given value at the specified path, creating objects along the way if they don't exist yet.
+ * 
+ * @returns the mutated object
+ */
+export declare const mutAssocPath: (path: string[], val: any) => (obj: Object) => Object;
