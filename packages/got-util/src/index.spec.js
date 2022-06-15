@@ -1,4 +1,4 @@
-import { mutAssocPath, mergeRight, getPath } from './index.js';
+import { getPathOr, mutAssocPath, mergeRight, getPath } from './index.js';
 
 describe('mergeRight', () => {
     test('should merge two objects correctly', () => {
@@ -100,6 +100,85 @@ describe('getPath', () => {
         const result2 = getPath(['some', 'invalid', 'path'], obj);
         const result3 = getPath(['some', 'test', 'invalid'], obj);
         const expected = undefined;
+
+        expect(result1).toEqual(expected);
+        expect(result2).toEqual(expected);
+        expect(result3).toEqual(expected);
+    });
+});
+
+describe('getPathOr', () => {
+    test('should get prop at path with path length = 1', () => {
+        const obj = {
+            prop: 'value',
+        };
+
+        const result = getPathOr('fallback', ['prop'])(obj);
+        const expected = 'value';
+
+        expect(result).toEqual(expected);
+    });
+    test('should return instance at path with path length = 1 ', () => {
+        const instance = { prop: 'value' };
+        const obj = {
+            prop: instance,
+        };
+
+        const result = getPathOr('fallback', ['prop'])(obj);
+
+        expect(result === instance).toBeTruthy();
+    });
+    test('should return fallback if path does not exist with path length = 1 ', () => {
+        const obj = {
+            prop: 'value',
+        };
+
+        const result = getPathOr('fallback', ['otherProp'])(obj);
+        const expected = 'fallback';
+
+        expect(result).toEqual(expected);
+    });
+    test('should get prop at path with path length = 3', () => {
+        const obj = {
+            some: {
+                test: {
+                    path: 'value',
+                },
+            },
+        };
+
+        const result = getPathOr('fallback', ['some', 'test', 'path'])(obj);
+        const expected = 'value';
+
+        expect(result).toEqual(expected);
+    });
+    test('should return instance at path with path length = 3 ', () => {
+        const instance = { prop: 'value' };
+        const obj = {
+            some: {
+                test: {
+                    path: instance,
+                },
+            },
+        };
+
+        const result = getPathOr('fallback', ['some', 'test', 'path'])(obj);
+
+        expect(result === instance).toBeTruthy();
+    });
+    test('should return undefined if path does not exist with path length = 3 ', () => {
+        const obj = {
+            some: {
+                test: {
+                    path: 'value',
+                },
+            },
+        };
+
+        const result1 = getPathOr('fallback', ['invalid', 'test', 'path'])(obj);
+        const result2 = getPathOr('fallback', ['some', 'invalid', 'path'])(obj);
+        const result3 = getPathOr('fallback', ['some', 'test', 'invalid'])(obj);
+        const expected = 'fallback';
 
         expect(result1).toEqual(expected);
         expect(result2).toEqual(expected);

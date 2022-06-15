@@ -9,20 +9,8 @@ import {
     overPath,
     reduceObj,
     useResult,
+    getPathOr,
 } from '@gothub-team/got-util';
-
-const getPathOr = (or, path) => obj => {
-    let o = obj;
-    for (let i = 0; i < path.length; i += 1) {
-        const key = path[i];
-        if (key in o) {
-            o = o[key];
-        } else {
-            return or;
-        }
-    }
-    return o;
-};
 
 export const isEdgeTypesString = R.compose(
     ([fromType, toType]) => RA.lengthGt(0, fromType) && RA.lengthGt(0, toType),
