@@ -82,7 +82,8 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
         const useView = (view, downSelector = R.identity) => {
             const _stack = useEqualRef(stack);
             const _view = useEqualRef(view);
-            const selectView = useMemo(() => store.selectView(...stack)(view), [_stack, _view]);
+            // creating new function here instead of using currying to make function calls testable
+            const selectView = useMemo(() => state => store.selectView(..._stack)(_view)(state), [_stack, _view]);
 
             const selectViewUpdated = useRefUpdated(selectView);
             const downselectorUpdated = useRefUpdated(downSelector);

@@ -16,7 +16,7 @@
         "test:store": "yarn workspace @gothub-team/got-store test",
         "test:react": "yarn workspace @gothub-team/got-react test",
         "test": "yarn test:store; yarn test:util;",
-        "lint": "eslint ./",
+        "lint": "eslint ./packages",
         "publish:util": "yarn workspace @gothub-team/got-util npm publish --access public",
         "publish:core": "yarn workspace @gothub-team/got-core npm publish --access public",
         "publish:store": "yarn workspace @gothub-team/got-store npm publish --access public",
@@ -40,12 +40,25 @@
         "tag:version": "VERSION=$(jq -r '.version' ./package.json); git commit -am \"v$VERSION\"; git tag -a \"v$VERSION\" -m \"v$VERSION\"; git push"
     },
     "devDependencies": {
+        "@babel/eslint-parser": "^7.18.2",
         "@babel/node": "^7.17.10",
         "@types/jest": "^27.5.1",
-        "eslint": "^8.15.0",
+        "eslint": "^8.17.0",
         "eslint-config-airbnb": "^19.0.4",
         "eslint-plugin-import": "^2.26.0",
-        "eslint-plugin-node": "^11.1.0"
+        "eslint-plugin-jsx-a11y": "^6.5.1",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-react": "^7.30.0",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "react-scripts": "4.0.3"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
     },
     "packageManager": "yarn@3.2.1",
     "stableVersion": "0.21.18"

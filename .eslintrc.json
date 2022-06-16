@@ -6,9 +6,19 @@
     },
     "extends": [
         "airbnb-base",
-        "plugin:node/recommended"
+        "plugin:node/recommended",
+        "airbnb/hooks",
+        "plugin:react/jsx-runtime"
     ],
+    "parser": "@babel/eslint-parser",
     "parserOptions": {
+        "requireConfigFile": false,
+        "babelOptions": {
+            "presets": ["@babel/preset-react"]
+        },
+        "ecmaFeatures": {
+            "jsx": true
+        },
         "ecmaVersion": 2020,
         "sourceType": "module",
         "allowImportExportEverywhere": true
@@ -16,6 +26,14 @@
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
+    },
+    "plugins": [
+        "react"
+    ],
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
     },
     "overrides": [
         {
@@ -138,6 +156,54 @@
             0
         ],
         "node/no-unpublished-require": [
+            0
+        ],
+        "react/jsx-indent": [
+            "error",
+            4
+        ],
+        "react/jsx-indent-props": [
+            "error",
+            4
+        ],
+        "react-hooks/rules-of-hooks": [
+            0
+        ],
+        "jsx-a11y/click-events-have-key-events": [
+            0
+        ],
+        "jsx-a11y/no-static-element-interactions": [
+            0
+        ],
+        "jsx-a11y/media-has-caption": [
+            0
+        ],
+        "react/prop-types": [
+            0
+        ],
+        "react/no-deprecated": [
+            0
+        ],
+        "react/jsx-filename-extension": [
+            0
+        ],
+        "react/button-has-type": [
+            0
+        ],
+        "react-hooks/exhaustive-deps": [
+            0
+        ],
+        "react/function-component-definition": [
+            2,
+            {
+                "namedComponents": "arrow-function",
+                "unnamedComponents": "arrow-function"
+            }
+        ],
+        "import/no-deprecated": [
+            1
+        ],
+        "default-param-last": [
             0
         ]
     }
