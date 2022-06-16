@@ -2083,17 +2083,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gothub-team/got-core@npm:0.21.20":
-  version: 0.21.20
-  resolution: "@gothub-team/got-core@npm:0.21.20"
-  dependencies:
-    "@gothub-team/got-util": 0.21.20
-    ramda: ^0.28.0
-    ramda-adjunct: ^3.1.0
-  checksum: 99384de7f4c05aafc560dd052f1ec874aa45b9cbb51e1503893d6558414934549d4e52695a163497ae8622fca986f4dd85e1eb365e2524be1c38263b1d8a01d6
-  languageName: node
-  linkType: hard
-
 "@gothub-team/got-core@workspace:*, @gothub-team/got-core@workspace:packages/got-core":
   version: 0.0.0-use.local
   resolution: "@gothub-team/got-core@workspace:packages/got-core"
@@ -2114,22 +2103,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@gothub-team/got-react@npm:0.21.20":
-  version: 0.21.20
-  resolution: "@gothub-team/got-react@npm:0.21.20"
-  dependencies:
-    "@gothub-team/got-api": ^0.1.20
-    "@gothub-team/got-store": 0.21.20
-    ramda: ^0.28.0
-    ramda-adjunct: ^3.1.0
-    react-redux: 7.2.3
-  peerDependencies:
-    react: ">=17.0.2"
-    react-redux: ">=7.2.3"
-  checksum: 434c5e7f0ddd0e1264f8609c1d086fdc6b4a59ba9b775da4c705696e273e15a3ff0d98aa915319eea7e6a0188e70fec6f7e5d55021eb4657def945f099c11db9
-  languageName: node
-  linkType: hard
-
 "@gothub-team/got-react@workspace:packages/got-react":
   version: 0.0.0-use.local
   resolution: "@gothub-team/got-react@workspace:packages/got-react"
@@ -2141,15 +2114,24 @@ __metadata:
     "@gothub-team/got-core": "workspace:*"
     "@gothub-team/got-store": "workspace:*"
     "@gothub-team/got-util": "workspace:*"
+    "@testing-library/jest-dom": 5.16.4
+    "@testing-library/react": 13.3.0
     babel-jest: ^28.1.0
     babel-loader: ^8.2.5
     babel-plugin-transform-runtime: ^6.23.0
     babel-polyfill: ^6.26.0
-    jest: ^28.1.0
+    jest: 27.0.0
     ramda: ^0.28.0
     ramda-adjunct: ^3.1.0
-    react: ">=17.0.2"
+    react: ^18.2.0
+    react-dom: ^18.2.0
     react-redux: 7.2.3
+    react-router-dom: ^6.3.0
+    react-scripts: 5.0.1
+    redux: ^4.2.0
+    redux-logger: ^3.0.6
+    unfetch: ^4.2.0
+    uuid: ^8.3.2
     webpack: ^5.72.1
     webpack-cli: 4.9.2
   peerDependencies:
@@ -2164,18 +2146,6 @@ __metadata:
   dependencies:
     buffer: ^6.0.3
   checksum: 70543214714145153ea0efe9bc6eaf7d004318e2f99c2167bba8e85d312f4845d239f4fc5d86a0c116ccb7942479f858de1115e2616c3e1959f73014a265d2ad
-  languageName: node
-  linkType: hard
-
-"@gothub-team/got-store@npm:0.21.20":
-  version: 0.21.20
-  resolution: "@gothub-team/got-store@npm:0.21.20"
-  dependencies:
-    "@gothub-team/got-core": 0.21.20
-    "@gothub-team/got-util": 0.21.20
-    ramda: ^0.28.0
-    ramda-adjunct: ^3.1.0
-  checksum: f8f33634144b1acd58d0424dcd89f4f2a48a86197335d83398dccd29d45b45687271aaeccc981043e643b5e68b178de4ea02aa59fb4672e68d01e6b101b722b9
   languageName: node
   linkType: hard
 
@@ -2200,16 +2170,6 @@ __metadata:
     webpack-cli: 4.9.2
   languageName: unknown
   linkType: soft
-
-"@gothub-team/got-util@npm:0.21.20":
-  version: 0.21.20
-  resolution: "@gothub-team/got-util@npm:0.21.20"
-  dependencies:
-    ramda: ^0.28.0
-    ramda-adjunct: ^3.1.0
-  checksum: fd3e2f481b2fe3bb5ad25daf4647dd29ea23dad8a999d037bdd5d8ba939a28140559d8b058f2f9344997c1e1532e5f77dc17e94187b54be1810097292732ff65
-  languageName: node
-  linkType: hard
 
 "@gothub-team/got-util@workspace:*, @gothub-team/got-util@workspace:packages/got-util":
   version: 0.0.0-use.local
@@ -2247,30 +2207,6 @@ __metadata:
     react: ^17.0.2
     react-dom: ^17.0.2
     react-scripts: 4.0.3
-  languageName: unknown
-  linkType: soft
-
-"@gothub-team/test-got-react@workspace:packages/test-got-react":
-  version: 0.0.0-use.local
-  resolution: "@gothub-team/test-got-react@workspace:packages/test-got-react"
-  dependencies:
-    "@gothub-team/got-react": 0.21.20
-    "@gothub-team/got-store": "workspace:*"
-    "@gothub-team/got-util": "workspace:*"
-    "@testing-library/jest-dom": 5.16.4
-    "@testing-library/react": 13.3.0
-    jest: 27.0.0
-    ramda: ^0.28.0
-    ramda-adjunct: ^3.1.0
-    react: ^18.2.0
-    react-dom: ^18.2.0
-    react-redux: 7.2.3
-    react-router-dom: ^6.3.0
-    react-scripts: 5.0.1
-    redux: ^4.2.0
-    redux-logger: ^3.0.6
-    unfetch: ^4.2.0
-    uuid: ^8.3.2
   languageName: unknown
   linkType: soft
 
@@ -17616,15 +17552,6 @@ __metadata:
   bin:
     react-scripts: bin/react-scripts.js
   checksum: 92afa2f245c7092ccc97d5609dc7a2130616262e34da7f15072d9442e2d2e1d4909a91022abd1faac1336eb17c5525a10d9bd43e1ae374c7ec941ca20addca68
-  languageName: node
-  linkType: hard
-
-"react@npm:>=17.0.2":
-  version: 18.1.0
-  resolution: "react@npm:18.1.0"
-  dependencies:
-    loose-envify: ^1.1.0
-  checksum: 5bb296b561b43ef2220395da4faac86c14a087c8c80e1a7598a5740f01ee605c11eaf249985c1e2000971c4cd32ccb46d40f00479bbd9fb6b1c7cf857393b7d4
   languageName: node
   linkType: hard
 

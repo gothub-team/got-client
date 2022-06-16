@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import { Provider, useSelector, useDispatch } from 'react-redux';
 import { act, render, waitFor } from '@testing-library/react';
-import { gotReducer, createHooks } from '@gothub-team/got-react';
 import { createStore } from '@gothub-team/got-store';
 import { combineReducers, createStore as createReduxStore } from 'redux';
 import * as R from 'ramda';
 import '@testing-library/jest-dom';
 import { generateNewRandom } from '@gothub-team/got-util';
+import { gotReducer, createHooks } from '../index.js';
 import { delay } from './util.js';
 
 // TODO fix JSX detection
