@@ -62,7 +62,7 @@ export const setup = ({
     };
 };
 
-const useViewEquality = (a, b) => b.requireEqCheck ? R.equals(a.result, b.result) : true;
+const useViewEquality = (next, prev) => next.requireEqCheck ? R.equals(next.result, prev.result) : true;
 
 export const createHooks = ({ store, baseState = R.identity }) => ({
     useGraph: (...stack) => {
@@ -94,7 +94,7 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
             const resultRef = useRef();
 
             const select = useMemo(() => state => {
-                const stateId = R.prop('stateId', state) || Math.random();
+                const stateId = R.propOr(0, 'stateId', state);
 
                 if (!selectViewUpdated && !downselectorUpdated && stateId === stateIdRef.current) {
                     return {
