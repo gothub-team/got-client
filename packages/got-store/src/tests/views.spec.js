@@ -1,5 +1,4 @@
-import * as uuid from 'uuid';
-import { createTestStore } from './shared.js';
+import { createTestStore, generateRandomTestData, randomTestDataView } from './shared.js';
 import { MISSING_PARAM_ERROR } from '../errors.js';
 
 describe('store:Views', () => {
@@ -764,60 +763,18 @@ describe('store:Views', () => {
         // this should run much faster on local machines, but was increased from 10ms to 25ms to not fail tests in workflows
         test('should select 100 parent and 1000 child objects in under 25ms', () => {
             const runTimes = 10;
-            const generateRandomString = (length = 5) => Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, length);
 
             let totalTime = 0;
             for (let counter = 0; counter < runTimes; counter += 1) {
                 const {
                     store: {
                         selectView,
-                        add,
                     },
                     select,
-                } = createTestStore({ });
-
-                // generate debug data
-                for (let i = 0; i < 100; i += 1) {
-                    const locationId = uuid.v4();
-                    const location = {
-                        id: locationId, createdDate: new Date().toISOString(), path: `${generateRandomString()}/${generateRandomString()}`, tags: [generateRandomString(), generateRandomString()],
-                    };
-                    add('main')('root/location')('root')(location);
-                    for (let j = 0; j < 10; j += 1) {
-                        const objectId = uuid.v4();
-                        const object = {
-                            id: objectId, createdDate: new Date().toISOString(), isAtLocation: true, name: generateRandomString(10), oldLocation: false,
-                        };
-                        add('main')('location/object')(locationId)(object);
-                    }
-                }
-
-                const view = {
-                    'root': {
-                        as: 'root',
-                        edges: {
-                            'root/location': {
-                                as: 'locations',
-                                include: {
-                                    node: true,
-                                    edges: true,
-                                },
-                                edges: {
-                                    'location/object': {
-                                        as: 'objects',
-                                        include: {
-                                            node: true,
-                                            edges: true,
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    },
-                };
+                } = createTestStore(generateRandomTestData(100, 10));
 
                 const start = performance.now();
-                select(selectView('main', 'temp')(view));
+                select(selectView('main', 'temp')(randomTestDataView));
                 const end = performance.now();
 
                 totalTime += end - start;
