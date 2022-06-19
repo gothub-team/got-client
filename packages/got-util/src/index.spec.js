@@ -1,4 +1,4 @@
-import { getPathOr, mutAssocPath, mergeRight, getPath } from './index.js';
+import { getPathOr, assocPathMutate, mergeRight, getPath } from './index.js';
 
 describe('mergeRight', () => {
     test('should merge two objects correctly', () => {
@@ -186,11 +186,11 @@ describe('getPathOr', () => {
     });
 });
 
-describe('mutAssocPath', () => {
+describe('assocPathMutate', () => {
     test('should assoc at path with path length = 1', () => {
         const obj = {};
 
-        const result = mutAssocPath(['prop'], 'value')(obj);
+        const result = assocPathMutate(['prop'], 'value')(obj);
         const expected = {
             prop: 'value',
         };
@@ -200,7 +200,7 @@ describe('mutAssocPath', () => {
     test('should not modify other properties with path length = 1', () => {
         const obj = { ogProp: 'ogValue' };
 
-        const result = mutAssocPath(['prop'], 'value')(obj);
+        const result = assocPathMutate(['prop'], 'value')(obj);
         const expected = {
             prop: 'value',
             ogProp: 'ogValue',
@@ -211,14 +211,14 @@ describe('mutAssocPath', () => {
     test('should return same object instance with path length = 1', () => {
         const obj = { ogProp: 'ogValue' };
 
-        const result = mutAssocPath(['prop'], 'value')(obj);
+        const result = assocPathMutate(['prop'], 'value')(obj);
 
         expect(obj === result).toBeTruthy();
     });
     test('should assoc at path with path length = 3', () => {
         const obj = {};
 
-        const result = mutAssocPath(['some', 'test', 'path'], 'value')(obj);
+        const result = assocPathMutate(['some', 'test', 'path'], 'value')(obj);
         const expected = {
             some: {
                 test: {
@@ -240,7 +240,7 @@ describe('mutAssocPath', () => {
             },
         };
 
-        const result = mutAssocPath(['some', 'test', 'path'], 'value')(obj);
+        const result = assocPathMutate(['some', 'test', 'path'], 'value')(obj);
         const expected = {
             ogProp1: 'ogValue1',
             some: {
@@ -257,7 +257,7 @@ describe('mutAssocPath', () => {
     test('should return same object instance with path length = 3', () => {
         const obj = { ogProp: 'ogValue' };
 
-        const result = mutAssocPath(['some', 'test', 'path'], 'value')(obj);
+        const result = assocPathMutate(['some', 'test', 'path'], 'value')(obj);
 
         expect(obj === result).toBeTruthy();
     });

@@ -11,7 +11,7 @@ import {
     overPath,
     useSubscriber,
     useResult,
-    mutAssocPath,
+    assocPathMutate,
 } from '@gothub-team/got-util';
 import {
     mergeOverwriteGraphsLeft,
@@ -418,7 +418,7 @@ export const createStore = ({
                     bag.files = selectFiles(...stack)(nodeId)(state);
                 }
 
-                overViewTree(mutAssocPath(nodeViewPath, bag));
+                overViewTree(assocPathMutate(nodeViewPath, bag));
             },
         }, view, stackGetEdgeToIds);
 

@@ -130,4 +130,4 @@ export declare const getPath: (or: any, path: string[]) => (obj: Object) => any;
  * 
  * @returns the mutated object
  */
-export declare const mutAssocPath: (path: string[], val: any) => (obj: Object) => Object;
+export declare const assocPathMutate: (path: string[], val: any) => (obj: Object) => Object;

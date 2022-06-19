@@ -161,7 +161,7 @@ export const getPathOr = (or, path) => input => {
 
 export const getPath = (path, input) => getPathOr(undefined, path)(input);
 
-export const mutAssocPath = (path, val) => input => {
+export const assocPathMutate = (path, val) => input => {
     let obj = input;
     for (let i = 0; i < path.length - 1; i += 1) {
         const prop = path[i];
