@@ -7,6 +7,7 @@ import { combineReducers, createStore as createReduxStore } from 'redux';
 import * as R from 'ramda';
 import '@testing-library/jest-dom';
 import { generateNewRandom } from '@gothub-team/got-util';
+import { useEffect } from 'react';
 import { gotReducer, createHooks } from '../index.js';
 import {
     basicGraph,
@@ -207,6 +208,42 @@ describe('useView', () => {
         expect(renderPayloads[0]).toEqual(storeViewRes);
         expect(renderPayloads[1]).toEqual(storeViewRes);
         expect(renderPayloads[2]).toEqual(storeViewRes);
+    });
+    test('should select the same data as the store when dispatching action in useEffect', async () => {
+        const renderPayloads = [];
+
+        const subscriber = {
+            next: event => {
+                if (event.type === 'render') { renderPayloads.push(event.payload); }
+            },
+        };
+
+        const { TestComponent, store } = createTestComponent(({ useGraph, gotStore, onRender }) => {
+            const { useView } = useGraph(...basicStack);
+            const viewRes = useView(basicView);
+            onRender(viewRes);
+
+            useEffect(() => {
+                gotStore.setNode('main')({ id: 'node1', prop: 'secondValue' });
+            }, []);
+            return (
+                <div data-testid="exists" />
+            );
+        }, subscriber);
+
+        store.mergeGraph(basicGraph, 'main');
+
+        const storeViewRes1 = store.getView(...basicStack)(basicView);
+
+        const { getByTestId } = render(<TestComponent />);
+
+        await delay(100);
+
+        const storeViewRes2 = store.getView(...basicStack)(basicView);
+
+        expect(renderPayloads.length).toBe(2);
+        expect(renderPayloads[0]).toEqual(storeViewRes1);
+        expect(renderPayloads[1]).toEqual(storeViewRes2);
     });
     test('should return the same object instance when rendering multiple times', async () => {
         const renderPayloads = [];

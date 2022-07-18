@@ -59,7 +59,7 @@ export const createTestComponent = (_Component, subscriber) => {
     const onRender = payload => next({ type: 'render', payload });
 
     const mockSetup = getMockSetup();
-    const { reduxStore, useGraph } = mockSetup;
+    const { reduxStore, useGraph, store } = mockSetup;
 
     const Component = React.memo(_Component);
 
@@ -68,6 +68,7 @@ export const createTestComponent = (_Component, subscriber) => {
             <Component
                 useGraph={useGraph}
                 onRender={onRender}
+                gotStore={store}
                 {...props}
             />
         </Provider>
