@@ -11,6 +11,7 @@ import {
     createTestComponent,
     delay,
 } from './shared.jsx';
+import { setFnEquals } from '../index.js';
 
 // TODO fix JSX detection
 // TODO use workspace module, for now it causes hook errors for some reason
@@ -778,6 +779,240 @@ describe('useView', () => {
             expect(renderPayloads.length).toBe(3);
             expect(mockStore.selectView).toHaveBeenCalledTimes(1);
             expect(mockSelector).toHaveBeenCalledTimes(3);
+        });
+    });
+
+    describe('fnEquals calls', () => {
+        test('should not call fnEquals when rendering multiple times due to unrelated state hook updates', async () => {
+            const fnEquals = jest.fn(R.equals);
+            setFnEquals(fnEquals);
+            const renderPayloads = [];
+
+            const subscriber = {
+                next: event => {
+                    if (event.type === 'render') { renderPayloads.push(event.payload); }
+                },
+            };
+
+            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+                const [state, setState] = useState();
+                const { useView } = useGraph(...basicStack);
+                const viewRes = useView(basicView);
+                onRender(viewRes);
+                return (
+                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                );
+            }, subscriber);
+
+            store.mergeGraph(basicGraph, 'main');
+
+            const { getByTestId } = render(<TestComponent />);
+
+            await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+            const element = getByTestId('exists');
+
+            await act(() => element.click());
+            await act(() => element.click());
+
+            setFnEquals(R.equals);
+            expect(renderPayloads.length).toBe(3);
+
+            expect(fnEquals).toHaveBeenCalledTimes(0);
+        });
+        test('should not call fnEquals when rendering multiple times due to unrelated redux updates', async () => {
+            const fnEquals = jest.fn(R.equals);
+            setFnEquals(fnEquals);
+            const renderPayloads = [];
+
+            const subscriber = {
+                next: event => {
+                    if (event.type === 'render') { renderPayloads.push(event.payload); }
+                },
+            };
+
+            const { TestComponent, mockStore, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+                const value = useSelector(R.prop('test'));
+                const { useView } = useGraph(...basicStack);
+                const viewRes = useView(basicView);
+                onRender([value, viewRes]);
+                return (
+                    <div data-testid="exists" />
+                );
+            }, subscriber);
+
+            const { getByTestId } = render(<TestComponent />);
+
+            await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+            const element = getByTestId('exists');
+
+            const testState1 = reduxStore.getState().test;
+            await act(() => reduxStore.dispatch({ type: 'TEST_ACTION' }));
+            const testState2 = reduxStore.getState().test;
+            await act(() => reduxStore.dispatch({ type: 'TEST_ACTION' }));
+            const testState3 = reduxStore.getState().test;
+            await delay(100);
+
+            expect(testState1).toEqual(renderPayloads[0][0]);
+            expect(testState1).not.toEqual(testState2);
+            expect(testState2).toEqual(renderPayloads[1][0]);
+            expect(testState2).not.toEqual(testState3);
+            expect(testState3).toEqual(renderPayloads[2][0]);
+
+            setFnEquals(R.equals);
+            expect(renderPayloads.length).toBe(3);
+
+            expect(fnEquals).toHaveBeenCalledTimes(0);
+        });
+        test('should call fnEquals every time when rendering multiple times due to view unrelated data changes', async () => {
+            const fnEquals = jest.fn(R.equals);
+            setFnEquals(fnEquals);
+            const renderPayloads = [];
+
+            const subscriber = {
+                next: event => {
+                    if (event.type === 'render') { renderPayloads.push(event.payload); }
+                },
+            };
+
+            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+                const { useView } = useGraph(...basicStack);
+                const viewRes = useView(basicView);
+                onRender(viewRes);
+                return (
+                    <div data-testid="exists"/>
+                );
+            }, subscriber);
+
+            store.mergeGraph(basicGraph, 'main');
+
+            const { getByTestId } = render(<TestComponent />);
+
+            await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+            await act(() => store.setNode('main')({ id: 'node3', prop: 'secondValue' }));
+            await act(() => store.setNode('main')({ id: 'node4', prop: 'thirdValue' }));
+
+            await delay(100);
+
+            setFnEquals(R.equals);
+            expect(renderPayloads.length).toBe(1);
+
+            expect(fnEquals).toHaveBeenCalledTimes(3 - 1); // -1 since we dont compare anything on the first render
+        });
+        test('should call fnEquals every time when rendering multiple times due to view related data changes', async () => {
+            const fnEquals = jest.fn(R.equals);
+            setFnEquals(fnEquals);
+            const renderPayloads = [];
+
+            const subscriber = {
+                next: event => {
+                    if (event.type === 'render') { renderPayloads.push(event.payload); }
+                },
+            };
+
+            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+                const [state, setState] = useState();
+                const { useView } = useGraph(...basicStack);
+                const viewRes = useView(basicView);
+                onRender(viewRes);
+                return (
+                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                );
+            }, subscriber);
+
+            store.mergeGraph(basicGraph, 'main');
+
+            const { getByTestId } = render(<TestComponent />);
+
+            await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+            await act(() => store.setNode('main')({ id: 'node1', prop: 'secondValue' }));
+            await act(() => store.setNode('main')({ id: 'node1', prop: 'thirdValue' }));
+
+            await delay(100);
+
+            setFnEquals(R.equals);
+            expect(renderPayloads.length).toBe(3);
+
+            expect(fnEquals).toHaveBeenCalledTimes(3 - 1); // -1 since we dont compare anything on the first render
+        });
+        test('should call fnEquals every time when rendering multiple times due to new view instances', async () => {
+            const fnEquals = jest.fn(R.equals);
+            setFnEquals(fnEquals);
+            const renderPayloads = [];
+
+            const subscriber = {
+                next: event => {
+                    if (event.type === 'render') { renderPayloads.push(event.payload); }
+                },
+            };
+
+            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+                const [state, setState] = useState(Math.random());
+                const { useView } = useGraph(...basicStack);
+                const view = {
+                    ...basicView,
+                    [state]: {
+                        include: {
+                            node: true,
+                        },
+                    },
+                };
+                const viewRes = useView(view, data => data);
+                onRender(viewRes);
+                return (
+                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                );
+            }, subscriber);
+
+            store.mergeGraph(basicGraph, 'main');
+
+            const { getByTestId } = render(<TestComponent />);
+
+            await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+            const element = getByTestId('exists');
+
+            await act(() => element.click());
+            await act(() => element.click());
+
+            setFnEquals(R.equals);
+            expect(renderPayloads.length).toBe(3);
+
+            expect(fnEquals).toHaveBeenCalledTimes(3 - 1); // -1 since we dont compare anything on the first render
+        });
+        test('should call fnEquals every time when rendering multiple times due to new downselector instances', async () => {
+            const fnEquals = jest.fn(R.equals);
+            setFnEquals(fnEquals);
+            const renderPayloads = [];
+
+            const subscriber = {
+                next: event => {
+                    if (event.type === 'render') { renderPayloads.push(event.payload); }
+                },
+            };
+
+            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+                const [state, setState] = useState();
+                const { useView } = useGraph(...basicStack);
+                const viewRes = useView(basicView, data => data);
+                onRender(viewRes);
+                return (
+                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                );
+            }, subscriber);
+
+            store.mergeGraph(basicGraph, 'main');
+
+            const { getByTestId } = render(<TestComponent />);
+
+            await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+            const element = getByTestId('exists');
+
+            await act(() => element.click());
+            await act(() => element.click());
+
+            setFnEquals(R.equals);
+            expect(renderPayloads.length).toBe(3);
+
+            expect(fnEquals).toHaveBeenCalledTimes(3 - 1); // -1 since we dont compare anything on the first render
         });
     });
 });

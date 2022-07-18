@@ -62,7 +62,12 @@ export const setup = ({
     };
 };
 
-const useViewEquality = (next, prev) => next.requireEqCheck ? R.equals(next.result, prev.result) : true;
+let fnEquals = R.equals;
+export const setFnEquals = fn => {
+    fnEquals = fn;
+};
+
+const useViewEquality = (next, prev) => next.requireEqCheck ? fnEquals(next.result, prev.result) : true;
 
 export const createHooks = ({ store, baseState = R.identity }) => ({
     useGraph: (...stack) => {
