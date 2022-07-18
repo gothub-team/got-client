@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react';
 import { act, render, waitFor } from '@testing-library/react';
 import { useEqualRef, useRefUpdated } from '../util.js';
-import { createTestComponent, delay } from './shared.spec.jsx';
+import { createTestComponent, delay } from './shared.jsx';
 
 describe('useEqualRef', () => {
     test('should return the same primitive value on every render and trigger memo only once when supplied with the identical primitive', async () => {

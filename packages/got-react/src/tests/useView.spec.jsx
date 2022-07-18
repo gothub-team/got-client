@@ -10,7 +10,7 @@ import {
     basicView,
     createTestComponent,
     delay,
-} from './shared.spec.jsx';
+} from './shared.jsx';
 
 // TODO fix JSX detection
 // TODO use workspace module, for now it causes hook errors for some reason
