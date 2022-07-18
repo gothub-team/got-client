@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { Provider } from 'react-redux';
-import { act, render, waitFor } from '@testing-library/react';
 import { createStore } from '@gothub-team/got-store';
 import { combineReducers, createStore as createReduxStore } from 'redux';
 import * as R from 'ramda';

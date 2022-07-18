@@ -1,14 +1,9 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
-import { Provider, useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { act, render, waitFor } from '@testing-library/react';
-import { createStore } from '@gothub-team/got-store';
-import { combineReducers, createStore as createReduxStore } from 'redux';
 import * as R from 'ramda';
 import '@testing-library/jest-dom';
-import { generateNewRandom } from '@gothub-team/got-util';
-import { useEffect } from 'react';
-import { gotReducer, createHooks } from '../index.js';
 import {
     basicGraph,
     basicStack,
