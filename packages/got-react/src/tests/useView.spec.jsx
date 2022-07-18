@@ -348,6 +348,74 @@ describe('useView', () => {
 
         expect(mockStore.selectView).toHaveBeenCalledTimes(1);
     });
+    test('should call selectView only once when rendering multiple times with equal view instances', async () => {
+        const renderPayloads = [];
+
+        const subscriber = {
+            next: event => {
+                if (event.type === 'render') { renderPayloads.push(event.payload); }
+            },
+        };
+
+        const { TestComponent, store, mockStore } = createTestComponent(({ useGraph, onRender }) => {
+            const [state, setState] = useState();
+            const { useView } = useGraph(...basicStack);
+            const viewRes = useView({ ...basicView });
+            onRender(viewRes);
+            return (
+                <div data-testid="exists" onClick={() => setState(Math.random())} />
+            );
+        }, subscriber);
+
+        store.mergeGraph(basicGraph, 'main');
+
+        const { getByTestId } = render(<TestComponent />);
+
+        await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+        const element = getByTestId('exists');
+
+        await act(() => element.click());
+        await act(() => element.click());
+
+        await delay(100);
+
+        expect(renderPayloads.length).toBe(3);
+        expect(mockStore.selectView).toHaveBeenCalledTimes(1);
+    });
+    test('should call selectView only once when rendering multiple times with equal stack instances', async () => {
+        const renderPayloads = [];
+
+        const subscriber = {
+            next: event => {
+                if (event.type === 'render') { renderPayloads.push(event.payload); }
+            },
+        };
+
+        const { TestComponent, store, mockStore } = createTestComponent(({ useGraph, onRender }) => {
+            const [state, setState] = useState();
+            const { useView } = useGraph(...[...basicStack]);
+            const viewRes = useView(basicView);
+            onRender(viewRes);
+            return (
+                <div data-testid="exists" onClick={() => setState(Math.random())} />
+            );
+        }, subscriber);
+
+        store.mergeGraph(basicGraph, 'main');
+
+        const { getByTestId } = render(<TestComponent />);
+
+        await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+        const element = getByTestId('exists');
+
+        await act(() => element.click());
+        await act(() => element.click());
+
+        await delay(100);
+
+        expect(renderPayloads.length).toBe(3);
+        expect(mockStore.selectView).toHaveBeenCalledTimes(1);
+    });
     test('should rerender when view relevant data changes', async () => {
         const renderPayloads = [];
 
@@ -423,7 +491,7 @@ describe('useView', () => {
 
         expect(mockStore.selectView).toHaveBeenCalledTimes(3);
     });
-    test('should not rerender when view irrelevant data in stack changes', async () => {
+    test('should rerender only once when view irrelevant data in stack changes', async () => {
         const renderPayloads = [];
 
         const subscriber = {
@@ -621,7 +689,7 @@ describe('useView', () => {
         await delay(100);
         expect(mockSelector).toHaveBeenCalledTimes(3);
     });
-    test('should not rerender when view relevant data in stack changes but downselector returns the same value', async () => {
+    test('should rerender only once when view relevant data in stack changes but downselector returns the same value', async () => {
         const renderPayloads = [];
 
         const subscriber = {
