@@ -15,6 +15,7 @@
         "test:core": "yarn workspace @gothub-team/got-core test",
         "test:store": "yarn workspace @gothub-team/got-store test",
         "test:react": "yarn workspace @gothub-team/got-react test",
+        "test:react:fn": "yarn workspace @gothub-team/got-react test:fn '$1'",
         "test": "yarn test:store; yarn test:util; yarn test:react",
         "lint": "eslint ./packages",
         "publish:util": "yarn workspace @gothub-team/got-util npm publish --access public",

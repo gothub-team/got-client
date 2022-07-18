@@ -8,111 +8,16 @@ import * as R from 'ramda';
 import '@testing-library/jest-dom';
 import { generateNewRandom } from '@gothub-team/got-util';
 import { gotReducer, createHooks } from '../index.js';
-import { delay } from './util.js';
+import {
+    basicGraph,
+    basicStack,
+    basicView,
+    createTestComponent,
+    delay,
+} from './shared.spec.jsx';
 
 // TODO fix JSX detection
 // TODO use workspace module, for now it causes hook errors for some reason
-
-const testReducer = (state = 0, action) => {
-    if (action.type === 'TEST_ACTION') {
-        return generateNewRandom(state);
-    }
-
-    return state;
-};
-
-const getMockSetup = () => {
-    const rootReducer = combineReducers({
-        got: gotReducer,
-        test: testReducer,
-    });
-    const reduxStore = createReduxStore(
-        rootReducer,
-    );
-
-    const store = createStore({
-        dispatch: reduxStore.dispatch,
-        select: selector => selector(R.propOr({}, 'got', reduxStore.getState())),
-        onWarn: () => {},
-    });
-
-    const mockStore = R.map(fn => jest.fn(fn), store);
-
-    const { useGraph } = createHooks({
-        baseState: R.propOr({}, 'got'),
-        store: mockStore,
-    });
-
-    return {
-        reduxStore,
-        store,
-        mockStore,
-        useGraph,
-    };
-};
-
-const createTestComponent = (_Component, subscriber) => {
-    const {
-        next = () => {},
-        complete = () => {},
-        error = () => {},
-    } = subscriber;
-
-    const onRender = payload => next({ type: 'render', payload });
-
-    const mockSetup = getMockSetup();
-    const { reduxStore, useGraph } = mockSetup;
-
-    const Component = React.memo(_Component);
-
-    const TestComponent = ({ ...props }) => (
-        <Provider store={reduxStore}>
-            <Component
-                useGraph={useGraph}
-                onRender={onRender}
-                {...props}
-            />
-        </Provider>
-    );
-
-    return {
-        TestComponent, ...mockSetup,
-    };
-};
-
-const basicStack = ['main', 'edit'];
-const basicGraph = {
-    nodes: {
-        node1: { id: 'node1', prop: 'value1' },
-        node2: { id: 'node2', prop: 'value2' },
-    },
-    edges: {
-        from: {
-            node1: {
-                to: {
-                    node2: { metadataVal: 'metVal1' },
-                },
-            },
-        },
-    },
-};
-
-const basicView = {
-    node1: {
-        include: {
-            node: true,
-        },
-        edges: {
-            'from/to': {
-                include: {
-                    node: true,
-                    edges: true,
-                    metadata: true,
-                },
-            },
-        },
-    },
-};
 
 describe('verifying test setup', () => {
     test('should render only once when rendering a plain component', async () => {
@@ -204,8 +109,7 @@ describe('verifying test setup', () => {
         await act(() => element.click());
 
         expect(renderPayloads.length).toBe(1);
-        // TODO REVIEW this somehow renders 4 times instead of 3? 2 times right off the bat
-        expect(fnSelect).toHaveBeenCalledTimes(4);
+        expect(fnSelect).toHaveBeenCalledTimes(3 + 1); // +1 since useSelector calls selector an additional time after component mount
     });
 });
 
@@ -365,8 +269,10 @@ describe('useView', () => {
 
         await act(() => element.click());
         await act(() => element.click());
-        expect(renderPayloads.length).toBe(3);
 
+        await delay(100);
+
+        expect(renderPayloads.length).toBe(3);
         expect(mockStore.selectView).toHaveBeenCalledTimes(1);
     });
     test('should call selectView only once when rendering multiple times due to unrelated test redux updates', async () => {
@@ -485,7 +391,7 @@ describe('useView', () => {
 
         expect(mockStore.selectView).toHaveBeenCalledTimes(3);
     });
-    test('should not rerender when view irrelevant data changes', async () => {
+    test('should not rerender when view irrelevant data in stack changes', async () => {
         const renderPayloads = [];
 
         const subscriber = {
@@ -514,7 +420,7 @@ describe('useView', () => {
         await delay(100);
         expect(renderPayloads.length).toBe(1);
     });
-    test('should call selectView multiple times when view irrelevant data changes', async () => {
+    test('should call selectView multiple times when view irrelevant data in stack changes', async () => {
         const renderPayloads = [];
 
         const subscriber = {
@@ -542,5 +448,225 @@ describe('useView', () => {
 
         await delay(100);
         expect(mockStore.selectView).toHaveBeenCalledTimes(3);
+    });
+    test('should call downselector only once when rendering multiple times due to unrelated state hook updates', async () => {
+        const renderPayloads = [];
+
+        const subscriber = {
+            next: event => {
+                if (event.type === 'render') { renderPayloads.push(event.payload); }
+            },
+        };
+
+        const mockSelector = jest.fn(R.identity);
+
+        const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const [state, setState] = useState();
+            const { useView } = useGraph(...basicStack);
+            const viewRes = useView(basicView, mockSelector);
+            onRender(viewRes);
+            return (
+                <div data-testid="exists" onClick={() => setState(Math.random())} />
+            );
+        }, subscriber);
+
+        store.mergeGraph(basicGraph, 'main');
+
+        const { getByTestId } = render(<TestComponent />);
+
+        await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+        const element = getByTestId('exists');
+
+        await act(() => element.click());
+        await act(() => element.click());
+        expect(renderPayloads.length).toBe(3);
+
+        expect(mockSelector).toHaveBeenCalledTimes(1);
+    });
+    test('should call downselector only once when rendering multiple times due to unrelated test redux updates', async () => {
+        const renderPayloads = [];
+
+        const subscriber = {
+            next: event => {
+                if (event.type === 'render') { renderPayloads.push(event.payload); }
+            },
+        };
+
+        const mockSelector = jest.fn(R.identity);
+
+        const { TestComponent, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+            const value = useSelector(R.prop('test'));
+            const { useView } = useGraph(...basicStack);
+            const viewRes = useView(basicView, mockSelector);
+            onRender([value, viewRes]);
+            return (
+                <div data-testid="exists" />
+            );
+        }, subscriber);
+
+        const { getByTestId } = render(<TestComponent />);
+
+        await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+        const element = getByTestId('exists');
+
+        const testState1 = reduxStore.getState().test;
+        await act(() => reduxStore.dispatch({ type: 'TEST_ACTION' }));
+        const testState2 = reduxStore.getState().test;
+        await act(() => reduxStore.dispatch({ type: 'TEST_ACTION' }));
+        const testState3 = reduxStore.getState().test;
+        await delay(100);
+
+        expect(testState1).toEqual(renderPayloads[0][0]);
+        expect(testState1).not.toEqual(testState2);
+        expect(testState2).toEqual(renderPayloads[1][0]);
+        expect(testState2).not.toEqual(testState3);
+        expect(testState3).toEqual(renderPayloads[2][0]);
+
+        expect(renderPayloads.length).toBe(3);
+
+        expect(mockSelector).toHaveBeenCalledTimes(1);
+    });
+    test('should call downselector multiple times when view relevant data changes', async () => {
+        const renderPayloads = [];
+
+        const subscriber = {
+            next: event => {
+                if (event.type === 'render') { renderPayloads.push(event.payload); }
+            },
+        };
+
+        const mockSelector = jest.fn(R.identity);
+
+        const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { useView } = useGraph(...basicStack);
+            const viewRes = useView(basicView, mockSelector);
+            onRender(viewRes);
+            return (
+                <div data-testid="exists" />
+            );
+        }, subscriber);
+
+        store.mergeGraph(basicGraph, 'main');
+
+        const { getByTestId } = render(<TestComponent />);
+
+        await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+        await act(() => store.setNode('main')({ id: 'node1', prop: 'secondValue' }));
+        await act(() => store.setNode('main')({ id: 'node1', prop: 'thirdValue' }));
+
+        await delay(100);
+
+        expect(mockSelector).toHaveBeenCalledTimes(3);
+    });
+    test('should call downselector multiple times when view irrelevant data in stack changes', async () => {
+        const renderPayloads = [];
+
+        const subscriber = {
+            next: event => {
+                if (event.type === 'render') { renderPayloads.push(event.payload); }
+            },
+        };
+
+        const mockSelector = jest.fn(R.identity);
+
+        const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { useView } = useGraph(...basicStack);
+            const viewRes = useView(basicView, mockSelector);
+            onRender(viewRes);
+            return (
+                <div data-testid="exists" />
+            );
+        }, subscriber);
+
+        store.mergeGraph(basicGraph, 'main');
+
+        const { getByTestId } = render(<TestComponent />);
+
+        await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+        await act(() => store.setNode('main')({ id: 'node3', prop: 'secondValue' }));
+        await act(() => store.setNode('main')({ id: 'node4', prop: 'thirdValue' }));
+
+        await delay(100);
+        expect(mockSelector).toHaveBeenCalledTimes(3);
+    });
+    test('should not rerender when view relevant data in stack changes but downselector returns the same value', async () => {
+        const renderPayloads = [];
+
+        const subscriber = {
+            next: event => {
+                if (event.type === 'render') { renderPayloads.push(event.payload); }
+            },
+        };
+
+        const mockSelector = jest.fn(R.always(true));
+
+        const { TestComponent, store, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+            const { useView } = useGraph(...basicStack);
+            const viewRes = useView(basicView, mockSelector);
+            onRender(viewRes);
+            return (
+                <div data-testid="exists" />
+            );
+        }, subscriber);
+
+        store.mergeGraph(basicGraph, 'main');
+
+        const { getByTestId } = render(<TestComponent />);
+
+        await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+
+        const testState1 = reduxStore.getState().got;
+        const testRes1 = store.getView(...basicStack)(basicView);
+
+        await act(() => store.setNode('main')({ id: 'node1', prop: 'secondValue' }));
+        const testState2 = reduxStore.getState().got;
+        const testRes2 = store.getView(...basicStack)(basicView);
+
+        await act(() => store.setNode('main')({ id: 'node1', prop: 'thirdValue' }));
+        const testState3 = reduxStore.getState().got;
+        const testRes3 = store.getView(...basicStack)(basicView);
+
+        expect(testState1).not.toEqual(testState2);
+        expect(testState2).not.toEqual(testState3);
+
+        await delay(100);
+        expect(renderPayloads.length).toBe(1);
+    });
+    test('should call downselector multiple times but selectView only once if only downselector changes', async () => {
+        const renderPayloads = [];
+
+        const subscriber = {
+            next: event => {
+                if (event.type === 'render') { renderPayloads.push(event.payload); }
+            },
+        };
+
+        const mockSelector = jest.fn(R.identity);
+
+        const { TestComponent, store, mockStore } = createTestComponent(({ useGraph, onRender }) => {
+            const [state, setState] = useState();
+            const { useView } = useGraph(...basicStack);
+            const viewRes = useView(basicView, data => mockSelector(data));
+            onRender(viewRes);
+            return (
+                <div data-testid="exists" onClick={() => setState(Math.random())} />
+            );
+        }, subscriber);
+
+        store.mergeGraph(basicGraph, 'main');
+
+        const { getByTestId } = render(<TestComponent />);
+
+        await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+        const element = getByTestId('exists');
+
+        await act(() => element.click());
+        await act(() => element.click());
+
+        await delay(100);
+
+        expect(renderPayloads.length).toBe(3);
+        expect(mockStore.selectView).toHaveBeenCalledTimes(1);
+        expect(mockSelector).toHaveBeenCalledTimes(3);
     });
 });

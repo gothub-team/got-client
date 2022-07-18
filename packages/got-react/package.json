@@ -62,7 +62,7 @@
     },
     "scripts": {
         "test": "jest ./src --passWithNoTests",
-        "test:fn": "jest ./src/tests/$1.spec.js --passWithNoTests",
+        "test:fn": "jest ./src/tests/$1.spec.jsx --passWithNoTests",
         "build": "webpack --config webpack.config.js; babel src -d dist/cjs --ignore 'src/**/*.spec.js','src/tests'"
     },
     "jest": {

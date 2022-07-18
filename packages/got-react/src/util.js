@@ -4,7 +4,8 @@ import { useRef } from 'react';
 /** React hook to safeguard inputs from triggering effects or memos by checking for deep equality */
 export const useEqualRef = input => {
     const ref = useRef();
-    if (!R.equals(input, ref.current)) {
+    const isEqual = R.equals(input, ref.current);
+    if (!isEqual) {
         ref.current = input;
     }
 
@@ -15,7 +16,9 @@ export const useEqualRef = input => {
 export const useRefUpdated = input => {
     const ref = useRef();
     const isEqual = R.equals(input, ref.current);
-    ref.current = input;
+    if (!isEqual) {
+        ref.current = input;
+    }
 
-    return isEqual;
+    return !isEqual;
 };

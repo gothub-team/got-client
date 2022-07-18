@@ -82,19 +82,26 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
         const useView = (view, downSelector = R.identity) => {
             const _stack = useEqualRef(stack);
             const _view = useEqualRef(view);
+
+            const stateIdRef = useRef();
+
+            const selectViewRef = useRef();
+            const downSelectorRef = useRef();
+
+            const viewResRef = useRef();
+            const resultRef = useRef();
+
             // creating new function here instead of using currying to make function calls testable
             const selectView = useMemo(() => state => store.selectView(..._stack)(_view)(state), [_stack, _view]);
 
-            const selectViewUpdated = useRefUpdated(selectView);
-            const downselectorUpdated = useRefUpdated(downSelector);
-
-            const stateIdRef = useRef();
-            const viewResRef = useRef();
-
-            const resultRef = useRef();
-
-            const select = useMemo(() => state => {
+            const selector = useMemo(() => _state => {
+                const state = baseState(_state);
                 const stateId = R.propOr(0, 'stateId', state);
+
+                const selectViewUpdated = !R.equals(selectViewRef.current, selectView);
+                if (selectViewUpdated) selectViewRef.current = selectView;
+                const downselectorUpdated = !R.equals(downSelectorRef.current, downSelector);
+                if (downselectorUpdated) downSelectorRef.current = downSelector;
 
                 if (!selectViewUpdated && !downselectorUpdated && stateId === stateIdRef.current) {
                     return {
@@ -108,19 +115,16 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
                     viewResRef.current = selectView(state);
                 }
 
+                const result = downSelector(viewResRef.current);
+                resultRef.current = result;
+
                 return {
                     requireEqCheck: true,
-                    result: downSelector(viewResRef.current),
+                    result: resultRef.current,
                 };
             }, [selectView, downSelector]);
 
-            const selector = useMemo(() => R.compose(
-                select,
-                baseState,
-            ), [select, baseState]);
-
             const { result } = useSelector(selector, useViewEquality);
-            resultRef.current = result;
 
             return result;
         };
