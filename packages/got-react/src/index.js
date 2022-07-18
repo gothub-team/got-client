@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { createApi } from '@gothub-team/got-api';
 import { createStore } from '@gothub-team/got-store';
 import { useMemo, useRef } from 'react';
-import { useEqualRef, useRefUpdated } from './util.js';
+import { useEqualRef } from './util.js';
 
 export { gotReducer } from '@gothub-team/got-store';
 
