@@ -123,7 +123,7 @@ export declare const toPromise: (
 /**
  * @returns the property at a given path in the specified object or the given fallback if the path doesn't exist.
  */
-export declare const getPath: (or: any, path: string[]) => (obj: Object) => any;
+export declare const getPathOr: (or: any, path: string[]) => (obj: Object) => any;
 
 /**
  * Will mutate an object and assoc the given value at the specified path, creating objects along the way if they don't exist yet.
