@@ -3,13 +3,21 @@ import * as RA from 'ramda-adjunct';
 
 export const useResult = initialValue => {
     const reference = { current: initialValue };
+
+    const set = input => {
+        if (R.is(Function)) {
+            reference.current = input(reference.current);
+        } else {
+            reference.current = input;
+        }
+    };
+    const over = fn => {
+        reference.current = fn(reference.current);
+    };
     return [
         () => reference.current,
-        R.ifElse(
-            R.is(Function),
-            fnSet => reference.current = fnSet(reference.current),
-            newValue => reference.current = newValue,
-        ),
+        set,
+        over,
     ];
 };
 
@@ -141,4 +149,37 @@ export const toPromise = observable => new Promise((resolve, reject) => {
 export const generateNewRandom = prev => {
     const rand = Math.random();
     return prev !== rand ? rand : generateNewRandom(prev);
+};
+
+export const getPathOr = (or, path) => input => {
+    let obj = input;
+    for (let i = 0; i < path.length; i += 1) {
+        const key = path[i];
+        if (key in obj) {
+            obj = obj[key];
+        } else {
+            return or;
+        }
+    }
+    return obj;
+};
+
+export const getPath = (path, input) => getPathOr(undefined, path)(input);
+
+export const assocPathMutate = (path, val) => input => {
+    let obj = input;
+    for (let i = 0; i < path.length - 1; i += 1) {
+        const prop = path[i];
+        if (prop in obj) {
+            obj = obj[prop];
+        } else {
+            obj[prop] = {};
+            obj = obj[prop];
+        }
+    }
+
+    const lastProp = path[path.length - 1];
+    obj[lastProp] = val;
+
+    return input;
 };

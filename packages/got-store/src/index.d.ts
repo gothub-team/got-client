@@ -72,7 +72,7 @@ export declare interface GotStore {
     /**
      * Clears the entire got store.
      */
-    clear: () => void;
+    clearAll: () => void;
 
     /**
      * Returns the value of a given variable based on the specified graph stack with

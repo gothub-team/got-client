@@ -12,6 +12,7 @@ import {
     useSubscriber,
     useResult,
     generateNewRandom,
+    assocPathMutate,
 } from '@gothub-team/got-util';
 import {
     mergeOverwriteGraphsLeft,
@@ -397,29 +398,28 @@ export const createStore = ({
         }
     };
     const selectView = (...stack) => view => state => {
-        const [getViewTree, setViewTree] = useResult({});
+        const [getViewTree, , overViewTree] = useResult({});
         const stackGetEdgeToIds = (fromType, nodeId, toType, { reverse } = {}) => reverse
             ? selectReverseEdge(...stack)(`${fromType}/${toType}`)(nodeId)(state)
             : selectEdge(...stack)(`${fromType}/${toType}`)(nodeId)(state);
+
         doViewGraph({
             nodes: (queryObj, nodeId, edgePath, nodeViewPath, metadata) => {
-                setViewTree(
-                    R.assocPath(nodeViewPath, {
-                        nodeId,
-                    }),
-                );
-                includeMetadata(queryObj) && edgePath && setViewTree(
-                    R.assocPath([...nodeViewPath, 'metadata'], metadata),
-                );
-                includeNode(queryObj) && setViewTree(
-                    R.assocPath([...nodeViewPath, 'node'], selectNode(...stack)(nodeId)(state)),
-                );
-                includeRights(queryObj) && setViewTree(
-                    R.assocPath([...nodeViewPath, 'rights'], selectRights(...stack)(nodeId)(state)),
-                );
-                includeFiles(queryObj) && setViewTree(
-                    R.assocPath([...nodeViewPath, 'files'], selectFiles(...stack)(nodeId)(state)),
-                );
+                const bag = { nodeId };
+                if (includeMetadata(queryObj) && edgePath) {
+                    bag.metadata = metadata;
+                }
+                if (includeNode(queryObj)) {
+                    bag.node = selectNode(...stack)(nodeId)(state);
+                }
+                if (includeRights(queryObj)) {
+                    bag.rights = selectRights(...stack)(nodeId)(state);
+                }
+                if (includeFiles(queryObj)) {
+                    bag.files = selectFiles(...stack)(nodeId)(state);
+                }
+
+                overViewTree(assocPathMutate(nodeViewPath, bag));
             },
         }, view, stackGetEdgeToIds);
 
