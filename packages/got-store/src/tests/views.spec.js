@@ -1,4 +1,4 @@
-import { createTestStore } from './shared.js';
+import { createTestStore, generateRandomTestData, randomTestDataView } from './shared.js';
 import { MISSING_PARAM_ERROR } from '../errors.js';
 
 describe('store:Views', () => {
@@ -756,6 +756,33 @@ describe('store:Views', () => {
 
             expect(dispatch).not.toBeCalled();
         /* #endregion */
+        });
+    });
+
+    describe('performance', () => {
+        // this should run much faster on local machines, but was increased from 10ms to 25ms to not fail tests in workflows
+        test('should select 100 parent and 1000 child objects in under 25ms', () => {
+            const runTimes = 10;
+
+            let totalTime = 0;
+            for (let counter = 0; counter < runTimes; counter += 1) {
+                const {
+                    store: {
+                        selectView,
+                    },
+                    select,
+                } = createTestStore(generateRandomTestData(100, 10));
+
+                const start = performance.now();
+                select(selectView('main', 'temp')(randomTestDataView));
+                const end = performance.now();
+
+                totalTime += end - start;
+            }
+
+            console.log('select view ran in ', totalTime / runTimes, 'ms');
+
+            expect(totalTime / runTimes).toBeLessThanOrEqual(25);
         });
     });
 

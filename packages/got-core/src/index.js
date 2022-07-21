@@ -3,11 +3,13 @@ import * as R from 'ramda';
 import * as RA from 'ramda-adjunct';
 import {
     forEachCondObj,
+    getPath,
     mergeDeepLeft,
     mergeLeft,
     overPath,
     reduceObj,
     useResult,
+    getPathOr,
 } from '@gothub-team/got-util';
 
 export const isEdgeTypesString = R.compose(
@@ -126,12 +128,12 @@ export const mergeOverwriteGraphsRight = R.curry((left, right) => {
 });
 export const mergeOverwriteGraphsLeft = R.flip(mergeOverwriteGraphsRight);
 
-export const includeNode = R.pathOr(false, ['include', 'node']);
-export const includeRights = R.pathOr(false, ['include', 'rights']);
-export const includeEdges = R.pathOr(false, ['include', 'edges']);
-export const includeMetadata = R.pathOr(false, ['include', 'metadata']);
+export const includeNode = getPathOr(false, ['include', 'node']);
+export const includeRights = getPathOr(false, ['include', 'rights']);
+export const includeEdges = getPathOr(false, ['include', 'edges']);
+export const includeMetadata = getPathOr(false, ['include', 'metadata']);
 export const isReverse = R.propOr(false, 'reverse');
-export const includeFiles = R.pathOr(false, ['include', 'files']);
+export const includeFiles = getPathOr(false, ['include', 'files']);
 
 export const doViewGraph = R.curry(({ nodes: fnNodes, edges: fnEdges }, view, fnGetEdgeToIds) => {
     const _INNER_RECURSION = (
@@ -221,18 +223,16 @@ export const pickMapGraph = R.curry((fnMap, view, graph) => {
 
 export const filterGraph = pickMapGraph(R.identity);
 
-export const selectPathFromStack = R.curry((path, stack, fnMergeLeft, state) => R.reduce(
-    (acc, graphName) => R.ifElse(
-        R.hasPath([graphName, ...path]),
-        R.compose(
-            R.flip(fnMergeLeft)(acc),
-            R.path([graphName, ...path]),
-        ),
-        R.always(acc),
-    )(state),
-    undefined,
-    stack,
-));
+export const selectPathFromStack = R.curry((path, stack, fnMergeLeft, state) => {
+    let acc;
+    stack.forEach(graphName => {
+        const val = getPath([graphName, ...path], state);
+        if (val !== undefined) {
+            acc = fnMergeLeft(val)(acc);
+        }
+    });
+    return acc;
+});
 
 export const selectEdgeToIds = graph => (fromType, nodeId, toType, { reverse } = {}) => reverse
     ? R.pathOr({}, ['index', 'reverseEdges', toType, nodeId, fromType], graph)

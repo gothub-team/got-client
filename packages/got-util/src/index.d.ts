@@ -1,8 +1,17 @@
+
+export declare type FnGet = () => any;
+export declare type FnSet = (value: any) => any;
+export declare type FnOver = (fn: FnSet) => any;
+
 /**
- * returns a getter and a setter function for a reference.
+ * returns a getter, a setter and an over function for a reference.
  * Setter function can be invoked with either a new value or a function to be applied to the reference.
+ * Over function can only be invoked with a function to be applied to the reference.
+ * 
+ * While the Setter function includes the same functionality as the Over function,
+ * calling the Over function repeatedly is more efficient since it doesnt have to check for input type
  */
-export declare const useResult: (initialValue: any) => [() => any, any | ((value: any) => any)];
+export declare const useResult: (initialValue: any) => [fnGet: FnGet, fnSet: FnSet, fnOver: FnOver];
 
 export declare type Subscriber<TEvent> = {
     /**
@@ -105,3 +114,20 @@ export declare const forEachConfObj: (
 export declare const toPromise: (
     observable: { subscribe: (subscriber: Subscriber<any>) => void }
     ) => Promise<any[]>;
+
+/**
+ * @returns the property at a given path in the specified object or undefined if the path doesn't exist.
+ */
+ export declare const getPath: (path: string[], obj: Object) => any | undefined;
+
+/**
+ * @returns the property at a given path in the specified object or the given fallback if the path doesn't exist.
+ */
+export declare const getPathOr: (or: any, path: string[]) => (obj: Object) => any;
+
+/**
+ * Will mutate an object and assoc the given value at the specified path, creating objects along the way if they don't exist yet.
+ * 
+ * @returns the mutated object
+ */
+export declare const assocPathMutate: (path: string[], val: any) => (obj: Object) => Object;
