@@ -49,17 +49,11 @@ export const getMockSetup = () => {
     };
 };
 
-export const createTestComponent = (_Component, subscriber) => {
+export const createTestComponent = _Component => {
     const renderPayloads = [];
-    const {
-        next = () => {},
-        complete = () => {},
-        error = () => {},
-    } = subscriber;
 
     const onRender = payload => {
         renderPayloads.push(payload);
-        return next({ type: 'render', payload });
     };
 
     const mockSetup = getMockSetup();
