@@ -50,13 +50,17 @@ export const getMockSetup = () => {
 };
 
 export const createTestComponent = (_Component, subscriber) => {
+    const renderPayloads = [];
     const {
         next = () => {},
         complete = () => {},
         error = () => {},
     } = subscriber;
 
-    const onRender = payload => next({ type: 'render', payload });
+    const onRender = payload => {
+        renderPayloads.push(payload);
+        return next({ type: 'render', payload });
+    };
 
     const mockSetup = getMockSetup();
     const { reduxStore, useGraph, store } = mockSetup;
@@ -75,7 +79,7 @@ export const createTestComponent = (_Component, subscriber) => {
     );
 
     return {
-        TestComponent, ...mockSetup,
+        TestComponent, ...mockSetup, renderPayloads,
     };
 };
 

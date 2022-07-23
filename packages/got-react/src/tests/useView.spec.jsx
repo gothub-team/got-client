@@ -18,20 +18,12 @@ import { setFnEquals } from '../index.js';
 
 describe('verifying test setup', () => {
     test('should render only once when rendering a plain component', async () => {
-        const renderPayloads = [];
-
-        const subscriber = {
-            next: event => {
-                if (event.type === 'render') { renderPayloads.push(event.payload); }
-            },
-        };
-
-        const { TestComponent } = createTestComponent(({ onRender }) => {
+        const { TestComponent, renderPayloads } = createTestComponent(({ onRender }) => {
             onRender();
             return (
                 <div data-testid="exists" />
             );
-        }, subscriber);
+        });
 
         const { getByTestId } = render(<TestComponent />);
 
@@ -42,21 +34,13 @@ describe('verifying test setup', () => {
         expect(renderPayloads.length).toBeLessThanOrEqual(1);
     });
     test('should rerender on related test redux updates', async () => {
-        const renderPayloads = [];
-
-        const subscriber = {
-            next: event => {
-                if (event.type === 'render') { renderPayloads.push(event.payload); }
-            },
-        };
-
-        const { TestComponent, reduxStore } = createTestComponent(({ onRender }) => {
+        const { TestComponent, reduxStore, renderPayloads } = createTestComponent(({ onRender }) => {
             const value = useSelector(R.prop('test'));
             onRender(value);
             return (
                 <div data-testid="exists" />
             );
-        }, subscriber);
+        });
 
         const { getByTestId } = render(<TestComponent />);
 
@@ -76,24 +60,16 @@ describe('verifying test setup', () => {
         expect(renderPayloads.length).toBe(3);
     });
     test('should call selector on related test redux updates', async () => {
-        const renderPayloads = [];
-
-        const subscriber = {
-            next: event => {
-                if (event.type === 'render') { renderPayloads.push(event.payload); }
-            },
-        };
-
         const fnSelect = jest.fn(R.prop('invalid-prop'));
 
-        const { TestComponent, reduxStore } = createTestComponent(({ onRender }) => {
+        const { TestComponent, reduxStore, renderPayloads } = createTestComponent(({ onRender }) => {
             const dispatch = useDispatch();
             const value = useSelector(fnSelect);
             onRender(dispatch);
             return (
                 <div data-testid="exists" onClick={() => dispatch({ type: 'TEST_ACTION' })} />
             );
-        }, subscriber);
+        });
 
         await delay(10);
 
@@ -113,15 +89,7 @@ describe('verifying test setup', () => {
 describe('useView', () => {
     describe('Return value', () => {
         test('should select the same data as the store when rendering only once', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 // const val = useEqualRef('value');
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
@@ -129,7 +97,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -140,15 +108,7 @@ describe('useView', () => {
             expect(renderPayloads[0]).toEqual(store.getView(...basicStack)(basicView));
         });
         test('should select the same data as the store when rendering multiple times', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState();
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
@@ -156,7 +116,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -176,15 +136,7 @@ describe('useView', () => {
             expect(renderPayloads[2]).toEqual(storeViewRes);
         });
         test('should select the same data as the store when dispatching action in useEffect', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store } = createTestComponent(({ useGraph, gotStore, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, gotStore, onRender }) => {
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
                 onRender(viewRes);
@@ -195,7 +147,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -212,15 +164,7 @@ describe('useView', () => {
             expect(renderPayloads[1]).toEqual(storeViewRes2);
         });
         test('should return the same object instance when rendering multiple times', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState();
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
@@ -228,7 +172,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -248,15 +192,7 @@ describe('useView', () => {
 
     describe('Render behavior', () => {
         test('should render only once when no updates occur', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 // const val = useEqualRef('value');
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
@@ -264,7 +200,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -279,22 +215,16 @@ describe('useView', () => {
             expect(renderPayloads[0]).toEqual(store.getView(...basicStack)(basicView));
         });
         test('should rerender when view relevant data changes', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store, mockStore, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+            const {
+                TestComponent, store, mockStore, reduxStore, renderPayloads,
+            } = createTestComponent(({ useGraph, onRender }) => {
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -324,22 +254,16 @@ describe('useView', () => {
             expect(renderPayloads.length).toBe(3);
         });
         test('should rerender only once when view irrelevant data in stack changes', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store, mockStore, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+            const {
+                TestComponent, store, mockStore, reduxStore, renderPayloads,
+            } = createTestComponent(({ useGraph, onRender }) => {
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -353,24 +277,16 @@ describe('useView', () => {
             expect(renderPayloads.length).toBe(1);
         });
         test('should rerender only once when view relevant data in stack changes but downselector returns the same value', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
             const mockSelector = jest.fn(R.always(true));
 
-            const { TestComponent, store, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, reduxStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView, mockSelector);
                 onRender(viewRes);
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -399,15 +315,7 @@ describe('useView', () => {
 
     describe('selectView calls', () => {
         test('should call selectView only once when rendering multiple times due to unrelated state hook updates', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store, mockStore } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, mockStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState();
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
@@ -415,7 +323,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -433,15 +341,7 @@ describe('useView', () => {
             expect(mockStore.selectView).toHaveBeenCalledTimes(1);
         });
         test('should call selectView only once when rendering multiple times due to unrelated test redux updates', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, mockStore, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, mockStore, reduxStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const value = useSelector(R.prop('test'));
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
@@ -449,7 +349,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             const { getByTestId } = render(<TestComponent />);
 
@@ -474,15 +374,7 @@ describe('useView', () => {
             expect(mockStore.selectView).toHaveBeenCalledTimes(1);
         });
         test('should call selectView only once when rendering multiple times with equal view instances', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store, mockStore } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, mockStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState();
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView({ ...basicView });
@@ -490,7 +382,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -508,15 +400,7 @@ describe('useView', () => {
             expect(mockStore.selectView).toHaveBeenCalledTimes(1);
         });
         test('should call selectView only once when rendering multiple times with equal stack instances', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store, mockStore } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, mockStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState();
                 const { useView } = useGraph(...[...basicStack]);
                 const viewRes = useView(basicView);
@@ -524,7 +408,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -542,22 +426,16 @@ describe('useView', () => {
             expect(mockStore.selectView).toHaveBeenCalledTimes(1);
         });
         test('should call selectView multiple times when view relevant data changes', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store, mockStore, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+            const {
+                TestComponent, store, mockStore, reduxStore, renderPayloads,
+            } = createTestComponent(({ useGraph, onRender }) => {
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -572,22 +450,16 @@ describe('useView', () => {
             expect(mockStore.selectView).toHaveBeenCalledTimes(3);
         });
         test('should call selectView multiple times when view irrelevant data in stack changes', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store, mockStore, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+            const {
+                TestComponent, store, mockStore, reduxStore, renderPayloads,
+            } = createTestComponent(({ useGraph, onRender }) => {
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -604,17 +476,9 @@ describe('useView', () => {
 
     describe('downselector calls', () => {
         test('should call downselector only once when rendering multiple times due to unrelated state hook updates', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
             const mockSelector = jest.fn(R.identity);
 
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState();
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView, mockSelector);
@@ -622,7 +486,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -638,17 +502,9 @@ describe('useView', () => {
             expect(mockSelector).toHaveBeenCalledTimes(1);
         });
         test('should call downselector only once when rendering multiple times due to unrelated test redux updates', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
             const mockSelector = jest.fn(R.identity);
 
-            const { TestComponent, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, reduxStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const value = useSelector(R.prop('test'));
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView, mockSelector);
@@ -656,7 +512,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             const { getByTestId } = render(<TestComponent />);
 
@@ -681,24 +537,16 @@ describe('useView', () => {
             expect(mockSelector).toHaveBeenCalledTimes(1);
         });
         test('should call downselector multiple times when view relevant data changes', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
             const mockSelector = jest.fn(R.identity);
 
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView, mockSelector);
                 onRender(viewRes);
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -713,24 +561,16 @@ describe('useView', () => {
             expect(mockSelector).toHaveBeenCalledTimes(3);
         });
         test('should call downselector multiple times when view irrelevant data in stack changes', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
             const mockSelector = jest.fn(R.identity);
 
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView, mockSelector);
                 onRender(viewRes);
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -744,17 +584,9 @@ describe('useView', () => {
             expect(mockSelector).toHaveBeenCalledTimes(3);
         });
         test('should call downselector multiple times but selectView only once if only downselector changes', async () => {
-            const renderPayloads = [];
-
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
             const mockSelector = jest.fn(R.identity);
 
-            const { TestComponent, store, mockStore } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, mockStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState();
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView, data => mockSelector(data));
@@ -762,7 +594,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -786,15 +618,8 @@ describe('useView', () => {
         test('should not call fnEquals when rendering multiple times due to unrelated state hook updates', async () => {
             const fnEquals = jest.fn(R.equals);
             setFnEquals(fnEquals);
-            const renderPayloads = [];
 
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState();
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
@@ -802,7 +627,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -822,15 +647,8 @@ describe('useView', () => {
         test('should not call fnEquals when rendering multiple times due to unrelated redux updates', async () => {
             const fnEquals = jest.fn(R.equals);
             setFnEquals(fnEquals);
-            const renderPayloads = [];
 
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, mockStore, reduxStore } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, mockStore, reduxStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const value = useSelector(R.prop('test'));
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
@@ -838,7 +656,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" />
                 );
-            }, subscriber);
+            });
 
             const { getByTestId } = render(<TestComponent />);
 
@@ -866,22 +684,15 @@ describe('useView', () => {
         test('should call fnEquals every time when rendering multiple times due to view unrelated data changes', async () => {
             const fnEquals = jest.fn(R.equals);
             setFnEquals(fnEquals);
-            const renderPayloads = [];
 
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
                     <div data-testid="exists"/>
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -901,15 +712,8 @@ describe('useView', () => {
         test('should call fnEquals every time when rendering multiple times due to view related data changes', async () => {
             const fnEquals = jest.fn(R.equals);
             setFnEquals(fnEquals);
-            const renderPayloads = [];
 
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState();
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
@@ -917,7 +721,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -937,15 +741,8 @@ describe('useView', () => {
         test('should call fnEquals every time when rendering multiple times due to new view instances', async () => {
             const fnEquals = jest.fn(R.equals);
             setFnEquals(fnEquals);
-            const renderPayloads = [];
 
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState(Math.random());
                 const { useView } = useGraph(...basicStack);
                 const view = {
@@ -961,7 +758,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
@@ -981,15 +778,8 @@ describe('useView', () => {
         test('should call fnEquals every time when rendering multiple times due to new downselector instances', async () => {
             const fnEquals = jest.fn(R.equals);
             setFnEquals(fnEquals);
-            const renderPayloads = [];
 
-            const subscriber = {
-                next: event => {
-                    if (event.type === 'render') { renderPayloads.push(event.payload); }
-                },
-            };
-
-            const { TestComponent, store } = createTestComponent(({ useGraph, onRender }) => {
+            const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [state, setState] = useState();
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView, data => data);
@@ -997,7 +787,7 @@ describe('useView', () => {
                 return (
                     <div data-testid="exists" onClick={() => setState(Math.random())} />
                 );
-            }, subscriber);
+            });
 
             store.mergeGraph(basicGraph, 'main');
 
