@@ -22,6 +22,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
+        token: ${{secrets.GH_PUSH_TOKEN}}
         fetch-depth: 0
     - name: Node
       uses: actions/setup-node@v1
@@ -37,8 +38,6 @@ jobs:
         git config --local user.name gothub-info
         yarn bump:patch
         git push
-      env: 
-        GITHUB_TOKEN: ${{secrets.GH_PUSH_TOKEN}}
     - name: Publish
       run: yarn publish:all
       env:
