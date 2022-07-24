@@ -8,7 +8,7 @@
         "airbnb-base",
         "plugin:node/recommended",
         "airbnb/hooks",
-        "plugin:react/jsx-runtime"
+        "plugin:react/recommended"
     ],
     "parser": "@babel/eslint-parser",
     "parserOptions": {
