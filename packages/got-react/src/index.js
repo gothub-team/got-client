@@ -120,8 +120,8 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
                     selectViewResultRef.current = selectView(state);
                 }
 
-                const result = fnTransform(selectViewResultRef.current);
-                fnTransformResultRef.current = result;
+                const fnTransformResult = fnTransform(selectViewResultRef.current);
+                fnTransformResultRef.current = fnTransformResult;
 
                 return {
                     requireEqCheck: true,
