@@ -84,14 +84,14 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
 
             return [ref, setRef];
         };
-        const useView = (view, downSelector = R.identity) => {
+        const useView = (view, fnTransform = R.identity) => {
             const _stack = useEqualRef(stack);
             const _view = useEqualRef(view);
 
             const stateIdRef = useRef();
 
             const selectViewRef = useRef();
-            const downSelectorRef = useRef();
+            const fnTransformRef = useRef();
 
             const viewResRef = useRef();
             const resultRef = useRef();
@@ -105,10 +105,10 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
 
                 const selectViewUpdated = !R.equals(selectViewRef.current, selectView);
                 if (selectViewUpdated) selectViewRef.current = selectView;
-                const downselectorUpdated = !R.equals(downSelectorRef.current, downSelector);
-                if (downselectorUpdated) downSelectorRef.current = downSelector;
+                const fnTransformUpdated = !R.equals(fnTransformRef.current, fnTransform);
+                if (fnTransformUpdated) fnTransformRef.current = fnTransform;
 
-                if (!selectViewUpdated && !downselectorUpdated && stateId === stateIdRef.current) {
+                if (!selectViewUpdated && !fnTransformUpdated && stateId === stateIdRef.current) {
                     return {
                         requireEqCheck: false,
                         result: resultRef.current,
@@ -120,14 +120,14 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
                     viewResRef.current = selectView(state);
                 }
 
-                const result = downSelector(viewResRef.current);
+                const result = fnTransform(viewResRef.current);
                 resultRef.current = result;
 
                 return {
                     requireEqCheck: true,
                     result: resultRef.current,
                 };
-            }, [selectView, downSelector]);
+            }, [selectView, fnTransform]);
 
             const { result } = useSelector(selector, useViewEquality);
 
