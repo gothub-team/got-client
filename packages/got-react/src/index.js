@@ -91,10 +91,10 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
             const stateIdRef = useRef();
 
             const selectViewRef = useRef();
-            const fnTransformRef = useRef();
+            const selectViewResultRef = useRef();
 
-            const viewResRef = useRef();
-            const resultRef = useRef();
+            const fnTransformRef = useRef();
+            const fnTransformResultRef = useRef();
 
             // creating new function here instead of using currying to make function calls testable
             const selectView = useMemo(() => state => store.selectView(..._stack)(_view)(state), [_stack, _view]);
@@ -111,21 +111,21 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
                 if (!selectViewUpdated && !fnTransformUpdated && stateId === stateIdRef.current) {
                     return {
                         requireEqCheck: false,
-                        result: resultRef.current,
+                        result: fnTransformResultRef.current,
                     };
                 }
 
                 if (selectViewUpdated || stateId !== stateIdRef.current) {
                     stateIdRef.current = stateId;
-                    viewResRef.current = selectView(state);
+                    selectViewResultRef.current = selectView(state);
                 }
 
-                const result = fnTransform(viewResRef.current);
-                resultRef.current = result;
+                const result = fnTransform(selectViewResultRef.current);
+                fnTransformResultRef.current = result;
 
                 return {
                     requireEqCheck: true,
-                    result: resultRef.current,
+                    result: fnTransformResultRef.current,
                 };
             }, [selectView, fnTransform]);
 
