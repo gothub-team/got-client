@@ -31,7 +31,7 @@ describe('verifying test setup', () => {
         expect(getByTestId('exists')).toBeTruthy();
 
         await delay(100);
-        expect(renderPayloads.length).toBeLessThanOrEqual(1);
+        expect(renderPayloads.length).toBe(1);
     });
     test('should rerender on related test redux updates', async () => {
         const { TestComponent, reduxStore, renderPayloads } = createTestComponent(({ onRender }) => {
