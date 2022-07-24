@@ -183,8 +183,8 @@ describe('useView', () => {
             await act(() => element.click());
             expect(renderPayloads.length).toBe(3);
 
-            expect(renderPayloads[0] === renderPayloads[1]).toBeTruthy();
-            expect(renderPayloads[0] === renderPayloads[2]).toBeTruthy();
+            expect(renderPayloads[0]).toBe(renderPayloads[1]);
+            expect(renderPayloads[0]).toBe(renderPayloads[2]);
         });
     });
 
