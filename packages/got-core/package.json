@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-core",
-    "version": "0.21.20",
+    "version": "0.21.21-3",
     "description": "Core graph functions and type declarations.",
     "main": "dist/cjs/index.js",
     "types": "src/index.d.ts",
@@ -53,5 +53,6 @@
         "transform": {
             "\\.js?$": "babel-jest"
         }
-    }
+    },
+    "stableVersion": "0.21.18"
 }

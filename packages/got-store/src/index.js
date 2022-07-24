@@ -11,6 +11,7 @@ import {
     overPath,
     useSubscriber,
     useResult,
+    generateNewRandom,
     assocPathMutate,
 } from '@gothub-team/got-util';
 import {
@@ -745,10 +746,20 @@ export const createStore = ({
     });
 };
 
-export const gotReducer = (state = {}, action) => R.compose(
-    reducer => reducer(action.payload)(state),
-    R.propOr(() => R.identity, action.type),
-)(reducers);
+export const gotReducer = (state = {}, action) => {
+    const reducer = reducers[action.type];
+    if (reducer) {
+        return R.compose(
+            reducer(action.payload),
+            R.over(
+                R.lensProp('stateId'),
+                generateNewRandom,
+            ),
+        )(state);
+    }
+
+    return state;
+};
 
 export const reducers = {
     [GOT_ACTION_MERGE]: ({

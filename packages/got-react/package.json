@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-react",
-    "version": "0.21.20",
+    "version": "0.21.21-3",
     "description": "React hooks to interact with local (in-memory) got graphs and sync them with remote got providers.",
     "main": "dist/cjs/index.js",
     "types": "src/index.d.ts",
@@ -28,6 +28,7 @@
         "@gothub-team/got-store": "workspace:*",
         "ramda": "^0.28.0",
         "ramda-adjunct": "^3.1.0",
+        "react": ">=17.0.2",
         "react-redux": "7.2.3"
     },
     "devDependencies": {
@@ -36,11 +37,22 @@
         "@babel/preset-env": "^7.17.10",
         "@gothub-team/got-core": "workspace:*",
         "@gothub-team/got-util": "workspace:*",
+        "@testing-library/jest-dom": "5.16.4",
+        "@testing-library/react": "13.3.0",
         "babel-jest": "^28.1.0",
         "babel-loader": "^8.2.5",
         "babel-plugin-transform-runtime": "^6.23.0",
         "babel-polyfill": "^6.26.0",
-        "jest": "^28.1.0",
+        "jest": "27.0.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-redux": "7.2.3",
+        "react-router-dom": "^6.3.0",
+        "react-scripts": "5.0.1",
+        "redux": "^4.2.0",
+        "redux-logger": "^3.0.6",
+        "unfetch": "^4.2.0",
+        "uuid": "^8.3.2",
         "webpack": "^5.72.1",
         "webpack-cli": "4.9.2"
     },
@@ -50,17 +62,21 @@
     },
     "scripts": {
         "test": "jest ./src --passWithNoTests",
-        "test:fn": "jest ./src/tests/$1.spec.js --passWithNoTests",
+        "test:fn": "jest ./src/tests/$1.spec.jsx --passWithNoTests",
         "build": "webpack --config webpack.config.js; babel src -d dist/cjs --ignore 'src/**/*.spec.js','src/tests'"
     },
     "jest": {
         "moduleFileExtensions": [
-            "js"
+            "js",
+            "jsx"
         ],
         "rootDir": "./",
         "testRegex": ".*?(?=\\.spec).*?\\.js",
         "transform": {
-            "\\.js?$": "babel-jest"
-        }
-    }
+            "\\.js?$": "babel-jest",
+            "\\.jsx?$": "babel-jest"
+        },
+        "testEnvironment": "jsdom"
+    },
+    "stableVersion": "0.21.18"
 }

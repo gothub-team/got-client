@@ -116,6 +116,12 @@ export declare const toPromise: (
     ) => Promise<any[]>;
 
 /**
+ * Generates a random number between 0 and 1 that is not the given number
+ * 
+ * @returns a random number
+ */
+export declare const generateNewRandom: (prev: Number) => Number;
+/**
  * @returns the property at a given path in the specified object or undefined if the path doesn't exist.
  */
  export declare const getPath: (path: string[], obj: Object) => any | undefined;

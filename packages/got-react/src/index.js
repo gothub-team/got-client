@@ -3,6 +3,8 @@ import * as RA from 'ramda-adjunct';
 import { useSelector } from 'react-redux';
 import { createApi } from '@gothub-team/got-api';
 import { createStore } from '@gothub-team/got-store';
+import { useMemo, useRef } from 'react';
+import { useEqualRef } from './util.js';
 
 export { gotReducer } from '@gothub-team/got-store';
 
@@ -60,6 +62,13 @@ export const setup = ({
     };
 };
 
+let fnEquals = R.equals;
+export const setFnEquals = fn => {
+    fnEquals = fn;
+};
+
+const useViewEquality = (next, prev) => next.requireEqCheck ? fnEquals(next.result, prev.result) : true;
+
 export const createHooks = ({ store, baseState = R.identity }) => ({
     useGraph: (...stack) => {
         const currentGraphName = R.nth(-1, stack);
@@ -75,14 +84,54 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
 
             return [ref, setRef];
         };
-        const useView = (view, selector = R.identity) => {
-            const nodes = useSelector(R.compose(
-                selector,
-                store.selectView(...stack)(view),
-                baseState,
-            ), R.equals);
+        const useView = (view, fnTransform = R.identity) => {
+            const _stack = useEqualRef(stack);
+            const _view = useEqualRef(view);
 
-            return nodes;
+            const stateIdRef = useRef();
+
+            const selectViewRef = useRef();
+            const selectViewResultRef = useRef();
+
+            const fnTransformRef = useRef();
+            const fnTransformResultRef = useRef();
+
+            // creating new function here instead of using currying to make function calls testable
+            const selectView = useMemo(() => state => store.selectView(..._stack)(_view)(state), [_stack, _view]);
+
+            const selector = useMemo(() => _state => {
+                const state = baseState(_state);
+                const stateId = R.propOr(0, 'stateId', state);
+
+                const selectViewUpdated = !R.equals(selectViewRef.current, selectView);
+                if (selectViewUpdated) selectViewRef.current = selectView;
+                const fnTransformUpdated = !R.equals(fnTransformRef.current, fnTransform);
+                if (fnTransformUpdated) fnTransformRef.current = fnTransform;
+
+                if (!selectViewUpdated && !fnTransformUpdated && stateId === stateIdRef.current) {
+                    return {
+                        requireEqCheck: false,
+                        result: fnTransformResultRef.current,
+                    };
+                }
+
+                if (selectViewUpdated || stateId !== stateIdRef.current) {
+                    stateIdRef.current = stateId;
+                    selectViewResultRef.current = selectView(state);
+                }
+
+                const fnTransformResult = fnTransform(selectViewResultRef.current);
+                fnTransformResultRef.current = fnTransformResult;
+
+                return {
+                    requireEqCheck: true,
+                    result: fnTransformResultRef.current,
+                };
+            }, [selectView, fnTransform]);
+
+            const { result } = useSelector(selector, useViewEquality);
+
+            return result;
         };
         const useNode = (nodeId, selector = R.identity) => {
             const node = useSelector(

@@ -146,6 +146,11 @@ export const toPromise = observable => new Promise((resolve, reject) => {
     });
 });
 
+export const generateNewRandom = prev => {
+    const rand = Math.random();
+    return prev !== rand ? rand : generateNewRandom(prev);
+};
+
 export const getPathOr = (or, path) => input => {
     let obj = input;
     for (let i = 0; i < path.length; i += 1) {

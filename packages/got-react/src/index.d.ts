@@ -53,6 +53,14 @@ export declare interface UseGraphHookResult {
      * data that fall under its rules but it can also be used to directly write into
      * the graph without knowing what data are already there.
      * 
+     * To optimize render behavior, it is recomended to have both the view and selector stay constant
+     * or at least be memoized using reacts useMemo hook. While the hook can determine if the view equals
+     * a previously input view and prevent useSelector from running unnecessarily, if a new instance of the
+     * selector function is supplied on every render, the selector and equality function will run every time,
+     * even on rerenders caused by hook changes. Therefor we advise against defining the selector within the 
+     * useView function call by arrow function or configuring a curried function. This way useSelector
+     * will only run if any got specific changes were detected in the redux store through a change of the got states stateId.
+     * 
      * @param view The view tree to be selected for read and write access on the
      * remote graph.
      * @param selector A selector that will be applied after the selection of the view tree.
