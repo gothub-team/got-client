@@ -11,14 +11,3 @@ export const useEqualRef = input => {
 
     return ref.current;
 };
-
-/** React hook to  check for deep equality of instances between calls */
-export const useRefUpdated = input => {
-    const ref = useRef();
-    const isEqual = R.equals(input, ref.current);
-    if (!isEqual) {
-        ref.current = input;
-    }
-
-    return !isEqual;
-};
