@@ -38,7 +38,7 @@
         "prerelease:react": "npm version prerelease --workspace @gothub-team/got-react --git-tag-version false",
         "bump:patch": "yarn patch:util; yarn patch:core; yarn patch:store; yarn patch:react; yarn version patch; yarn tag:version",
         "bump:prerelease": "yarn prerelease:util; yarn prerelease:core; yarn prerelease:store; yarn prerelease:react; npm version prerelease --git-tag-version false; yarn tag:version",
-        "tag:version": "VERSION=$(jq -r '.version' ./package.json); git commit -am \"v$VERSION\"; git tag -a \"v$VERSION\" -m \"v$VERSION\"; git push"
+        "tag:version": "VERSION=$(jq -r '.version' ./package.json); git commit -am \"v$VERSION\"; git tag -a \"v$VERSION\" -m \"v$VERSION\""
     },
     "devDependencies": {
         "@babel/eslint-parser": "^7.18.2",

@@ -27,15 +27,28 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 17.x
-    - run: |
+    - name: Install
+      run: yarn install
+    - name: Build
+      run: yarn build
+    - name: Bump Prerelease
+      run: |
         git config --local user.email github-actions@github.com
         git config --local user.name github-actions
-        yarn
-        yarn build
+        git checkout -b release/new-version
         yarn bump:patch
-        yarn publish:all
-        git push
+        git push --set-upstream origin release/new-version
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4
+      with:
+        commit-message: published new version
+        branch: release/new-version
+        base: master
+        delete-branch: true
+        title: '[Release] New Version'
+        body: |
+          New version
+    - name: Publish
+      run: yarn publish:all
       env:
         NPM_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
-
-

@@ -36,6 +36,7 @@ jobs:
         git config --local user.email github-actions@github.com
         git config --local user.name github-actions
         yarn bump:prerelease
+        git push
     - name: Publish
       run: yarn publish:all:beta
       env:
