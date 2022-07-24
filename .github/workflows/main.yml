@@ -33,21 +33,12 @@ jobs:
       run: yarn build
     - name: Bump Prerelease
       run: |
-        git config --local user.email github-actions@github.com
-        git config --local user.name github-actions
-        git checkout -b release/new-version
+        git config --local user.email info@gothub.io
+        git config --local user.name gothub-info
         yarn bump:patch
-        git push --set-upstream origin release/new-version
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v4
-      with:
-        commit-message: published new version
-        branch: release/new-version
-        base: master
-        delete-branch: true
-        title: '[Release] New Version'
-        body: |
-          New version
+        git push
+      env: 
+        GITHUB_TOKEN: ${{secrets.GH_PUSH_TOKEN}}
     - name: Publish
       run: yarn publish:all
       env:
