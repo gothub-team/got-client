@@ -13,4 +13,4 @@ jobs:
       with:
         fetch-depth: 0
     - name: Check Version
-      run: git log | grep "\[release\]"
+      run: git log master.. | grep "\[release\]"
