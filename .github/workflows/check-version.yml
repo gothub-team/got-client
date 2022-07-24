@@ -4,7 +4,7 @@ on:
   push:
     branches: ['**']
 jobs:
-  jest: 
+  check-version: 
     runs-on: ubuntu-18.04
     if: "github.repository_owner == 'gothub-team' && !contains(github.event.head_commit.message, 'ci skip')"
     steps:

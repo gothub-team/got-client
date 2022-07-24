@@ -14,7 +14,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  publish:
+  publish-prerelease:
     name: "Publish npm packages as prerelease"
     runs-on: ubuntu-latest
     if: "github.repository_owner == 'gothub-team' && contains(github.event.head_commit.message, '[prerelease]')"
