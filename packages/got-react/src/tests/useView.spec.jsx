@@ -208,13 +208,11 @@ describe('useView', () => {
             expect(getByTestId('element')).toBeTruthy();
 
             await delay(100);
-            expect(renderPayloads.length).toBeLessThanOrEqual(1);
-
-            expect(renderPayloads[0]).toEqual(store.getView(...basicStack)(basicView));
+            expect(renderPayloads.length).toBe(1);
         });
         test('should rerender when view relevant data changes', async () => {
             const {
-                TestComponent, store, reduxStore, renderPayloads,
+                TestComponent, store, renderPayloads,
             } = createTestComponent(({ useGraph, onRender }) => {
                 const { useView } = useGraph(...basicStack);
                 const viewRes = useView(basicView);
@@ -230,23 +228,8 @@ describe('useView', () => {
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
 
-            const testState1 = reduxStore.getState().got;
-            const testRes1 = store.getView(...basicStack)(basicView);
-
             await act(() => store.setNode('main')({ id: 'node1', prop: 'secondValue' }));
-            const testState2 = reduxStore.getState().got;
-            const testRes2 = store.getView(...basicStack)(basicView);
-
             await act(() => store.setNode('main')({ id: 'node1', prop: 'thirdValue' }));
-            const testState3 = reduxStore.getState().got;
-            const testRes3 = store.getView(...basicStack)(basicView);
-
-            expect(testState1).not.toEqual(testState2);
-            expect(testState2).not.toEqual(testState3);
-
-            expect(renderPayloads[0]).toEqual(testRes1);
-            expect(renderPayloads[1]).toEqual(testRes2);
-            expect(renderPayloads[2]).toEqual(testRes3);
 
             await delay(100);
             expect(renderPayloads.length).toBe(3);
