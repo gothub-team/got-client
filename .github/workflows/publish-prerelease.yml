@@ -6,7 +6,7 @@ name: prerelease
 on:
   # Triggers the workflow on push
   push:
-    branches: []
+    branches: ['**']
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -17,21 +17,27 @@ jobs:
   publish:
     name: "Publish npm packages as prerelease"
     runs-on: ubuntu-latest
-    if: "github.repository_owner == 'gothub-team' && contains(github.event.head_commit.message, '[publish prerelease]')"
+    if: "github.repository_owner == 'gothub-team' && contains(github.event.head_commit.message, '[prerelease]')"
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - uses: actions/setup-node@v1
+    - name: Node
+      uses: actions/setup-node@v1
       with:
         node-version: 17.x
-    - run: |
+    - name: Install
+      run: yarn install
+    - name: Build
+      run: yarn build
+    - name: Bump Prerelease
+      run: |
         git config --local user.email github-actions@github.com
         git config --local user.name github-actions
-        yarn
-        yarn build
         yarn bump:prerelease
-        yarn publish:all:beta
         git push
+    - name: Publish
+      run: yarn publish:all:beta
       env:
         NPM_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}

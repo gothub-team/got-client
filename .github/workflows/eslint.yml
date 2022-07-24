@@ -8,11 +8,17 @@ jobs:
     runs-on: ubuntu-18.04
     if: "github.repository_owner == 'gothub-team' && !contains(github.event.head_commit.message, 'ci skip')"
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Node
+      uses: actions/setup-node@v1
       with:
         node-version: 17.x
-    - run: |
-        yarn
-        yarn build
-        yarn lint
+    - name: Install
+      run: yarn install
+    - name: Build
+      run: yarn build
+    - name: Lint
+      run: yarn lint
