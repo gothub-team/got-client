@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got",
-    "version": "0.21.21-4",
+    "version": "0.21.21",
     "private": true,
     "workspaces": [
         "packages/*"
@@ -55,6 +55,5 @@
         "react-dom": "^17.0.2",
         "react-scripts": "4.0.3"
     },
-    "packageManager": "yarn@3.2.1",
-    "stableVersion": "0.21.20"
+    "packageManager": "yarn@3.2.1"
 }
