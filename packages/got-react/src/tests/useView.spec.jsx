@@ -210,7 +210,7 @@ describe('useView', () => {
             await delay(100);
             expect(renderPayloads.length).toBe(1);
         });
-        test('should rerender when view relevant data changes', async () => {
+        test('should rerender when view relevant data change', async () => {
             const {
                 TestComponent, store, renderPayloads,
             } = createTestComponent(({ useGraph, onRender }) => {
@@ -234,7 +234,7 @@ describe('useView', () => {
             await delay(100);
             expect(renderPayloads.length).toBe(3);
         });
-        test('should rerender only once when view irrelevant data in stack changes', async () => {
+        test('should render only once when view irrelevant data in stack change', async () => {
             const {
                 TestComponent, store, renderPayloads,
             } = createTestComponent(({ useGraph, onRender }) => {
@@ -257,7 +257,7 @@ describe('useView', () => {
             await delay(100);
             expect(renderPayloads.length).toBe(1);
         });
-        test('should rerender only once when view relevant data in stack changes but downselector returns the same value', async () => {
+        test('should render only once when view relevant data in stack change but downselector returns the same value', async () => {
             const mockSelector = jest.fn(R.always(true));
 
             const { TestComponent, store, reduxStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
@@ -350,7 +350,7 @@ describe('useView', () => {
 
             expect(mockStore.selectView).toHaveBeenCalledTimes(1);
         });
-        test('should call selectView only once when rendering multiple times with equal view instances', async () => {
+        test('should call selectView only once when rendering multiple times with equal view objects', async () => {
             const { TestComponent, store, mockStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [, setState] = useState();
                 const { useView } = useGraph(...basicStack);
@@ -376,7 +376,7 @@ describe('useView', () => {
             expect(renderPayloads.length).toBe(3);
             expect(mockStore.selectView).toHaveBeenCalledTimes(1);
         });
-        test('should call selectView only once when rendering multiple times with equal stack instances', async () => {
+        test('should call selectView only once when rendering multiple times with equal stack arrays', async () => {
             const { TestComponent, store, mockStore, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
                 const [, setState] = useState();
                 const { useView } = useGraph(...[...basicStack]);
@@ -402,7 +402,7 @@ describe('useView', () => {
             expect(renderPayloads.length).toBe(3);
             expect(mockStore.selectView).toHaveBeenCalledTimes(1);
         });
-        test('should call selectView multiple times when view relevant data changes', async () => {
+        test('should call selectView multiple times when view relevant data change', async () => {
             const {
                 TestComponent, store, mockStore, renderPayloads,
             } = createTestComponent(({ useGraph, onRender }) => {
@@ -426,7 +426,7 @@ describe('useView', () => {
 
             expect(mockStore.selectView).toHaveBeenCalledTimes(3);
         });
-        test('should call selectView multiple times when view irrelevant data in stack changes', async () => {
+        test('should call selectView multiple times when view irrelevant data in stack change', async () => {
             const {
                 TestComponent, store, mockStore, renderPayloads,
             } = createTestComponent(({ useGraph, onRender }) => {
@@ -512,7 +512,7 @@ describe('useView', () => {
 
             expect(mockSelector).toHaveBeenCalledTimes(1);
         });
-        test('should call downselector multiple times when view relevant data changes', async () => {
+        test('should call downselector multiple times when view relevant data change', async () => {
             const mockSelector = jest.fn(R.identity);
 
             const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
@@ -536,7 +536,7 @@ describe('useView', () => {
 
             expect(mockSelector).toHaveBeenCalledTimes(3);
         });
-        test('should call downselector multiple times when view irrelevant data in stack changes', async () => {
+        test('should call downselector multiple times when view irrelevant data in stack change', async () => {
             const mockSelector = jest.fn(R.identity);
 
             const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
@@ -656,7 +656,7 @@ describe('useView', () => {
 
             expect(fnEquals).toHaveBeenCalledTimes(0);
         });
-        test('should call fnEquals every time when rendering multiple times due to view unrelated data changes', async () => {
+        test('should call fnEquals every time when rendering multiple times due to view unrelated data change', async () => {
             const fnEquals = jest.fn(R.equals);
             setFnEquals(fnEquals);
 
@@ -684,7 +684,7 @@ describe('useView', () => {
 
             expect(fnEquals).toHaveBeenCalledTimes(3 - 1); // -1 since we dont compare anything on the first render
         });
-        test('should call fnEquals every time when rendering multiple times due to view related data changes', async () => {
+        test('should call fnEquals every time when rendering multiple times due to view related data change', async () => {
             const fnEquals = jest.fn(R.equals);
             setFnEquals(fnEquals);
 
@@ -713,7 +713,7 @@ describe('useView', () => {
 
             expect(fnEquals).toHaveBeenCalledTimes(3 - 1); // -1 since we dont compare anything on the first render
         });
-        test('should call fnEquals every time when rendering multiple times due to new view instances', async () => {
+        test('should call fnEquals every time when rendering multiple times due to changed view objects', async () => {
             const fnEquals = jest.fn(R.equals);
             setFnEquals(fnEquals);
 
