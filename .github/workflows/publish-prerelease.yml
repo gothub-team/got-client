@@ -17,7 +17,7 @@ jobs:
   publish:
     name: "Publish npm packages as prerelease"
     runs-on: ubuntu-latest
-    if: "github.repository_owner == 'gothub-team' && contains(github.event.head_commit.message, '[publish prerelease]')"
+    if: "github.repository_owner == 'gothub-team' && contains(github.event.head_commit.message, '[prerelease]')"
     steps:
     - name: Checkout
       uses: actions/checkout@v2
