@@ -78,5 +78,5 @@
         },
         "testEnvironment": "jsdom"
     },
-    "stableVersion": "0.21.18"
+    "stableVersion": "0.21.20"
 }

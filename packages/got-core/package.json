@@ -54,5 +54,5 @@
             "\\.js?$": "babel-jest"
         }
     },
-    "stableVersion": "0.21.18"
+    "stableVersion": "0.21.20"
 }
