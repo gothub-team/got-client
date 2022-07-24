@@ -32,12 +32,6 @@ jobs:
       run: yarn install
     - name: Build
       run: yarn build
-    - name: Bump Patch
-      run: |
-        git config --local user.email info@gothub.io
-        git config --local user.name gothub-info
-        yarn bump:patch
-        git push -f
     - name: Publish
       run: yarn publish:all
       env:

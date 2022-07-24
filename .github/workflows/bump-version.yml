@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: prerelease
+name: Bump Version
 
 # Controls when the workflow will run
 on:
@@ -14,30 +14,21 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  publish-prerelease:
-    name: "Publish npm packages as prerelease"
+  bump-version:
+    name: "Publish npm packages as release"
     runs-on: ubuntu-latest
-    if: "github.repository_owner == 'gothub-team' && contains(github.event.head_commit.message, '[prerelease]')"
+    if: "github.repository_owner == 'gothub-team' && contains(github.event.head_commit.message, '[release]')"
     steps:
     - name: Checkout
       uses: actions/checkout@v2
       with:
+        token: ${{secrets.GH_PUSH_TOKEN}}
         fetch-depth: 0
-    - name: Node
-      uses: actions/setup-node@v1
-      with:
-        node-version: 17.x
     - name: Install
       run: yarn install
-    - name: Build
-      run: yarn build
-    - name: Bump Prerelease
+    - name: Bump Patch
       run: |
-        git config --local user.email github-actions@github.com
-        git config --local user.name github-actions
-        yarn bump:prerelease
+        git config --local user.email info@gothub.io
+        git config --local user.name gothub-info
+        yarn bump:patch
         git push
-    - name: Publish
-      run: yarn publish:all:beta
-      env:
-        NPM_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
