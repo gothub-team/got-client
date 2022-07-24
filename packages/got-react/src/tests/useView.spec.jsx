@@ -20,14 +20,14 @@ describe('verifying test setup', () => {
         const { TestComponent, renderPayloads } = createTestComponent(({ onRender }) => {
             onRender();
             return (
-                <div data-testid="exists" />
+                <div data-testid="element" />
             );
         });
 
         const { getByTestId } = render(<TestComponent />);
 
         await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-        expect(getByTestId('exists')).toBeTruthy();
+        expect(getByTestId('element')).toBeTruthy();
 
         await delay(100);
         expect(renderPayloads.length).toBe(1);
@@ -37,7 +37,7 @@ describe('verifying test setup', () => {
             const value = useSelector(R.prop('test'));
             onRender(value);
             return (
-                <div data-testid="exists" />
+                <div data-testid="element" />
             );
         });
 
@@ -65,7 +65,7 @@ describe('verifying test setup', () => {
             useSelector(fnSelect);
             onRender(dispatch);
             return (
-                <div data-testid="exists" onClick={() => dispatch({ type: 'TEST_ACTION' })} />
+                <div data-testid="element" onClick={() => dispatch({ type: 'TEST_ACTION' })} />
             );
         });
 
@@ -74,7 +74,7 @@ describe('verifying test setup', () => {
         const { getByTestId } = render(<TestComponent />);
 
         await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-        const element = getByTestId('exists');
+        const element = getByTestId('element');
 
         await act(() => element.click());
         await act(() => element.click());
@@ -93,7 +93,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -112,7 +112,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -121,7 +121,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            const element = getByTestId('exists');
+            const element = getByTestId('element');
 
             await act(() => element.click());
             await act(() => element.click());
@@ -143,7 +143,7 @@ describe('useView', () => {
                     gotStore.setNode('main')({ id: 'node1', prop: 'secondValue' });
                 }, []);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -168,7 +168,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -177,7 +177,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            const element = getByTestId('exists');
+            const element = getByTestId('element');
 
             await act(() => element.click());
             await act(() => element.click());
@@ -196,7 +196,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -205,7 +205,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            expect(getByTestId('exists')).toBeTruthy();
+            expect(getByTestId('element')).toBeTruthy();
 
             await delay(100);
             expect(renderPayloads.length).toBeLessThanOrEqual(1);
@@ -220,7 +220,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -259,7 +259,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -282,7 +282,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView, mockSelector);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -316,7 +316,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -325,7 +325,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            const element = getByTestId('exists');
+            const element = getByTestId('element');
 
             await act(() => element.click());
             await act(() => element.click());
@@ -342,7 +342,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender([value, viewRes]);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -374,7 +374,7 @@ describe('useView', () => {
                 const viewRes = useView({ ...basicView });
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -383,7 +383,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            const element = getByTestId('exists');
+            const element = getByTestId('element');
 
             await act(() => element.click());
             await act(() => element.click());
@@ -400,7 +400,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -409,7 +409,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            const element = getByTestId('exists');
+            const element = getByTestId('element');
 
             await act(() => element.click());
             await act(() => element.click());
@@ -427,7 +427,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -451,7 +451,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -478,7 +478,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView, mockSelector);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -487,7 +487,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            const element = getByTestId('exists');
+            const element = getByTestId('element');
 
             await act(() => element.click());
             await act(() => element.click());
@@ -504,7 +504,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView, mockSelector);
                 onRender([value, viewRes]);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -537,7 +537,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView, mockSelector);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -561,7 +561,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView, mockSelector);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -585,7 +585,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView, data => mockSelector(data));
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -594,7 +594,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            const element = getByTestId('exists');
+            const element = getByTestId('element');
 
             await act(() => element.click());
             await act(() => element.click());
@@ -618,7 +618,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -627,7 +627,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            const element = getByTestId('exists');
+            const element = getByTestId('element');
 
             await act(() => element.click());
             await act(() => element.click());
@@ -647,7 +647,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender([value, viewRes]);
                 return (
-                    <div data-testid="exists" />
+                    <div data-testid="element" />
                 );
             });
 
@@ -682,7 +682,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists"/>
+                    <div data-testid="element"/>
                 );
             });
 
@@ -711,7 +711,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -748,7 +748,7 @@ describe('useView', () => {
                 const viewRes = useView(view, data => data);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -757,7 +757,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            const element = getByTestId('exists');
+            const element = getByTestId('element');
 
             await act(() => element.click());
             await act(() => element.click());
@@ -777,7 +777,7 @@ describe('useView', () => {
                 const viewRes = useView(basicView, data => data);
                 onRender(viewRes);
                 return (
-                    <div data-testid="exists" onClick={() => setState(Math.random())} />
+                    <div data-testid="element" onClick={() => setState(Math.random())} />
                 );
             });
 
@@ -786,7 +786,7 @@ describe('useView', () => {
             const { getByTestId } = render(<TestComponent />);
 
             await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
-            const element = getByTestId('exists');
+            const element = getByTestId('element');
 
             await act(() => element.click());
             await act(() => element.click());
