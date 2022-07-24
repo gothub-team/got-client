@@ -37,7 +37,7 @@ jobs:
         git config --local user.email info@gothub.io
         git config --local user.name gothub-info
         yarn bump:patch
-        git push
+        git push -f
     - name: Publish
       run: yarn publish:all
       env:
