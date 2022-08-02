@@ -224,6 +224,10 @@ export const pickMapGraph = R.curry((fnMap, view, graph) => {
 export const filterGraph = pickMapGraph(R.identity);
 
 export const selectPathFromStack = R.curry((path, stack, fnMergeLeft, state) => {
+    if (!path || !stack || !fnMergeLeft || !state) {
+        return undefined;
+    }
+
     let acc;
     stack.forEach(graphName => {
         const val = getPath([graphName, ...path], state);
