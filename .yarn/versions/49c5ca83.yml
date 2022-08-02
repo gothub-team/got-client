@@ -1,0 +1,5 @@
+undecided:
+  - "@gothub-team/got-core"
+  - "@gothub-team/got-react"
+  - "@gothub-team/got-store"
+  - "@gothub-team/got-util"
