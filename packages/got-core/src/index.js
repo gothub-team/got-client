@@ -225,7 +225,6 @@ export const filterGraph = pickMapGraph(R.identity);
 
 export const selectPathFromStack = R.curry((path, stack, fnMergeLeft, state) => {
     if (!path || !stack || !fnMergeLeft || !state) {
-        console.log('returning undefined');
         return undefined;
     }
 
