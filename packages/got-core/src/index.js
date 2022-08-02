@@ -99,7 +99,7 @@ const overwriteRight = R.curry((left, right) => {
 export const overwriteLeft = R.flip(overwriteRight);
 
 export const mergeOverwriteGraphsRight = R.curry((left, right) => {
-    const [getResult, setResult] = useResult(left);
+    const [getResult, setResult] = useResult(left || {});
     const overwriteResult = (val, path) => setResult(
         R.ifElse(
             R.always(RA.isUndefined(val)),

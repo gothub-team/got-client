@@ -138,6 +138,34 @@ describe('getPathOr', () => {
 
         expect(result).toEqual(expected);
     });
+    test('should return fallback if input is undefined with path length = 1 ', () => {
+        const obj = undefined;
+
+        const result = getPathOr('fallback', ['prop'])(obj);
+        const expected = 'fallback';
+
+        expect(result).toEqual(expected);
+    });
+    test('should return fallback if input is not object with path length = 1 ', () => {
+        const obj = 'someString';
+
+        const result = getPathOr('fallback', ['prop'])(obj);
+        const expected = 'fallback';
+
+        expect(result).toEqual(expected);
+    });
+    test('should return fallback if object along path is undefined with path length = 3 ', () => {
+        const obj = {
+            some: {
+                test: undefined,
+            },
+        };
+
+        const result = getPathOr('fallback', ['some', 'test', 'path'])(obj);
+        const expected = 'fallback';
+
+        expect(result).toEqual(expected);
+    });
     test('should get prop at path with path length = 3', () => {
         const obj = {
             some: {

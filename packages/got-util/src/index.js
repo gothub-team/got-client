@@ -152,16 +152,20 @@ export const generateNewRandom = prev => {
 };
 
 export const getPathOr = (or, path) => input => {
-    let obj = input;
-    for (let i = 0; i < path.length; i += 1) {
-        const key = path[i];
-        if (key in obj) {
-            obj = obj[key];
-        } else {
-            return or;
+    try {
+        let obj = input;
+        for (let i = 0; i < path.length; i += 1) {
+            const key = path[i];
+            if (key in obj) {
+                obj = obj[key];
+            } else {
+                return or;
+            }
         }
+        return obj;
+    } catch (err) {
+        return or;
     }
-    return obj;
 };
 
 export const getPath = (path, input) => getPathOr(undefined, path)(input);
