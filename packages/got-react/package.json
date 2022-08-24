@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-react",
-    "version": "0.21.29",
+    "version": "0.21.30",
     "description": "React hooks to interact with local (in-memory) got graphs and sync them with remote got providers.",
     "main": "dist/cjs/index.js",
     "types": "src/index.d.ts",
@@ -24,7 +24,7 @@
         "node": ">=17.0.0"
     },
     "dependencies": {
-        "@gothub-team/got-api": "^0.1.20",
+        "@gothub-team/got-api": "^0.1.25",
         "@gothub-team/got-store": "workspace:*",
         "ramda": "^0.28.0",
         "ramda-adjunct": "^3.1.0",

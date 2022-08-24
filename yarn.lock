@@ -1830,13 +1830,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gothub-team/got-api@npm:^0.1.20":
-  version: 0.1.24
-  resolution: "@gothub-team/got-api@npm:0.1.24"
+"@gothub-team/got-api@npm:^0.1.25":
+  version: 0.1.25
+  resolution: "@gothub-team/got-api@npm:0.1.25"
   dependencies:
     "@gothub-team/got-srp": ^0.3.20
     buffer: ^6.0.3
-  checksum: d7cb90b02bae746a4c416863eeae677bbcef29f82657bcd4d71c895eb969b62d93e2622d7f69be8665414cd5bffa71da10b77c9bb2dc3ec4106ec73192100898
+  checksum: 99b08546606dc20ff112efc49ea1db458b97035412785b641fab56e4fdb3ecefe10644a9642d7cd786fc765d91003dd32b0eed036eccecf68d6547a541cf96bd
   languageName: node
   linkType: hard
 
@@ -1867,7 +1867,7 @@ __metadata:
     "@babel/cli": ^7.17.10
     "@babel/core": ^7.17.10
     "@babel/preset-env": ^7.17.10
-    "@gothub-team/got-api": ^0.1.20
+    "@gothub-team/got-api": ^0.1.25
     "@gothub-team/got-core": "workspace:*"
     "@gothub-team/got-store": "workspace:*"
     "@gothub-team/got-util": "workspace:*"
@@ -1913,7 +1913,7 @@ __metadata:
     "@babel/cli": ^7.17.10
     "@babel/core": ^7.17.10
     "@babel/preset-env": ^7.17.10
-    "@gothub-team/got-api": ^0.1.20
+    "@gothub-team/got-api": ^0.1.25
     "@gothub-team/got-core": "workspace:*"
     "@gothub-team/got-util": "workspace:*"
     babel-jest: ^28.1.0
