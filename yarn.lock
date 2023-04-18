@@ -1840,6 +1840,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gothub-team/got-api@npm:^0.1.26":
+  version: 0.1.26
+  resolution: "@gothub-team/got-api@npm:0.1.26"
+  dependencies:
+    "@gothub-team/got-srp": ^0.3.20
+    buffer: ^6.0.3
+  checksum: ae83b3579c5c603717b32fa3f5a978bf4e974bb32cc5604649f67b2bdc099fa2b8d337341fb06cca1b6b8b3b76f418e26535ea02afea8e0973b2ea4e6eba6fc6
+  languageName: node
+  linkType: hard
+
 "@gothub-team/got-core@workspace:*, @gothub-team/got-core@workspace:packages/got-core":
   version: 0.0.0-use.local
   resolution: "@gothub-team/got-core@workspace:packages/got-core"
@@ -1867,7 +1877,7 @@ __metadata:
     "@babel/cli": ^7.17.10
     "@babel/core": ^7.17.10
     "@babel/preset-env": ^7.17.10
-    "@gothub-team/got-api": ^0.1.25
+    "@gothub-team/got-api": ^0.1.26
     "@gothub-team/got-core": "workspace:*"
     "@gothub-team/got-store": "workspace:*"
     "@gothub-team/got-util": "workspace:*"
