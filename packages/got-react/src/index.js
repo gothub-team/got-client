@@ -32,11 +32,13 @@ export const setup = ({
     onError = console.error,
     onWarn = console.warn,
     adminMode = false,
+    sessionExpireTime,
 }) => {
     const api = createApi({
         host,
         adminMode,
         sessionStore: getLocalStorageSessionStore(`got-auth_${host}`),
+        sessionExpireTime,
     });
     const store = createStore({
         api,

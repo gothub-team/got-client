@@ -355,6 +355,10 @@ export declare interface SetupOptions {
      * Whether or not to call the API in admin mode.
      */
     adminMode?: boolean;
+    /** 
+     * The time in miliseconds after which the session will expire. Defaults to 28 days.
+     */
+    sessionExpireTime?: number;
 }
 
 /**
