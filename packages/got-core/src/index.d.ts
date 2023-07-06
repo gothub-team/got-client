@@ -517,7 +517,7 @@ export declare const isFilesPath: (path: string[]) => boolean;
 /**
  * Checks if the given path is pointing to a node file view of a graph.
  */
-export declare const isNodesFilesPath: (path: string[]) => boolean;
+export declare const isNodeFilesPath: (path: string[]) => boolean;
 
 /**
  * Checks if the given path is pointing inside the index object of a graph.
