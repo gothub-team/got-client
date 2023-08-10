@@ -898,7 +898,7 @@ describe('store:mergeOverwriteGraph', () => {
         });
     });
 
-    describe('Rights', () => {
+    describe('User Rights', () => {
         test('should merge node rights object into toGraph (seperate nodeIds)', () => {
             /* #region Test Bed Creation */
             const nodeId1 = 'node1';
@@ -1011,6 +1011,134 @@ describe('store:mergeOverwriteGraph', () => {
                     graph: {
                         rights: {
                             [nodeId1]: { user: { [user1]: { read: true } } },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            mergeOverwriteGraph(graph, graphName1);
+
+            expect(onError).not.toBeCalled();
+            const hasPath = R.hasPath([graphName1, 'graph', 'rights', nodeId1], getState());
+            expect(hasPath).toBeFalsy();
+            /* #endregion */
+        });
+    });
+    describe('Role Rights', () => {
+        test('should merge node rights object into toGraph (seperate nodeIds)', () => {
+            /* #region Test Bed Creation */
+            const nodeId1 = 'node1';
+            const nodeId2 = 'node2';
+            const role1 = 'role1';
+            const graphName1 = 'graph1';
+
+            const graph = {
+                rights: {
+                    [nodeId2]: { role: { [role1]: { read: true, admin: true } } },
+                },
+            };
+
+            const {
+                store: { mergeOverwriteGraph },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            mergeOverwriteGraph(graph, graphName1);
+
+            const expectedGraph = {
+                graph: {
+                    rights: {
+                        [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        [nodeId2]: { role: { [role1]: { read: true, admin: true } } },
+                    },
+                },
+            };
+            expect(onError).not.toBeCalled();
+            expect(getState()).toHaveProperty(graphName1, expectedGraph);
+            /* #endregion */
+        });
+        test('should overwrite node rights object in toGraph (overwrite rights)', () => {
+            /* #region Test Bed Creation */
+            const nodeId1 = 'node1';
+            const role1 = 'role1';
+            const graphName1 = 'graph1';
+
+            const graph = {
+                rights: {
+                    [nodeId1]: { role: { [role1]: { read: false, admin: true } } },
+                },
+            };
+
+            const {
+                store: { mergeOverwriteGraph },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            mergeOverwriteGraph(graph, graphName1);
+
+            const expectedGraph = {
+                graph: {
+                    rights: {
+                        [nodeId1]: {
+                            role: {
+                                [role1]: {
+                                    read: false,
+                                    admin: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            };
+            expect(onError).not.toBeCalled();
+            expect(getState()).toHaveProperty(graphName1, expectedGraph);
+            /* #endregion */
+        });
+        test('should dissoc node rights object marked with undefined', () => {
+            /* #region Test Bed Creation */
+            const nodeId1 = 'node1';
+            const role1 = 'role1';
+            const graphName1 = 'graph1';
+
+            const graph = {
+                rights: {
+                    [nodeId1]: undefined,
+                },
+            };
+
+            const {
+                store: { mergeOverwriteGraph },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true } } },
                         },
                     },
                 },

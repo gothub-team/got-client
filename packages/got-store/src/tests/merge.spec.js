@@ -1092,8 +1092,8 @@ describe('store:merge', () => {
         });
     });
 
-    describe('Rights', () => {
-        test('should merge rights into toGraph (seperate nodeIds)', () => {
+    describe('User Rights', () => {
+        test('should merge user rights into toGraph (seperate nodeIds)', () => {
             /* #region Test Bed Creation */
             const nodeId1 = 'node1';
             const nodeId2 = 'node2';
@@ -1138,7 +1138,7 @@ describe('store:merge', () => {
             expect(getState()).toHaveProperty(graphName1, expectedGraph);
             /* #endregion */
         });
-        test('should merge rights into toGraph (seperate users)', () => {
+        test('should merge user rights into toGraph (seperate users)', () => {
             /* #region Test Bed Creation */
             const nodeId1 = 'node1';
             const user1 = 'user1';
@@ -1187,7 +1187,7 @@ describe('store:merge', () => {
             expect(getState()).toHaveProperty(graphName1, expectedGraph);
             /* #endregion */
         });
-        test('should merge rights into toGraph (merge rights)', () => {
+        test('should merge user rights into toGraph (merge rights)', () => {
             /* #region Test Bed Creation */
             const nodeId1 = 'node1';
             const user1 = 'user1';
@@ -1238,7 +1238,7 @@ describe('store:merge', () => {
             expect(getState()).toHaveProperty(graphName1, expectedGraph);
             /* #endregion */
         });
-        test('should keep rights marked for deletion', () => {
+        test('should keep user rights marked for deletion', () => {
             /* #region Test Bed Creation */
             const nodeId1 = 'node1';
             const user1 = 'user1';
@@ -1276,6 +1276,205 @@ describe('store:merge', () => {
                         [nodeId1]: {
                             user: {
                                 [user1]: {
+                                    read: false,
+                                    write: true,
+                                    admin: false,
+                                },
+                            },
+                        },
+                    },
+                },
+            };
+            expect(onError).not.toBeCalled();
+            expect(getState()).toHaveProperty(graphName1, expectedGraph);
+            /* #endregion */
+        });
+    });
+
+    describe('Role Rights', () => {
+        test('should merge role rights into toGraph (seperate nodeIds)', () => {
+            /* #region Test Bed Creation */
+            const nodeId1 = 'node1';
+            const nodeId2 = 'node2';
+            const role1 = 'role1';
+            const graphName1 = 'graph1';
+            const graphName2 = 'graph2';
+
+            const {
+                store: { merge },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        },
+                    },
+                },
+                [graphName2]: {
+                    graph: {
+                        rights: {
+                            [nodeId2]: { role: { [role1]: { read: true, admin: true } } },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            merge(graphName2, graphName1); // merge stack2 into stack1
+
+            const expectedGraph = {
+                graph: {
+                    rights: {
+                        [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        [nodeId2]: { role: { [role1]: { read: true, admin: true } } },
+                    },
+                },
+            };
+            expect(onError).not.toBeCalled();
+            expect(getState()).toHaveProperty(graphName1, expectedGraph);
+            /* #endregion */
+        });
+        test('should merge role rights into toGraph (seperate roles)', () => {
+            /* #region Test Bed Creation */
+            const nodeId1 = 'node1';
+            const role1 = 'role1';
+            const role2 = 'role2';
+            const graphName1 = 'graph1';
+            const graphName2 = 'graph2';
+
+            const {
+                store: { merge },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        },
+                    },
+                },
+                [graphName2]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role2]: { read: true, admin: true } } },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            merge(graphName2, graphName1); // merge stack2 into stack1
+
+            const expectedGraph = {
+                graph: {
+                    rights: {
+                        [nodeId1]: {
+                            role: {
+                                [role1]: { read: true, write: true },
+                                [role2]: { read: true, admin: true },
+                            },
+                        },
+                    },
+                },
+            };
+            expect(onError).not.toBeCalled();
+            expect(getState()).toHaveProperty(graphName1, expectedGraph);
+            /* #endregion */
+        });
+        test('should merge role rights into toGraph (merge rights)', () => {
+            /* #region Test Bed Creation */
+            const nodeId1 = 'node1';
+            const role1 = 'role1';
+            const graphName1 = 'graph1';
+            const graphName2 = 'graph2';
+
+            const {
+                store: { merge },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        },
+                    },
+                },
+                [graphName2]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true, admin: true } } },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            merge(graphName2, graphName1); // merge stack2 into stack1
+
+            const expectedGraph = {
+                graph: {
+                    rights: {
+                        [nodeId1]: {
+                            role: {
+                                [role1]: {
+                                    read: true,
+                                    write: true,
+                                    admin: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            };
+            expect(onError).not.toBeCalled();
+            expect(getState()).toHaveProperty(graphName1, expectedGraph);
+            /* #endregion */
+        });
+        test('should keep role rights marked for deletion', () => {
+            /* #region Test Bed Creation */
+            const nodeId1 = 'node1';
+            const role1 = 'role1';
+            const graphName1 = 'graph1';
+            const graphName2 = 'graph2';
+
+            const {
+                store: { merge },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        },
+                    },
+                },
+                [graphName2]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: false, admin: false } } },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            merge(graphName2, graphName1); // merge stack2 into stack1
+
+            const expectedGraph = {
+                graph: {
+                    rights: {
+                        [nodeId1]: {
+                            role: {
+                                [role1]: {
                                     read: false,
                                     write: true,
                                     admin: false,
