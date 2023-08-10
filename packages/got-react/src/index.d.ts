@@ -20,6 +20,7 @@ import {
     GetMetadataFn,
     GetRightsFn,
     GetFilesFn,
+    SetRoleRightsFn,
 } from '@gothub-team/got-core';
 import { 
     GotStore, 
@@ -243,11 +244,17 @@ export declare interface UseGraphHookResult {
      */
     rights: GetRightsFn<NodeRightsView>;
     /**
-     * Sets the given right types for the given node and the given user email  in the
+     * Sets the given right types for the given node and the given user email in the
      * current graph. `true` will grant the right type, `false` will revoke the right
      * type whereas `undefined` will perform no action for that right type.
      */
     setRights: SetRightsFn,
+    /**
+     * Sets the given right types for the given node and the given role in the
+     * current graph. `true` will grant the right type, `false` will revoke the right
+     * type whereas `undefined` will perform no action for that right type.
+     */
+    setRoleRights: SetRoleRightsFn,
     /**
      * Inherits all rights from one node to another. When added to the local graph
      * no operation is performed. Only on push the Operation is executed hidden
