@@ -425,6 +425,131 @@ describe('store:Rights', () => {
         });
     });
 
+    describe('setRoleRights', () => {
+        test('should call `dispatch` with correct parameters', () => {
+            /* #region Test Bed Creation */
+            const nodeId = 'node1';
+            const graphName = 'graph1';
+            const role = 'role1';
+            const rights = {
+                read: true,
+                write: true,
+                admin: true,
+            };
+
+            const {
+                store: { setRoleRights },
+                dispatch,
+                onError,
+            } = createTestStore();
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            setRoleRights(graphName)(nodeId)(role, rights);
+
+            expect(dispatch).toBeCalledWith({
+                type: 'GOT/SET_ROLE_RIGHTS',
+                payload: {
+                    graphName,
+                    nodeId,
+                    role,
+                    rights,
+                },
+            });
+            expect(onError).not.toBeCalled();
+            /* #endregion */
+        });
+        test('should set/delete specified rights types for specified node', () => {
+            /* #region Test Bed Creation */
+            const role = 'role1';
+            const nodeId = 'node1';
+            const graphName1 = 'graph1';
+            const roleRights = {
+                read: false,
+                write: true,
+            };
+
+            const {
+                store: { setRoleRights },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId]: {
+                                role: {
+                                    [role]: {
+                                        read: true,
+                                        admin: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            setRoleRights(graphName1)(nodeId)(role, roleRights);
+
+            const expectedRights = {
+                read: false,
+                write: true,
+                admin: true,
+            };
+            expect(onError).not.toBeCalled();
+            expect(getState()).toHaveProperty([graphName1, 'graph', 'rights', nodeId, 'role', role], expectedRights);
+            /* #endregion */
+        });
+        test('should call `onError` in case of invalid input', () => {
+            /* #region Test Bed Creation */
+            const role = 'role1';
+            const nodeId = 'node1';
+            const graphName1 = 'graph1';
+            const roleRights = {
+                read: false,
+                write: true,
+            };
+
+            const {
+                initialState,
+                store: { setRoleRights },
+                getState,
+                dispatch,
+                onError,
+            } = createTestStore({});
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            setRoleRights(undefined)(nodeId)(role, roleRights);
+            expect(onError).toBeCalledWith(expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'graphName',
+            }));
+            setRoleRights(graphName1)(undefined)(role, roleRights);
+            expect(onError).toBeCalledWith(expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'nodeId',
+            }));
+            setRoleRights(graphName1)(nodeId)(undefined, roleRights);
+            expect(onError).toBeCalledWith(expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'role',
+            }));
+            setRoleRights(graphName1)(nodeId)(role, undefined);
+            expect(onError).toBeCalledWith(expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'rights',
+            }));
+
+            expect(getState()).toEqual(initialState);
+            expect(dispatch).not.toBeCalled();
+            /* #endregion */
+        });
+    });
+
     describe('inheritRights', () => {
         test('should call `dispatch` with correct parameters', () => {
             /* #region Test Bed Creation */

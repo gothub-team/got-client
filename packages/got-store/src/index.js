@@ -41,6 +41,7 @@ export const GOT_ACTION_REMOVE = 'GOT/REMOVE';
 export const GOT_ACTION_ASSOC = 'GOT/ASSOC';
 export const GOT_ACTION_DISSOC = 'GOT/DISSOC';
 export const GOT_ACTION_SET_RIGHTS = 'GOT/SET_RIGHTS';
+export const GOT_ACTION_SET_ROLE_RIGHTS = 'GOT/SET_ROLE_RIGHTS';
 export const GOT_ACTION_INHERIT_RIGHTS = 'GOT/INHERIT_RIGHTS';
 export const GOT_ACTION_SET_FILE = 'GOT/SET_FILE';
 export const GOT_ACTION_REMOVE_FILE = 'GOT/REMOVE_FILE';
@@ -235,6 +236,17 @@ export const createStore = ({
                 graphName,
                 nodeId,
                 email,
+                rights,
+            },
+        });
+    };
+    const setRoleRights = graphName => nodeId => (role, rights) => {
+        dispatch({
+            type: GOT_ACTION_SET_ROLE_RIGHTS,
+            payload: {
+                graphName,
+                nodeId,
+                role,
                 rights,
             },
         });
@@ -655,6 +667,17 @@ export const createStore = ({
                 return setRights(graphName)(nodeId)(email, rights);
             }
         },
+        setRoleRights: graphName => nodeId => (role, rights) => {
+            if (validateError({
+                dispatch,
+                graphName,
+                nodeId,
+                role,
+                rights,
+            })) {
+                return setRoleRights(graphName)(nodeId)(role, rights);
+            }
+        },
         inheritRights: graphName => nodeId => fromId => {
             if (validateError({
                 dispatch,
@@ -864,6 +887,12 @@ export const reducers = {
         email,
         rights,
     }) => overPath([graphName, 'graph', 'rights', nodeId, 'user', email], mergeLeft(rights)),
+    [GOT_ACTION_SET_ROLE_RIGHTS]: ({
+        graphName,
+        nodeId,
+        role,
+        rights,
+    }) => overPath([graphName, 'graph', 'rights', nodeId, 'role', role], mergeLeft(rights)),
     [GOT_ACTION_INHERIT_RIGHTS]: ({
         graphName,
         nodeId,
