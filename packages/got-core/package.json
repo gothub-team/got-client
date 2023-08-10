@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-core",
-    "version": "0.21.34",
+    "version": "0.21.35",
     "description": "Core graph functions and type declarations.",
     "main": "dist/cjs/index.js",
     "types": "src/index.d.ts",
