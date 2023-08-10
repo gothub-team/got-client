@@ -10,6 +10,7 @@ import {
     reduceObj,
     useResult,
     getPathOr,
+    mergeWith,
 } from '@gothub-team/got-util';
 
 export const isEdgeTypesString = R.compose(
@@ -223,20 +224,22 @@ export const pickMapGraph = R.curry((fnMap, view, graph) => {
 
 export const filterGraph = pickMapGraph(R.identity);
 
-export const selectPathFromStack = R.curry((path, stack, fnMergeLeft, state) => {
+export const selectPathFromStack = (path, stack, fnMergeLeft, state) => {
     if (!path || !stack || !fnMergeLeft || !state) {
         return undefined;
     }
 
     let acc;
-    stack.forEach(graphName => {
+    // TODO: if we went from the back, we could stop when we found a "stopper" value like null or false (overwrite a previous deletion)
+    for (let i = 0; i < stack.length; i += 1) {
+        const graphName = stack[i];
         const val = getPath([graphName, ...path], state);
         if (val !== undefined) {
             acc = fnMergeLeft(val)(acc);
         }
-    });
+    }
     return acc;
-});
+};
 
 export const selectEdgeToIds = graph => (fromType, nodeId, toType, { reverse } = {}) => reverse
     ? R.pathOr({}, ['index', 'reverseEdges', toType, nodeId, fromType], graph)
@@ -286,3 +289,31 @@ export const createSuccessAndErrorGraphs = (graph, apiResult) => reduceObj([
             ),
         )],
 ])(apiResult);
+
+const mergeEdgesLeft = mergeWith(mergeLeft);
+export const selectEdgeFromStack = (fromType, from, toType, stack, state) => {
+    if (!state) { return undefined; }
+    let acc;
+    for (let i = 0; i < stack.length; i += 1) {
+        const graphName = stack[i];
+        const val = state[graphName]?.graph?.edges?.[fromType]?.[from]?.[toType];
+        if (val !== undefined) {
+            acc = mergeEdgesLeft(val)(acc);
+        }
+    }
+    return acc;
+};
+
+const mergeNodeLeft = mergeLeft;
+export const selectNodeFromStack = (nodeId, stack, state) => {
+    if (!state) { return undefined; }
+    let acc;
+    for (let i = 0; i < stack.length; i += 1) {
+        const graphName = stack[i];
+        const val = state[graphName]?.graph?.nodes?.[nodeId];
+        if (val !== undefined) {
+            acc = mergeNodeLeft(val)(acc);
+        }
+    }
+    return acc;
+};

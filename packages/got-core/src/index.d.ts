@@ -659,11 +659,11 @@ export declare const pickMapGraph: (fnMap: (object: any, path: string[]) => any)
 export declare const filterGraph: (view: View) => (graph: Graph) => Graph;
 
 /**
- * Curried function to select an Object at a given path in a given stack from the state.
+ * Selects an Object at a given path in a given stack from the state.
  * Elements found at the given path in every layer of the stack will be merged with fnMergeLeft,
  * which merges element prioritizing data of the left input.
  */
-export declare const selectPathFromStack: (path: string[]) => (stack: string[]) => (fnMergeLeft: (left: any, right: any) => any) => (state: State) => any;
+export declare const selectPathFromStack: (path: string[], stack: string[], fnMergeLeft: (left: any, right: any) => any, state: State) => any;
 
 /**
  * Selects a map of toIds and their edge metadata from a given graph.
@@ -674,3 +674,15 @@ export declare const selectEdgeIds: (graph: Graph) => GetEdgeToIdsFn;
  * Splits the given pushedGraph into a success and an error graph using the given apiResult.
  */
 export declare const createSuccessAndErrorGraphs: (pushedGraph: Graph, apiResult: PushResult) => [Graph, ErrorGraph];
+
+/** 
+ * Selects the nodes edges view in a given stack from the state.
+ * Elements found at the given path in every layer of the stack will be merged prioritizing data higher up the stack.
+ */
+export declare const selectEdgeFromStack = (fromType: string, from: string, toType: string, stack: string[], state: State) => NodeEdgesView;
+
+/** 
+ * Selects a node in a given stack from the state.
+ * Elements found at the given path in every layer of the stack will be merged prioritizing data higher up the stack.
+ */
+export declare const selectNodeFromStack = (nodeId: string, stack: string[], state: State) => any;

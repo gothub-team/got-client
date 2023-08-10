@@ -9,17 +9,13 @@ import {
     mergeWith,
     useSubscriber,
     useResult,
-    assocPathMutate,
 } from '@gothub-team/got-util';
 import {
     createSuccessAndErrorGraphs,
     selectPathFromStack,
     pickMapGraph,
-    doViewGraph,
-    includeNode,
-    includeRights,
-    includeFiles,
-    includeMetadata,
+    selectNodeFromStack,
+    selectEdgeFromStack,
     mergeGraphsRight,
 } from '@gothub-team/got-core';
 import {
@@ -103,7 +99,7 @@ export const createRawStore = ({
         });
     };
 
-    const selectNode = (stack, nodeId, state) => selectPathFromStack(['graph', 'nodes', nodeId], stack, mergeLeft, state);
+    const selectNode = (stack, nodeId, state) => selectNodeFromStack(nodeId, stack, state);
     const getNode = (stack, nodeId) => select(state => selectNode(stack, nodeId, state));
     const setNode = (graphName, node) => {
         dispatch({
@@ -123,25 +119,25 @@ export const createRawStore = ({
 
     const selectEdge = (stack, edgeTypes, fromId, state) => {
         const [fromType, toType] = R.split('/', edgeTypes);
-        return R.pickBy(
-            RA.isTruthy,
-            selectPathFromStack(['graph', 'edges', fromType, fromId, toType], stack, mergeWith(mergeLeft), state),
-        );
+        const edgeIds = selectEdgeFromStack(fromType, fromId, toType, stack, state);
+
+        return R.pickBy(RA.isTruthy, edgeIds);
     };
     const getEdge = (stack, edgeTypes, fromId) => select(state => selectEdge(stack, edgeTypes, fromId, state));
 
     const selectReverseEdge = (stack, edgeTypes, toId, state) => {
         const [fromType, toType] = R.split('/', edgeTypes);
         const [getResult, setResult] = useResult({});
+
+        const edgeIds = selectPathFromStack(['graph', 'index', 'reverseEdges', toType, toId, fromType], stack, mergeWith(mergeLeft), state);
         R.compose(
-            R.mapObjIndexed((val, fromId) => {
+            R.forEachObjIndexed((val, fromId) => {
                 if (val) {
                     const metadata = selectMetadata(stack, edgeTypes, fromId, toId, state);
                     metadata && setResult(R.assoc(fromId, metadata));
                 }
             }),
-            selectPathFromStack(['graph', 'index', 'reverseEdges', toType, toId, fromType], stack, mergeWith(mergeLeft)),
-        )(state);
+        )(edgeIds);
         return getResult();
     };
     const getReverseEdge = (stack, edgeTypes, toId) => select(state => selectReverseEdge(stack, edgeTypes, toId, state));
@@ -376,32 +372,69 @@ export const createRawStore = ({
         });
     };
     const selectView = (stack, view, state) => {
-        const [getViewTree, , overViewTree] = useResult({});
-        const stackGetEdgeToIds = (fromType, nodeId, toType, { reverse } = {}) => reverse
-            ? selectReverseEdge(stack, `${fromType}/${toType}`, nodeId, state)
-            : selectEdge(stack, `${fromType}/${toType}`, nodeId, state);
+        const queryNode = (queryObj, nodeId, metadata) => {
+            const bag = { nodeId };
+            const { include } = queryObj;
 
-        doViewGraph({
-            nodes: (queryObj, nodeId, edgePath, nodeViewPath, metadata) => {
-                const bag = { nodeId };
-                if (includeMetadata(queryObj) && edgePath) {
-                    bag.metadata = metadata;
-                }
-                if (includeNode(queryObj)) {
-                    bag.node = selectNode(stack, nodeId, state);
-                }
-                if (includeRights(queryObj)) {
-                    bag.rights = selectRights(stack, nodeId, state);
-                }
-                if (includeFiles(queryObj)) {
-                    bag.files = selectFiles(stack, nodeId, state);
-                }
+            // include node bag info
+            if (include?.metadata && metadata) {
+                bag.metadata = metadata;
+            }
+            if (include?.node) {
+                bag.node = selectNode(stack, nodeId, state);
+            }
+            if (include?.rights) {
+                bag.rights = selectRights(stack, nodeId, state);
+            }
+            if (include?.files) {
+                bag.files = selectFiles(stack, nodeId, state);
+            }
 
-                overViewTree(assocPathMutate(nodeViewPath, bag));
-            },
-        }, view, stackGetEdgeToIds);
+            // include edges
+            const { edges } = queryObj;
+            if (edges) {
+                const keys = Object.keys(edges);
+                for (let i = 0; i < keys.length; i += 1) {
+                    const edgeTypes = keys[i];
+                    const edgeAlias = edges[edgeTypes].as ?? edgeTypes;
 
-        return getViewTree();
+                    bag[edgeAlias] = queryEdge(edges[edgeTypes], edgeTypes, nodeId);
+                }
+            }
+
+            return bag;
+        };
+
+        const queryEdge = (queryObj, edgeTypes, nodeId) => {
+            const [fromType, toType] = R.split('/', edgeTypes);
+            const edgeIds = queryObj.reverse ? selectPathFromStack(['graph', 'index', 'reverseEdges', toType, nodeId, fromType], stack, mergeWith(mergeLeft), state) : selectEdgeFromStack(fromType, nodeId, toType, stack, state);
+
+            if (!edgeIds) return;
+
+            const edgeBag = {};
+            const keys = Object.keys(edgeIds);
+            const values = Object.values(edgeIds);
+            for (let i = 0; i < keys.length; i += 1) {
+                const toId = keys[i];
+                const metadata = queryObj.reverse ? selectMetadata(stack, edgeTypes, toId, nodeId, state) : values[i];
+                if (!metadata) return;
+
+                if (metadata) {
+                    edgeBag[toId] = queryNode(queryObj, toId, metadata);
+                }
+            }
+
+            return edgeBag;
+        };
+
+        const result = {};
+        R.forEachObjIndexed((nestedQueryObj, nodeId) => {
+            const nodeAlias = nestedQueryObj.as ?? nodeId;
+
+            result[nodeAlias] = queryNode(nestedQueryObj, nodeId);
+        }, view);
+
+        return result;
     };
     const getView = (stack, view) => select(state => selectView(stack, view, state));
 
