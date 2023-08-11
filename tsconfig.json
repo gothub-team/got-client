@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "declaration": true,
+        "strict": true
+    },
+    "include": [".eslintrc.cjs", "src", "declare", "packages"],
+    "exclude": ["node_modules", "dist"]
+}
