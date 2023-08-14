@@ -6,8 +6,8 @@ build({
     target: 'node16.0',
     platform: 'node',
     format: 'cjs',
-    entryPoints: ['./src/index.ts'],
-    outfile: './dist/cjs/index.cjs',
+    entryPoints: ['./src/index.ts', './src/persist.ts'],
+    outdir: './dist/cjs',
     plugins: [
         dtsPlugin({
             outDir: './dist/types',
