@@ -1,16 +1,30 @@
-import * as R from 'ramda';
 import { createApi } from '@gothub-team/got-api';
-import { createStore } from '@gothub-team/got-store';
+import { createStore, gotReducer } from '@gothub-team/got-store';
 import { getLocalStorageSessionStore } from './util.js';
 import { configureCreateGraph } from './createGraph.js';
 import { configureUseGraph } from './useGraph.js';
+import { atom as createAtom } from '@gothub-team/got-atom';
 
 export { gotReducer } from '@gothub-team/got-store';
 export { setFnEquals } from './useGraph.js';
 
-export const createHooks = ({ store, baseState = R.identity }) => {
+export const createGotAtom = () => {
+    const gotAtom = createAtom({});
+
+    const dispatch = (action) => {
+        gotAtom.set(gotReducer(gotAtom.get(), action));
+    };
+
+    return {
+        ...gotAtom,
+        dispatch,
+        getState: gotAtom.get,
+    };
+};
+
+export const createHooks = ({ atom, store }) => {
     const createGraph = configureCreateGraph(store);
-    const useGraph = configureUseGraph({ store, baseState, createGraph });
+    const useGraph = configureUseGraph({ atom, store, createGraph });
 
     return {
         createGraph,
@@ -21,7 +35,6 @@ export const createHooks = ({ store, baseState = R.identity }) => {
 export const setup = ({
     host, // string
     reduxStore, // Redux Store
-    baseState, // string
     onError = console.error,
     onWarn = console.warn,
     adminMode = false,
@@ -33,24 +46,23 @@ export const setup = ({
         sessionStore: getLocalStorageSessionStore(`got-auth_${host}`),
         sessionExpireTime,
     });
+    const atom = createGotAtom();
+
     const store = createStore({
         api,
-        dispatch: reduxStore.dispatch,
-        select: selector => baseState
-            ? selector(R.propOr({}, baseState, reduxStore.getState()))
-            : selector(reduxStore.getState()),
+        dispatch: atom.dispatch,
+        select: (selector) => selector(reduxStore.getState()),
         onError,
         onWarn,
     });
-    const {
-        useGraph,
-    } = createHooks({
+
+    const { useGraph, createGraph } = createHooks({
+        atom,
         store,
-        baseState: baseState
-            ? R.prop(baseState)
-            : R.identity,
     });
+
     return {
+        createGraph,
         useGraph,
         store,
         api,

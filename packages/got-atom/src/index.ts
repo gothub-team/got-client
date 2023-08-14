@@ -83,3 +83,55 @@ export const useAtom = <T, R = T>(
 
     return localValue.current;
 };
+
+/**
+ * Hook to subscribe to an atom. Will update when the atom's value changes.
+ * Intakes a selector function to select a value from the atom's state to be checked for equality and returned.
+ * This is a version of {@link useAtom} that will batch updates to the atom's value and update after using setTimeout.
+ * @typeParam T The type of the value that the atom holds.
+ * @typeParam R The type of the value that the hook returns.
+ * @param atom The atom to be subscribed to.
+ * @param selector A function that receives the atom's value and returns a value of type R.
+ */
+export const useAtomAsync = <T, R = T>(
+    { value, subscribe, unsubscribe }: Atom<T>,
+    selector: Selector<T, R> = (s) => s as unknown as R,
+    fnEquals: (a: R | undefined, b: R) => boolean = equals,
+) => {
+    const localValue = useRef<R | undefined>();
+    const scheduledForUpdate = useRef(false);
+    const [, forceRerender] = useReducer(() => ({}), {});
+
+    const update = (rerender: boolean = true) => {
+        console.log('update');
+        scheduledForUpdate.current = false;
+        if (!selectorRef.current) throw new Error('Selector is undefined');
+
+        const updatedValue = selectorRef.current(value.current);
+        if (!fnEquals(localValue.current, updatedValue)) {
+            localValue.current = updatedValue;
+            rerender && forceRerender();
+        }
+    };
+
+    const selectorRef = useRef<Selector<T, R> | undefined>();
+    if (selector !== selectorRef.current) {
+        selectorRef.current = selector;
+        update(false);
+    }
+
+    useEffect(() => {
+        const subscriber = {
+            next: () => {
+                if (!scheduledForUpdate.current) {
+                    scheduledForUpdate.current = true;
+                    setTimeout(update, 0);
+                }
+            },
+        };
+        subscribe(subscriber);
+        return () => unsubscribe(subscriber);
+    }, [subscribe, unsubscribe]);
+
+    return localValue.current;
+};

@@ -36,6 +36,7 @@
         "@babel/cli": "^7.17.10",
         "@babel/core": "^7.17.10",
         "@babel/preset-env": "^7.17.10",
+        "@gothub-team/got-atom": "workspace:*",
         "@gothub-team/got-core": "workspace:*",
         "@gothub-team/got-util": "workspace:*",
         "@testing-library/jest-dom": "5.16.4",

@@ -1,15 +1,14 @@
-/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from '@gothub-team/got-store';
-import { combineReducers, createStore as createReduxStore } from 'redux';
 import * as R from 'ramda';
 import '@testing-library/jest-dom';
 import { generateNewRandom } from '@gothub-team/got-util';
-import { gotReducer, createHooks } from '../index.js';
+import { createHooks } from '../index.js';
+import { createGotAtom } from '../index.js';
 
-export const delay = ms => new Promise(resolve => setTimeout(() => resolve(ms), ms));
+export const delay = (ms) => new Promise((resolve) => setTimeout(() => resolve(ms), ms));
 
 export const testReducer = (state = 0, action) => {
     if (action.type === 'TEST_ACTION') {
@@ -20,60 +19,49 @@ export const testReducer = (state = 0, action) => {
 };
 
 export const getMockSetup = () => {
-    const rootReducer = combineReducers({
-        got: gotReducer,
-        test: testReducer,
-    });
-    const reduxStore = createReduxStore(
-        rootReducer,
-    );
+    const atom = createGotAtom();
 
     const store = createStore({
-        dispatch: reduxStore.dispatch,
-        select: selector => selector(R.propOr({}, 'got', reduxStore.getState())),
+        dispatch: atom.dispatch,
+        select: (selector) => selector(atom.getState()),
         onWarn: () => {},
     });
 
-    const mockStore = R.map(fn => jest.fn(fn), store);
+    const mockStore = R.map((fn) => jest.fn(fn), store);
 
     const { useGraph } = createHooks({
-        baseState: R.propOr({}, 'got'),
+        atom,
         store: mockStore,
     });
 
     return {
-        reduxStore,
+        atom,
         store,
         mockStore,
         useGraph,
     };
 };
 
-export const createTestComponent = _Component => {
+export const createTestComponent = (_Component) => {
     const renderPayloads = [];
 
-    const onRender = payload => {
+    const onRender = (payload) => {
         renderPayloads.push(payload);
     };
 
     const mockSetup = getMockSetup();
-    const { reduxStore, useGraph, store } = mockSetup;
+    const { useGraph, store } = mockSetup;
 
     const Component = React.memo(_Component);
 
     const TestComponent = ({ ...props }) => (
-        <Provider store={reduxStore}>
-            <Component
-                useGraph={useGraph}
-                onRender={onRender}
-                gotStore={store}
-                {...props}
-            />
-        </Provider>
+        <Component useGraph={useGraph} onRender={onRender} gotStore={store} {...props} />
     );
 
     return {
-        TestComponent, ...mockSetup, renderPayloads,
+        TestComponent,
+        ...mockSetup,
+        renderPayloads,
     };
 };
 
