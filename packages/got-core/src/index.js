@@ -2,19 +2,16 @@
 import * as R from 'ramda';
 import * as RA from 'ramda-adjunct';
 import {
-    forEachCondObj,
     getPath,
     mergeDeepLeft,
     mergeLeft,
-    overPath,
     reduceObj,
     useResult,
     getPathOr,
     mergeWith,
     assocPathMutate,
+    forEachObjDepth, dissocPathMutate,
 } from '@gothub-team/got-util';
-import { forEachObjDepth } from '@gothub-team/got-util';
-import { dissocPathMutate } from '@gothub-team/got-util';
 
 export const isEdgeTypesString = R.compose(
     ([fromType, toType]) => RA.lengthGt(0, fromType) && RA.lengthGt(0, toType),
@@ -34,12 +31,12 @@ export const isReverseEdgesPath = R.pipe(R.nth(1), R.equals('reverseEdges'));
 export const isReverseEdgesIndexPath = R.allPass([RA.lengthEq(6), isIndexPath, isReverseEdgesPath]);
 
 const mergeObjRight = (depth, fnMerge) => (left, right) => {
-    if(!right) return left;
+    if (!right) return left;
 
     const [getResult, , overResult] = useResult(left ?? {});
     forEachObjDepth(right, (valRight, path) => {
         // console.log(valRight, path);
-        if(typeof valRight === 'undefined'){
+        if (typeof valRight === 'undefined') {
             overResult(assocPathMutate(path, undefined));
         } else {
             const valLeft = getPath(path, left);
@@ -58,8 +55,8 @@ const mergeFilesRight = mergeObjRight(1, mergeLeft);
 const mergeIndexRight = mergeObjRight(1, mergeDeepLeft);
 
 export const mergeGraphsRight = R.curry((left, right) => {
-    if(!right) return left;
-    if(!left) return right;
+    if (!right) return left;
+    if (!left) return right;
 
     const [getResult, setResult] = useResult(left);
 
@@ -68,7 +65,7 @@ export const mergeGraphsRight = R.curry((left, right) => {
 
     const edges = mergeEdgesRight(left?.edges, right?.edges);
     edges && setResult(R.assocPath(['edges'], edges));
-    
+
     const rights = mergeRightsRight(left?.rights, right?.rights);
     rights && setResult(R.assocPath(['rights'], rights));
 
@@ -77,28 +74,28 @@ export const mergeGraphsRight = R.curry((left, right) => {
 
     const index = mergeIndexRight(left?.index, right?.index);
     index && setResult(R.assocPath(['index'], index));
-    
+
     return getResult();
 });
 export const mergeGraphsLeft = R.flip(mergeGraphsRight);
 
-const overwriteObjRight = (depth) => (left, right) => {
-    if(!right) return left;
+const overwriteObjRight = depth => (left, right) => {
+    if (!right) return left;
 
     const [getResult, , overResult] = useResult(left ?? {});
     forEachObjDepth(right, (valRight, path) => {
-        if(typeof valRight === 'undefined'){
+        if (typeof valRight === 'undefined') {
             overResult(dissocPathMutate(path));
             return;
         }
 
-        if(valRight === false || typeof valRight === 'object'){
+        if (valRight === false || typeof valRight === 'object') {
             overResult(assocPathMutate(path, valRight));
             return;
         }
 
         const valLeft = getPath(path, left);
-        if (!(valRight === true && typeof valLeft === 'object')){
+        if (!(valRight === true && typeof valLeft === 'object')) {
             overResult(assocPathMutate(path, valRight));
             return;
         }
@@ -116,8 +113,8 @@ const overwriteFilesRight = overwriteObjRight(1);
 const overwriteIndexRight = overwriteObjRight(5);
 
 export const mergeOverwriteGraphsRight = R.curry((left, right) => {
-    if(!right) return left;
-    if(!left) return right;
+    if (!right) return left;
+    if (!left) return right;
 
     const [getResult, setResult] = useResult(left);
 
@@ -126,7 +123,7 @@ export const mergeOverwriteGraphsRight = R.curry((left, right) => {
 
     const edges = overwriteEdgesRight(left?.edges, right?.edges);
     edges && setResult(R.assocPath(['edges'], edges));
-    
+
     const rights = overwriteRightsRight(left?.rights, right?.rights);
     rights && setResult(R.assocPath(['rights'], rights));
 
@@ -135,7 +132,7 @@ export const mergeOverwriteGraphsRight = R.curry((left, right) => {
 
     const index = overwriteIndexRight(left?.index, right?.index);
     index && setResult(R.assocPath(['index'], index));
-    
+
     return getResult();
 });
 export const mergeOverwriteGraphsLeft = R.flip(mergeOverwriteGraphsRight);
@@ -164,36 +161,30 @@ export const doViewGraph = R.curry(({ nodes: fnNodes, edges: fnEdges }, view, fn
             fnEdges && fnEdges(nestedQueryObj, nodeId, edgeTypes, edgeViewPath);
             if (nestedQueryObj.reverse) {
                 return R.compose(
-                    ([fromType, toType]) =>
-                        R.compose(
-                            R.mapObjIndexed((toMetadata, fromId) =>
-                                _INNER_RECURSION(
-                                    nestedQueryObj,
-                                    fromId,
-                                    ['edges', fromType, fromId, toType, nodeId],
-                                    edgeViewPath,
-                                    toMetadata,
-                                ),
-                            ),
-                            fnGetEdgeToIds,
-                        )(fromType, nodeId, toType, { reverse: true }),
+                    ([fromType, toType]) => R.compose(
+                        R.mapObjIndexed((toMetadata, fromId) => _INNER_RECURSION(
+                            nestedQueryObj,
+                            fromId,
+                            ['edges', fromType, fromId, toType, nodeId],
+                            edgeViewPath,
+                            toMetadata,
+                        )),
+                        fnGetEdgeToIds,
+                    )(fromType, nodeId, toType, { reverse: true }),
                     R.split('/'),
                 )(edgeTypes);
             }
             return R.compose(
-                ([fromType, toType]) =>
-                    R.compose(
-                        R.mapObjIndexed((toMetadata, toId) =>
-                            _INNER_RECURSION(
-                                nestedQueryObj,
-                                toId,
-                                ['edges', fromType, nodeId, toType, toId],
-                                edgeViewPath,
-                                toMetadata,
-                            ),
-                        ),
-                        fnGetEdgeToIds,
-                    )(fromType, nodeId, toType),
+                ([fromType, toType]) => R.compose(
+                    R.mapObjIndexed((toMetadata, toId) => _INNER_RECURSION(
+                        nestedQueryObj,
+                        toId,
+                        ['edges', fromType, nodeId, toType, toId],
+                        edgeViewPath,
+                        toMetadata,
+                    )),
+                    fnGetEdgeToIds,
+                )(fromType, nodeId, toType),
                 R.split('/'),
             )(edgeTypes);
         })(R.propOr({}, 'edges', queryObj));
@@ -219,8 +210,8 @@ export const pickMapGraph = R.curry((fnMap, view, graph) => {
                 const files = includeFiles(queryObj) ? R.path(filesPath, graph) : undefined;
 
                 RA.isNotUndefined(metadata) && setResult(R.assocPath(edgePath, fnMap(metadata, edgePath)));
-                RA.isNotUndefined(reverseEdge) &&
-                    setResult(R.assocPath(reverseEdgePath, fnMap(reverseEdge, reverseEdgePath)));
+                RA.isNotUndefined(reverseEdge)
+                    && setResult(R.assocPath(reverseEdgePath, fnMap(reverseEdge, reverseEdgePath)));
                 RA.isNotUndefined(node) && setResult(R.assocPath(nodePath, fnMap(node, nodePath)));
                 RA.isNotUndefined(rights) && setResult(R.assocPath(rightsPath, fnMap(rights, rightsPath)));
                 RA.isNotUndefined(files) && setResult(R.assocPath(filesPath, fnMap(files, filesPath)));
@@ -251,46 +242,40 @@ export const selectPathFromStack = (path, stack, fnMergeLeft, state) => {
     return acc;
 };
 
-export const selectEdgeToIds =
-    (graph) =>
-    (fromType, nodeId, toType, { reverse } = {}) =>
-        reverse
-            ? R.pathOr({}, ['index', 'reverseEdges', toType, nodeId, fromType], graph)
-            : R.pathOr({}, ['edges', fromType, nodeId, toType], graph);
+export const selectEdgeToIds = graph => (fromType, nodeId, toType, { reverse } = {}) => reverse
+    ? R.pathOr({}, ['index', 'reverseEdges', toType, nodeId, fromType], graph)
+    : R.pathOr({}, ['edges', fromType, nodeId, toType], graph);
 
-export const createSuccessAndErrorGraphs = (graph, apiResult) =>
-    reduceObj([
-        [
-            R.propEq('statusCode', 200),
-            (val, path) =>
-                R.compose(
-                    R.when(R.always(R.head(path) === 'edges'), (acc) => {
-                        const [, fromType, fromId, toType, toId] = path;
-                        const reverseEdgesPath = ['index', 'reverseEdges', toType, toId, fromType, fromId];
-                        return R.when(
-                            R.always(R.hasPath(reverseEdgesPath, graph)),
-                            R.assocPath(reverseEdgesPath, R.path(reverseEdgesPath, graph)),
-                        )(acc);
-                    }),
-                    R.assocPath(path, R.path(path, graph)),
-                ),
-        ],
-        [
-            R.propEq('statusCode', 403),
-            (val, path) =>
-                R.compose(
-                    R.when(R.always(R.head(path) === 'edges'), (acc) => {
-                        const [, fromType, fromId, toType, toId] = path;
-                        const reverseEdgesPath = ['index', 'reverseEdges', toType, toId, fromType, fromId];
-                        return R.when(
-                            R.always(R.hasPath(reverseEdgesPath, graph)),
-                            R.assocPath(reverseEdgesPath, R.assoc('element', R.path(reverseEdgesPath, graph), val)),
-                        )(acc);
-                    }),
-                    R.assocPath(path, R.assoc('element', R.path(path, graph), val)),
-                ),
-        ],
-    ])(apiResult);
+export const createSuccessAndErrorGraphs = (graph, apiResult) => reduceObj([
+    [
+        R.propEq('statusCode', 200),
+        (val, path) => R.compose(
+            R.when(R.always(R.head(path) === 'edges'), acc => {
+                const [, fromType, fromId, toType, toId] = path;
+                const reverseEdgesPath = ['index', 'reverseEdges', toType, toId, fromType, fromId];
+                return R.when(
+                    R.always(R.hasPath(reverseEdgesPath, graph)),
+                    R.assocPath(reverseEdgesPath, R.path(reverseEdgesPath, graph)),
+                )(acc);
+            }),
+            R.assocPath(path, R.path(path, graph)),
+        ),
+    ],
+    [
+        R.propEq('statusCode', 403),
+        (val, path) => R.compose(
+            R.when(R.always(R.head(path) === 'edges'), acc => {
+                const [, fromType, fromId, toType, toId] = path;
+                const reverseEdgesPath = ['index', 'reverseEdges', toType, toId, fromType, fromId];
+                return R.when(
+                    R.always(R.hasPath(reverseEdgesPath, graph)),
+                    R.assocPath(reverseEdgesPath, R.assoc('element', R.path(reverseEdgesPath, graph), val)),
+                )(acc);
+            }),
+            R.assocPath(path, R.assoc('element', R.path(path, graph), val)),
+        ),
+    ],
+])(apiResult);
 
 const mergeEdgesLeft = mergeWith(mergeLeft);
 export const selectEdgeFromStack = (fromType, from, toType, stack, state) => {
