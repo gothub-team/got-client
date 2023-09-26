@@ -247,6 +247,7 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
         const dissoc = store.dissoc(currentGraphName);
         const rights = store.getRights(...stack);
         const setRights = store.setRights(currentGraphName);
+        const setRoleRights = store.setRoleRights(currentGraphName);
         const inheritRights = store.inheritRights(currentGraphName);
         const files = store.getFiles(...stack);
         const setFile = store.setFile(currentGraphName);
@@ -278,6 +279,7 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
             dissoc,
             rights,
             setRights,
+            setRoleRights,
             inheritRights,
             files,
             setFile,

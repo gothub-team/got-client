@@ -184,6 +184,13 @@ const validators = {
         }
         return true;
     },
+    role: (value, onError) => {
+        if (!value) {
+            onError && onError(new MissingParamError('role', 'todo123'));
+            return false;
+        }
+        return true;
+    },
     rights: (value, onError) => {
         if (!value) {
             onError && onError(new MissingParamError('rights', rightsExample));

@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-store",
-    "version": "0.21.33",
+    "version": "0.21.35",
     "description": "Functions to interact with local (in-memory) got graphs and sync them with remote got providers.",
     "main": "dist/cjs/index.js",
     "types": "src/index.d.ts",

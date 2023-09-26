@@ -3,7 +3,7 @@ import { createTestStore } from './shared.js';
 
 describe('store:Rights', () => {
     describe('selectRights', () => {
-        test('should get rights for the specified node', () => {
+        test('should get user rights for the specified node', () => {
             /* #region Test Bed Creation */
             const nodeId = 'node1';
             const user = 'user1';
@@ -39,7 +39,7 @@ describe('store:Rights', () => {
             expect(output).toEqual(nodeRights);
             /* #endregion */
         });
-        test('should stack rights correctly (merge rights)', () => {
+        test('should stack user rights correctly (merge rights)', () => {
             /* #region Test Bed Creation */
             const nodeId = 'node1';
             const user = 'user1';
@@ -100,7 +100,7 @@ describe('store:Rights', () => {
             expect(output).toEqual(expectedRights);
             /* #endregion */
         });
-        test('should stack rights correctly (merge users)', () => {
+        test('should stack user rights correctly (merge users)', () => {
             /* #region Test Bed Creation */
             const nodeId = 'node1';
             const user1 = 'user1';
@@ -165,7 +165,7 @@ describe('store:Rights', () => {
             expect(output).toEqual(expectedRights);
             /* #endregion */
         });
-        test('should not override rights with not existing rights from higher stacked graphs', () => {
+        test('should not override user rights with not existing rights from higher stacked graphs', () => {
             /* #region Test Bed Creation */
             const nodeId = 'node1';
             const user = 'user1';
@@ -174,6 +174,212 @@ describe('store:Rights', () => {
             const nodeRights1 = {
                 user: {
                     [user]: {
+                        read: true,
+                        write: true,
+                    },
+                },
+            };
+
+            const {
+                store: { selectRights },
+                select,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId]: nodeRights1,
+                        },
+                    },
+                },
+                [graphName2]: {
+                    graph: {
+                        rights: {
+                            [nodeId]: {},
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            const output = select(selectRights(graphName1, graphName2)(nodeId));
+
+            expect(onError).not.toBeCalled();
+            expect(output).toEqual(nodeRights1);
+            /* #endregion */
+        });
+        test('should get role rights for the specified node', () => {
+            /* #region Test Bed Creation */
+            const nodeId = 'node1';
+            const role = 'role1';
+            const graphName1 = 'graph1';
+            const nodeRights = {
+                role: {
+                    [role]: {
+                        read: true,
+                        write: true,
+                    },
+                },
+            };
+
+            const {
+                store: { selectRights },
+                select,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId]: nodeRights,
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            const output = select(selectRights(graphName1)(nodeId));
+
+            expect(onError).not.toBeCalled();
+            expect(output).toEqual(nodeRights);
+            /* #endregion */
+        });
+        test('should stack role rights correctly (merge rights)', () => {
+            /* #region Test Bed Creation */
+            const nodeId = 'node1';
+            const role = 'role1';
+            const graphName1 = 'graph1';
+            const graphName2 = 'graph2';
+            const nodeRights1 = {
+                role: {
+                    [role]: {
+                        read: true,
+                        write: true,
+                    },
+                },
+            };
+            const nodeRights2 = {
+                role: {
+                    [role]: {
+                        write: false,
+                        admin: true,
+                    },
+                },
+            };
+
+            const {
+                store: { selectRights },
+                select,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId]: nodeRights1,
+                        },
+                    },
+                },
+                [graphName2]: {
+                    graph: {
+                        rights: {
+                            [nodeId]: nodeRights2,
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            const output = select(selectRights(graphName1, graphName2)(nodeId));
+
+            const expectedRights = {
+                role: {
+                    [role]: {
+                        read: true,
+                        write: false,
+                        admin: true,
+                    },
+                },
+            };
+            expect(onError).not.toBeCalled();
+            expect(output).toEqual(expectedRights);
+            /* #endregion */
+        });
+        test('should stack role rights correctly (merge roles)', () => {
+            /* #region Test Bed Creation */
+            const nodeId = 'node1';
+            const role1 = 'role1';
+            const role2 = 'role2';
+            const graphName1 = 'graph1';
+            const graphName2 = 'graph2';
+            const nodeRights1 = {
+                role: {
+                    [role1]: {
+                        read: true,
+                        write: true,
+                    },
+                },
+            };
+            const nodeRights2 = {
+                role: {
+                    [role2]: {
+                        write: true,
+                        admin: true,
+                    },
+                },
+            };
+
+            const {
+                store: { selectRights },
+                select,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId]: nodeRights1,
+                        },
+                    },
+                },
+                [graphName2]: {
+                    graph: {
+                        rights: {
+                            [nodeId]: nodeRights2,
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            const output = select(selectRights(graphName1, graphName2)(nodeId));
+
+            const expectedRights = {
+                role: {
+                    [role1]: {
+                        read: true,
+                        write: true,
+                    },
+                    [role2]: {
+                        write: true,
+                        admin: true,
+                    },
+                },
+            };
+            expect(onError).not.toBeCalled();
+            expect(output).toEqual(expectedRights);
+            /* #endregion */
+        });
+        test('should not override role rights with not existing rights from higher stacked graphs', () => {
+            /* #region Test Bed Creation */
+            const nodeId = 'node1';
+            const role = 'role1';
+            const graphName1 = 'graph1';
+            const graphName2 = 'graph2';
+            const nodeRights1 = {
+                role: {
+                    [role]: {
                         read: true,
                         write: true,
                     },
@@ -414,6 +620,131 @@ describe('store:Rights', () => {
                 missing: 'email',
             }));
             setRights(graphName1)(nodeId)(user, undefined);
+            expect(onError).toBeCalledWith(expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'rights',
+            }));
+
+            expect(getState()).toEqual(initialState);
+            expect(dispatch).not.toBeCalled();
+            /* #endregion */
+        });
+    });
+
+    describe('setRoleRights', () => {
+        test('should call `dispatch` with correct parameters', () => {
+            /* #region Test Bed Creation */
+            const nodeId = 'node1';
+            const graphName = 'graph1';
+            const role = 'role1';
+            const rights = {
+                read: true,
+                write: true,
+                admin: true,
+            };
+
+            const {
+                store: { setRoleRights },
+                dispatch,
+                onError,
+            } = createTestStore();
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            setRoleRights(graphName)(nodeId)(role, rights);
+
+            expect(dispatch).toBeCalledWith({
+                type: 'GOT/SET_ROLE_RIGHTS',
+                payload: {
+                    graphName,
+                    nodeId,
+                    role,
+                    rights,
+                },
+            });
+            expect(onError).not.toBeCalled();
+            /* #endregion */
+        });
+        test('should set/delete specified rights types for specified node', () => {
+            /* #region Test Bed Creation */
+            const role = 'role1';
+            const nodeId = 'node1';
+            const graphName1 = 'graph1';
+            const roleRights = {
+                read: false,
+                write: true,
+            };
+
+            const {
+                store: { setRoleRights },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId]: {
+                                role: {
+                                    [role]: {
+                                        read: true,
+                                        admin: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            setRoleRights(graphName1)(nodeId)(role, roleRights);
+
+            const expectedRights = {
+                read: false,
+                write: true,
+                admin: true,
+            };
+            expect(onError).not.toBeCalled();
+            expect(getState()).toHaveProperty([graphName1, 'graph', 'rights', nodeId, 'role', role], expectedRights);
+            /* #endregion */
+        });
+        test('should call `onError` in case of invalid input', () => {
+            /* #region Test Bed Creation */
+            const role = 'role1';
+            const nodeId = 'node1';
+            const graphName1 = 'graph1';
+            const roleRights = {
+                read: false,
+                write: true,
+            };
+
+            const {
+                initialState,
+                store: { setRoleRights },
+                getState,
+                dispatch,
+                onError,
+            } = createTestStore({});
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            setRoleRights(undefined)(nodeId)(role, roleRights);
+            expect(onError).toBeCalledWith(expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'graphName',
+            }));
+            setRoleRights(graphName1)(undefined)(role, roleRights);
+            expect(onError).toBeCalledWith(expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'nodeId',
+            }));
+            setRoleRights(graphName1)(nodeId)(undefined, roleRights);
+            expect(onError).toBeCalledWith(expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'role',
+            }));
+            setRoleRights(graphName1)(nodeId)(role, undefined);
             expect(onError).toBeCalledWith(expect.objectContaining({
                 name: MISSING_PARAM_ERROR,
                 missing: 'rights',

@@ -23,6 +23,7 @@ import {
     RemoveFileFn,
     GetReverseEdgeFn,
     GetMetadataFn,
+    SetRoleRightsFn,
 } from '@gothub-team/got-core';
 import {
     Subscriber,
@@ -220,6 +221,14 @@ export declare interface GotStore {
      * @param graphName The graph which the rights should be set in.
      */
     setRights: (graphName: string) => SetRightsFn;
+    /**
+     * Sets the given right types for the given node and the given role in the
+     * specified local graph. `true` will grant the right type, `false` will revoke
+     * the right type whereas `undefined` will perform no action for that right type.
+     * 
+     * @param graphName The graph which the rights should be set in.
+     */
+    setRoleRights: (graphName: string) => SetRoleRightsFn;
     /**
      * Inherits all rights from one node to another in the specified local graph. 
      * When added to the local graph no operation is performed. Only on push the
