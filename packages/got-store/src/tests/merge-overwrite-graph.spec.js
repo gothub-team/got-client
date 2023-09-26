@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { createTestStore } from './shared.js';
+import { createTestStore, generateRandomTestData } from './shared.js';
 import { MISSING_PARAM_ERROR } from '../errors.js';
 
 describe('store:mergeOverwriteGraph', () => {
@@ -1366,5 +1366,52 @@ describe('store:mergeOverwriteGraph', () => {
             expect(dispatch).not.toBeCalled();
             /* #endregion */
         });
+    });
+
+    describe('performance', () => {
+        const testPerformance = (numParents, numChildren, numChildrenChildren, expectedTime) => {
+            const totalNum = numParents + numParents * numChildren + numParents * numChildren * numChildrenChildren;
+            test(`should merge ${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) in under ${expectedTime}ms`, () => {
+                const runTimes = 10;
+
+                let totalTime = 0;
+                for (let counter = 0; counter < runTimes; counter += 1) {
+                    const {
+                        store: { mergeOverwriteGraph },
+                    } = createTestStore(
+                        generateRandomTestData(numParents, numChildren, numChildrenChildren),
+                        undefined,
+                        false,
+                    );
+
+                    const {
+                        main: { graph },
+                    } = generateRandomTestData(numParents, numChildren, numChildrenChildren);
+
+                    const start = performance.now();
+
+                    mergeOverwriteGraph(graph, 'main');
+
+                    const end = performance.now();
+                    const runTime = end - start;
+                    totalTime += runTime;
+                }
+
+                console.log(
+                    `${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in `,
+                    totalTime / runTimes,
+                    'ms',
+                );
+
+                expect(totalTime / runTimes).toBeLessThanOrEqual(expectedTime);
+            });
+        };
+
+        testPerformance(1000, 0, 0, 10);
+        testPerformance(1, 1000, 0, 10);
+        testPerformance(1, 1, 1000, 10);
+        testPerformance(100, 10, 0, 10);
+        testPerformance(100, 100, 0, 100);
+        testPerformance(100, 100, 10, 1000);
     });
 });
