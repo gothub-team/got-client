@@ -10,7 +10,7 @@ import {
     getPathOr,
     mergeWith,
     assocPathMutate,
-    forEachObjDepth, 
+    forEachObjDepth,
     dissocPathMutate,
 } from '@gothub-team/got-util';
 
