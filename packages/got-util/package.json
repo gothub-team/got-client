@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-util",
-    "version": "0.21.34",
+    "version": "0.21.35",
     "description": "General utility functions used across all got packages.",
     "main": "dist/cjs/index.js",
     "types": "src/index.d.ts",
