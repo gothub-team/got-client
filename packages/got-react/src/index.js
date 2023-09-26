@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { createApi } from '@gothub-team/got-api';
 import { createStore } from '@gothub-team/got-store';
 import { useMemo, useRef } from 'react';
+import equal from 'fast-deep-equal';
 import { useEqualRef } from './util.js';
 
 export { gotReducer } from '@gothub-team/got-store';
@@ -64,7 +65,7 @@ export const setup = ({
     };
 };
 
-let fnEquals = R.equals;
+let fnEquals = equal;
 export const setFnEquals = fn => {
     fnEquals = fn;
 };
@@ -81,7 +82,7 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
             const ref = useSelector(R.compose(
                 store.selectVar(...stack)(name),
                 baseState,
-            ), R.equals);
+            ), equal);
             const setRef = value => store.setVar(currentGraphName)(name, value);
 
             return [ref, setRef];
@@ -105,9 +106,9 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
                 const state = baseState(_state);
                 const stateId = R.propOr(0, 'stateId', state);
 
-                const selectViewUpdated = !R.equals(selectViewRef.current, selectView);
+                const selectViewUpdated = !equal(selectViewRef.current, selectView);
                 if (selectViewUpdated) selectViewRef.current = selectView;
-                const fnTransformUpdated = !R.equals(fnTransformRef.current, fnTransform);
+                const fnTransformUpdated = !equal(fnTransformRef.current, fnTransform);
                 if (fnTransformUpdated) fnTransformRef.current = fnTransform;
 
                 if (!selectViewUpdated && !fnTransformUpdated && stateId === stateIdRef.current) {
@@ -146,7 +147,7 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
                     ),
                     RA.stubUndefined,
                 ),
-                R.equals,
+                equal,
             );
 
             return node;
@@ -162,7 +163,7 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
                     ),
                     RA.stubUndefined,
                 ),
-                R.equals,
+                equal,
             );
 
             return metadata;
@@ -178,7 +179,7 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
                     ),
                     RA.stubUndefined,
                 ),
-                R.equals,
+                equal,
             );
 
             return metadata;
@@ -194,7 +195,7 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
                     ),
                     RA.stubUndefined,
                 ),
-                R.equals,
+                equal,
             );
 
             return rights;
@@ -210,7 +211,7 @@ export const createHooks = ({ store, baseState = R.identity }) => ({
                     ),
                     RA.stubUndefined,
                 ),
-                R.equals,
+                equal,
             );
 
             return files;

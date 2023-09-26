@@ -760,30 +760,41 @@ describe('store:Views', () => {
     });
 
     describe('performance', () => {
-        // this should run much faster on local machines, but was increased from 10ms to 25ms to not fail tests in workflows
-        test('should select 100 parent and 1000 child objects in under 25ms', () => {
-            const runTimes = 10;
+        const testPerformance = (numParents, numChildren, numChildrenChildren, expectedTime) => {
+            const totalNum = numParents + (numParents * numChildren) + (numParents * numChildren * numChildrenChildren);
+            test(`should select ${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) in under ${expectedTime}ms`, () => {
+                const runTimes = 10;
 
-            let totalTime = 0;
-            for (let counter = 0; counter < runTimes; counter += 1) {
-                const {
-                    store: {
-                        selectView,
-                    },
-                    select,
-                } = createTestStore(generateRandomTestData(100, 10));
+                let totalTime = 0;
+                for (let counter = 0; counter < runTimes; counter += 1) {
+                    const {
+                        store: {
+                            selectView,
+                        },
+                        select,
+                    } = createTestStore(generateRandomTestData(numParents, numChildren, numChildrenChildren), undefined, false);
 
-                const start = performance.now();
-                select(selectView('main', 'temp')(randomTestDataView));
-                const end = performance.now();
+                    const start = performance.now();
 
-                totalTime += end - start;
-            }
+                    select(selectView('main', 'temp')(randomTestDataView));
 
-            console.log('select view ran in ', totalTime / runTimes, 'ms');
+                    const end = performance.now();
+                    const runTime = end - start;
+                    totalTime += runTime;
+                }
 
-            expect(totalTime / runTimes).toBeLessThanOrEqual(25);
-        });
+                console.log(`${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in `, totalTime / runTimes, 'ms');
+
+                expect(totalTime / runTimes).toBeLessThanOrEqual(expectedTime);
+            });
+        };
+
+        testPerformance(1000, 0, 0, 10);
+        testPerformance(1, 1000, 0, 10);
+        testPerformance(1, 1, 1000, 10);
+        testPerformance(100, 10, 0, 10);
+        testPerformance(100, 100, 0, 100);
+        testPerformance(100, 100, 10, 1000);
     });
 
     describe('getView', () => {

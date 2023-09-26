@@ -1,4 +1,5 @@
-import { gotReducer, GOT_ACTION_CLEAR_ALL } from '../index.js';
+import { gotReducer } from '../index.js';
+import { GOT_ACTION_CLEAR_ALL } from '../reducer.js';
 import { createTestStore } from './shared.js';
 
 describe('store:clear-all', () => {
