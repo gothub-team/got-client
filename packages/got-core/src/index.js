@@ -10,7 +10,8 @@ import {
     getPathOr,
     mergeWith,
     assocPathMutate,
-    forEachObjDepth, dissocPathMutate,
+    forEachObjDepth, 
+    dissocPathMutate,
 } from '@gothub-team/got-util';
 
 export const isEdgeTypesString = R.compose(
