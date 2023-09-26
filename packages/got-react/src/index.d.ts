@@ -144,6 +144,12 @@ export declare interface CreateGraphResult {
      */
     setRoleRights: SetRoleRightsFn;
     /**
+     * Sets the given right types for the given node and the given role in the
+     * current graph. `true` will grant the right type, `false` will revoke the right
+     * type whereas `undefined` will perform no action for that right type.
+     */
+    setRoleRights: SetRoleRightsFn,
+    /**
      * Inherits all rights from one node to another. When added to the local graph
      * no operation is performed. Only on push the Operation is executed hidden
      * on remote. The current user might lose rights on the node in case he does not

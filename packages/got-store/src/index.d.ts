@@ -210,12 +210,12 @@ export declare interface GotStore {
      * Sets the given right types for the given node and the given role in the
      * specified local graph. `true` will grant the right type, `false` will revoke
      * the right type whereas `undefined` will perform no action for that right type.
-     *
+     * 
      * @param graphName The graph which the rights should be set in.
      */
     setRoleRights: (graphName: string) => SetRoleRightsFn;
     /**
-     * Inherits all rights from one node to another in the specified local graph.
+     * Inherits all rights from one node to another in the specified local graph. 
      * When added to the local graph no operation is performed. Only on push the
      * Operation is executed hidden on remote. The current user might lose rights
      * on the node in case he does not have any rights on the `fromId` node.

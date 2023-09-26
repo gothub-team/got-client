@@ -384,6 +384,28 @@ export declare type SetRoleRightsFn = (
 ) => void;
 
 /**
+ * Delares a curried function type that grants or revokes rights for a given role
+ * on a given node.
+ */
+export declare type SetRoleRightsFn = (
+    /**
+     * The node ID which the rights operation should be executed on.
+     */
+    nodeId: string
+) => (
+        /**
+         * The role which rights should be granted or revoked for.
+         */
+        role: string,
+        /**
+         * The right types which should be granted or revoked. `true` will grant the
+         * right type, `false` will revoke the right type whereas `undefined` will
+         * perform no action for that right type.
+         */
+        rights: RightTypes,
+    ) => void;
+
+/**
  * Delares a curried function type that inherits all rights from one node to another.
  */
 export declare type InheritRightsFn = (
@@ -676,12 +698,7 @@ export declare const filterGraph: (view: View) => (graph: Graph) => Graph;
  * Elements found at the given path in every layer of the stack will be merged with fnMergeLeft,
  * which merges element prioritizing data of the left input.
  */
-export declare const selectPathFromStack: (
-    path: string[],
-    stack: string[],
-    fnMergeLeft: (left: any, right: any) => any,
-    state: State,
-) => any;
+export declare const selectPathFromStack: (path: string[], stack: string[], fnMergeLeft: (left: any, right: any) => any, state: State) => any;
 
 /**
  * Selects a map of toIds and their edge metadata from a given graph.
@@ -693,20 +710,14 @@ export declare const selectEdgeIds: (graph: Graph) => GetEdgeToIdsFn;
  */
 export declare const createSuccessAndErrorGraphs: (pushedGraph: Graph, apiResult: PushResult) => [Graph, ErrorGraph];
 
-/**
+/** 
  * Selects the nodes edges view in a given stack from the state.
  * Elements found at the given path in every layer of the stack will be merged prioritizing data higher up the stack.
  */
-export declare const selectEdgeFromStack: (
-    fromType: string,
-    from: string,
-    toType: string,
-    stack: string[],
-    state: State,
-) => NodeEdgesView;
+export declare const selectEdgeFromStack = (fromType: string, from: string, toType: string, stack: string[], state: State) => NodeEdgesView;
 
-/**
+/** 
  * Selects a node in a given stack from the state.
  * Elements found at the given path in every layer of the stack will be merged prioritizing data higher up the stack.
  */
-export declare const selectNodeFromStack: (nodeId: string, stack: string[], state: State) => any;
+export declare const selectNodeFromStack = (nodeId: string, stack: string[], state: State) => any;
