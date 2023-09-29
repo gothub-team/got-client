@@ -1959,7 +1959,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gothub-team/got-atom@workspace:*, @gothub-team/got-atom@workspace:packages/got-atom":
+"@gothub-team/got-atom@workspace:packages/got-atom":
   version: 0.0.0-use.local
   resolution: "@gothub-team/got-atom@workspace:packages/got-atom"
   dependencies:
@@ -2001,7 +2001,6 @@ __metadata:
     "@babel/core": ^7.17.10
     "@babel/preset-env": ^7.17.10
     "@gothub-team/got-api": ^0.1.27
-    "@gothub-team/got-atom": "workspace:*"
     "@gothub-team/got-core": "workspace:*"
     "@gothub-team/got-store": "workspace:*"
     "@gothub-team/got-util": "workspace:*"
