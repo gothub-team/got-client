@@ -280,9 +280,8 @@ export const createSuccessAndErrorGraphs = (graph, apiResult) => reduceObj([
 
 const mergeEdgesLeft = mergeWith(mergeLeft);
 export const selectEdgeFromStack = (fromType, from, toType, stack, state) => {
-    if (!state) {
-        return undefined;
-    }
+    if (!state) { return undefined; }
+    
     let acc;
     for (let i = 0; i < stack.length; i += 1) {
         const graphName = stack[i];
@@ -296,9 +295,8 @@ export const selectEdgeFromStack = (fromType, from, toType, stack, state) => {
 
 const mergeNodeLeft = mergeLeft;
 export const selectNodeFromStack = (nodeId, stack, state) => {
-    if (!state) {
-        return undefined;
-    }
+    if (!state) { return undefined; }
+    
     let acc;
     for (let i = 0; i < stack.length; i += 1) {
         const graphName = stack[i];
