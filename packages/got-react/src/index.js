@@ -36,21 +36,17 @@ export const setup = ({
     const store = createStore({
         api,
         dispatch: reduxStore.dispatch,
-        select: selector => baseState
-            ? selector(R.propOr({}, baseState, reduxStore.getState()))
-            : selector(reduxStore.getState()),
+        select: (selector) =>
+            baseState ? selector(R.propOr({}, baseState, reduxStore.getState())) : selector(reduxStore.getState()),
         onError,
         onWarn,
     });
-    const {
-        useGraph,
-    } = createHooks({
+    const { createGraph, useGraph } = createHooks({
         store,
-        baseState: baseState
-            ? R.prop(baseState)
-            : R.identity,
+        baseState: baseState ? R.prop(baseState) : R.identity,
     });
     return {
+        createGraph,
         useGraph,
         store,
         api,
