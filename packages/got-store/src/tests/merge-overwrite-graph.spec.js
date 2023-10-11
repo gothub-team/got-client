@@ -97,7 +97,7 @@ describe('store:mergeOverwriteGraph', () => {
                 store: { mergeOverwriteGraph },
                 getState,
                 onError,
-            } = createTestStore({ });
+            } = createTestStore({});
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -840,7 +840,10 @@ describe('store:mergeOverwriteGraph', () => {
             mergeOverwriteGraph(graph, graphName1);
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1], false);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1],
+                false,
+            );
             /* #endregion */
         });
         test('should dissoc reverse edge marked as undefined', () => {
@@ -892,7 +895,10 @@ describe('store:mergeOverwriteGraph', () => {
             mergeOverwriteGraph(graph, graphName1);
 
             expect(onError).not.toBeCalled();
-            const hasPath = R.hasPath([graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1], getState());
+            const hasPath = R.hasPath(
+                [graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1],
+                getState(),
+            );
             expect(hasPath).toBeFalsy();
             /* #endregion */
         });
@@ -1351,16 +1357,20 @@ describe('store:mergeOverwriteGraph', () => {
 
             /* #region Execution and Validation */
             mergeGraph(undefined, graphName1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromGraph',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromGraph',
+                }),
+            );
 
             mergeGraph({}, undefined);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toGraphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toGraphName',
+                }),
+            );
 
             expect(getState()).toEqual(initialState);
             expect(dispatch).not.toBeCalled();

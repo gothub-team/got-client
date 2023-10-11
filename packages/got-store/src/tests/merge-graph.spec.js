@@ -39,16 +39,20 @@ describe('store:mergeGraph', () => {
 
         /* #region Execution and Validation */
         mergeGraph(undefined, graphName1);
-        expect(onError).toBeCalledWith(expect.objectContaining({
-            name: MISSING_PARAM_ERROR,
-            missing: 'fromGraph',
-        }));
+        expect(onError).toBeCalledWith(
+            expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'fromGraph',
+            }),
+        );
 
         mergeGraph({}, undefined);
-        expect(onError).toBeCalledWith(expect.objectContaining({
-            name: MISSING_PARAM_ERROR,
-            missing: 'toGraphName',
-        }));
+        expect(onError).toBeCalledWith(
+            expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'toGraphName',
+            }),
+        );
 
         expect(getState()).toEqual(initialState);
         expect(dispatch).not.toBeCalled();

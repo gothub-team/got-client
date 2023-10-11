@@ -65,7 +65,7 @@ describe('reducer::mergeOverwrite', () => {
         expect(result.graph1).toEqual(expectedResult);
     });
     test('should merge correctly when merging empty object to non existing graph', () => {
-        const graph2 = { };
+        const graph2 = {};
 
         const action = {
             type: GOT_ACTION_MERGE_OVERWRITE,

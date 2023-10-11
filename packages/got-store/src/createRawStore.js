@@ -2,14 +2,7 @@
 /* eslint-disable consistent-return */
 import * as R from 'ramda';
 import * as RA from 'ramda-adjunct';
-import {
-    forEachCondObj,
-    mergeDeepLeft,
-    mergeLeft,
-    mergeWith,
-    useSubscriber,
-    useResult,
-} from '@gothub-team/got-util';
+import { forEachCondObj, mergeDeepLeft, mergeLeft, mergeWith, useSubscriber, useResult } from '@gothub-team/got-util';
 import {
     createSuccessAndErrorGraphs,
     selectPathFromStack,
@@ -40,11 +33,7 @@ import {
     GOT_ACTION_UPLOAD_PROGRESS,
 } from './reducer.js';
 
-export const createRawStore = ({
-    api,
-    dispatch,
-    select,
-}) => {
+export const createRawStore = ({ api, dispatch, select }) => {
     const merge = (fromGraphName, toGraphName) => {
         dispatch({
             type: GOT_ACTION_MERGE,
@@ -72,7 +61,7 @@ export const createRawStore = ({
             },
         });
     };
-    const clear = graphName => {
+    const clear = (graphName) => {
         dispatch({
             type: GOT_ACTION_CLEAR,
             payload: {
@@ -87,7 +76,7 @@ export const createRawStore = ({
     };
 
     const selectVar = (stack, name, state) => selectPathFromStack(['vars', name], stack, mergeLeft, state);
-    const getVar = (stack, name) => select(state => selectVar(stack, name, state));
+    const getVar = (stack, name) => select((state) => selectVar(stack, name, state));
     const setVar = (graphName, name, value) => {
         dispatch({
             type: GOT_ACTION_SET_VAR,
@@ -100,7 +89,7 @@ export const createRawStore = ({
     };
 
     const selectNode = (stack, nodeId, state) => selectNodeFromStack(nodeId, stack, state);
-    const getNode = (stack, nodeId) => select(state => selectNode(stack, nodeId, state));
+    const getNode = (stack, nodeId) => select((state) => selectNode(stack, nodeId, state));
     const setNode = (graphName, node) => {
         dispatch({
             type: GOT_ACTION_SET_NODE,
@@ -115,7 +104,8 @@ export const createRawStore = ({
         const [fromType, toType] = R.split('/', edgeTypes);
         return selectPathFromStack(['graph', 'edges', fromType, fromId, toType, toId], stack, mergeLeft, state);
     };
-    const getMetadata = (stack, edgeTypes, fromId, toId) => select(state => selectMetadata(stack, edgeTypes, fromId, toId, state));
+    const getMetadata = (stack, edgeTypes, fromId, toId) =>
+        select((state) => selectMetadata(stack, edgeTypes, fromId, toId, state));
 
     const selectEdge = (stack, edgeTypes, fromId, state) => {
         const [fromType, toType] = R.split('/', edgeTypes);
@@ -123,13 +113,18 @@ export const createRawStore = ({
 
         return R.pickBy(RA.isTruthy, edgeIds);
     };
-    const getEdge = (stack, edgeTypes, fromId) => select(state => selectEdge(stack, edgeTypes, fromId, state));
+    const getEdge = (stack, edgeTypes, fromId) => select((state) => selectEdge(stack, edgeTypes, fromId, state));
 
     const selectReverseEdge = (stack, edgeTypes, toId, state) => {
         const [fromType, toType] = R.split('/', edgeTypes);
         const [getResult, setResult] = useResult({});
 
-        const edgeIds = selectPathFromStack(['graph', 'index', 'reverseEdges', toType, toId, fromType], stack, mergeWith(mergeLeft), state);
+        const edgeIds = selectPathFromStack(
+            ['graph', 'index', 'reverseEdges', toType, toId, fromType],
+            stack,
+            mergeWith(mergeLeft),
+            state,
+        );
         R.compose(
             R.forEachObjIndexed((val, fromId) => {
                 if (val) {
@@ -140,7 +135,8 @@ export const createRawStore = ({
         )(edgeIds);
         return getResult();
     };
-    const getReverseEdge = (stack, edgeTypes, toId) => select(state => selectReverseEdge(stack, edgeTypes, toId, state));
+    const getReverseEdge = (stack, edgeTypes, toId) =>
+        select((state) => selectReverseEdge(stack, edgeTypes, toId, state));
 
     const add = (graphName, edgeTypes, fromId, toNode, metadata) => {
         const [fromType, toType] = R.split('/', edgeTypes);
@@ -197,8 +193,9 @@ export const createRawStore = ({
         });
     };
 
-    const selectRights = (stack, nodeId, state) => selectPathFromStack(['graph', 'rights', nodeId], stack, mergeDeepLeft, state);
-    const getRights = (stack, nodeId) => select(state => selectRights(stack, nodeId, state));
+    const selectRights = (stack, nodeId, state) =>
+        selectPathFromStack(['graph', 'rights', nodeId], stack, mergeDeepLeft, state);
+    const getRights = (stack, nodeId) => select((state) => selectRights(stack, nodeId, state));
     const setRights = (graphName, nodeId, email, rights) => {
         dispatch({
             type: GOT_ACTION_SET_RIGHTS,
@@ -232,8 +229,9 @@ export const createRawStore = ({
         });
     };
 
-    const selectFiles = (stack, nodeId, state) => selectPathFromStack(['graph', 'files', nodeId], stack, mergeLeft, state);
-    const getFiles = (stack, nodeId) => select(state => selectFiles(stack, nodeId, state));
+    const selectFiles = (stack, nodeId, state) =>
+        selectPathFromStack(['graph', 'files', nodeId], stack, mergeLeft, state);
+    const getFiles = (stack, nodeId) => select((state) => selectFiles(stack, nodeId, state));
     const setFile = (graphName, nodeId, prop, filename, file) => {
         dispatch({
             type: GOT_ACTION_SET_FILE,
@@ -265,13 +263,14 @@ export const createRawStore = ({
 
         const [successGraph, errorGraph] = createSuccessAndErrorGraphs(graph, apiResult);
 
-        RA.isNotNilOrEmpty(successGraph) && dispatch({
-            type: GOT_ACTION_MERGE,
-            payload: {
-                fromGraph: successGraph,
-                toGraphName,
-            },
-        });
+        RA.isNotNilOrEmpty(successGraph) &&
+            dispatch({
+                type: GOT_ACTION_MERGE,
+                payload: {
+                    fromGraph: successGraph,
+                    toGraphName,
+                },
+            });
 
         dispatch({
             type: GOT_ACTION_CLEAR,
@@ -280,21 +279,21 @@ export const createRawStore = ({
             },
         });
 
-        RA.isNotNilOrEmpty(errorGraph) && dispatch({
-            type: GOT_ACTION_MERGE_ERROR,
-            payload: {
-                fromGraph: errorGraph,
-                toGraphName: graphName,
-            },
-        });
+        RA.isNotNilOrEmpty(errorGraph) &&
+            dispatch({
+                type: GOT_ACTION_MERGE_ERROR,
+                payload: {
+                    fromGraph: errorGraph,
+                    toGraphName: graphName,
+                },
+            });
 
         const { subscribe, subscriber } = useSubscriber();
         const uploadFiles = async () => {
             const [getUploads, setUploads] = useResult([]);
-            forEachCondObj([
-                [(_, path) => RA.lengthEq(2, path),
-                    (_, path) => setUploads(R.append(uploadFile(path)))],
-            ])(R.propOr({}, 'files', successGraph));
+            forEachCondObj([[(_, path) => RA.lengthEq(2, path), (_, path) => setUploads(R.append(uploadFile(path)))]])(
+                R.propOr({}, 'files', successGraph),
+            );
             await Promise.all(getUploads());
             subscriber.complete();
         };
@@ -314,14 +313,12 @@ export const createRawStore = ({
                     },
                 });
 
-                await api.upload(
-                    uploadUrls,
-                    file,
-                    {
-                        contentType,
-                        uploadId,
-                        partSize,
-                        onProgress: progress => subscriber.next({
+                await api.upload(uploadUrls, file, {
+                    contentType,
+                    uploadId,
+                    partSize,
+                    onProgress: (progress) =>
+                        subscriber.next({
                             type: GOT_ACTION_UPLOAD_PROGRESS,
                             payload: {
                                 graphName: toGraphName,
@@ -330,8 +327,7 @@ export const createRawStore = ({
                                 progress,
                             },
                         }),
-                    },
-                );
+                });
 
                 subscriber.next({
                     type: GOT_ACTION_UPLOAD_COMPLETE,
@@ -407,7 +403,14 @@ export const createRawStore = ({
 
         const queryEdge = (queryObj, edgeTypes, nodeId) => {
             const [fromType, toType] = R.split('/', edgeTypes);
-            const edgeIds = queryObj.reverse ? selectPathFromStack(['graph', 'index', 'reverseEdges', toType, nodeId, fromType], stack, mergeWith(mergeLeft), state) : selectEdgeFromStack(fromType, nodeId, toType, stack, state);
+            const edgeIds = queryObj.reverse
+                ? selectPathFromStack(
+                      ['graph', 'index', 'reverseEdges', toType, nodeId, fromType],
+                      stack,
+                      mergeWith(mergeLeft),
+                      state,
+                  )
+                : selectEdgeFromStack(fromType, nodeId, toType, stack, state);
 
             if (!edgeIds) return;
 
@@ -436,9 +439,9 @@ export const createRawStore = ({
 
         return result;
     };
-    const getView = (stack, view) => select(state => selectView(stack, view, state));
+    const getView = (stack, view) => select((state) => selectView(stack, view, state));
 
-    return ({
+    return {
         merge,
         mergeGraph,
         mergeOverwriteGraph,
@@ -481,5 +484,5 @@ export const createRawStore = ({
 
         selectView,
         getView,
-    });
+    };
 };

@@ -1,7 +1,7 @@
 import * as R from 'ramda';
 import { useRef } from 'react';
 
-export const getLocalStorageSessionStore = sessionKey => ({
+export const getLocalStorageSessionStore = (sessionKey) => ({
     getSession: () => {
         try {
             return JSON.parse(window.localStorage.getItem(sessionKey));
@@ -10,7 +10,7 @@ export const getLocalStorageSessionStore = sessionKey => ({
             return null;
         }
     },
-    setSession: session => {
+    setSession: (session) => {
         session && window.localStorage.setItem(sessionKey, JSON.stringify(session));
     },
     removeSession: () => {
@@ -19,7 +19,7 @@ export const getLocalStorageSessionStore = sessionKey => ({
 });
 
 /** React hook to safeguard inputs from triggering effects or memos by checking for deep equality */
-export const useEqualRef = input => {
+export const useEqualRef = (input) => {
     const ref = useRef();
     const isEqual = R.equals(input, ref.current);
     if (!isEqual) {
