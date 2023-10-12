@@ -90,13 +90,16 @@ describe('store:pull', () => {
                     store: { pull },
                     dispatch,
                     onError,
-                } = createTestStore({
-                    main: {
-                        graph: { },
+                } = createTestStore(
+                    {
+                        main: {
+                            graph: {},
+                        },
                     },
-                }, {
-                    pull: () => pullOutput,
-                });
+                    {
+                        pull: () => pullOutput,
+                    },
+                );
                 /* #endregion */
 
                 /* #region Execution and Validation */
@@ -128,23 +131,26 @@ describe('store:pull', () => {
                         },
                     },
                 };
-                const pullOutput = { };
+                const pullOutput = {};
 
                 const {
                     store: { pull },
                     dispatch,
                     onError,
-                } = createTestStore({
-                    main: {
-                        graph: {
-                            nodes: {
-                                [node1Id]: node1,
+                } = createTestStore(
+                    {
+                        main: {
+                            graph: {
+                                nodes: {
+                                    [node1Id]: node1,
+                                },
                             },
                         },
                     },
-                }, {
-                    pull: () => pullOutput,
-                });
+                    {
+                        pull: () => pullOutput,
+                    },
+                );
                 /* #endregion */
 
                 /* #region Execution and Validation */
@@ -198,13 +204,16 @@ describe('store:pull', () => {
                     store: { pull },
                     dispatch,
                     onError,
-                } = createTestStore({
-                    main: {
-                        graph: { },
+                } = createTestStore(
+                    {
+                        main: {
+                            graph: {},
+                        },
                     },
-                }, {
-                    pull: () => pullOutput,
-                });
+                    {
+                        pull: () => pullOutput,
+                    },
+                );
                 /* #endregion */
 
                 /* #region Execution and Validation */
@@ -244,23 +253,26 @@ describe('store:pull', () => {
                         },
                     },
                 };
-                const pullOutput = { };
+                const pullOutput = {};
 
                 const {
                     store: { pull },
                     dispatch,
                     onError,
-                } = createTestStore({
-                    main: {
-                        graph: {
-                            edges: {
-                                [fromType]: { [fromId]: { [toType]: { [toNode1Id]: metadata } } },
+                } = createTestStore(
+                    {
+                        main: {
+                            graph: {
+                                edges: {
+                                    [fromType]: { [fromId]: { [toType]: { [toNode1Id]: metadata } } },
+                                },
                             },
                         },
                     },
-                }, {
-                    pull: () => pullOutput,
-                });
+                    {
+                        pull: () => pullOutput,
+                    },
+                );
                 /* #endregion */
 
                 /* #region Execution and Validation */
@@ -325,13 +337,16 @@ describe('store:pull', () => {
                     store: { pull },
                     dispatch,
                     onError,
-                } = createTestStore({
-                    main: {
-                        graph: { },
+                } = createTestStore(
+                    {
+                        main: {
+                            graph: {},
+                        },
                     },
-                }, {
-                    pull: () => pullOutput,
-                });
+                    {
+                        pull: () => pullOutput,
+                    },
+                );
                 /* #endregion */
 
                 /* #region Execution and Validation */
@@ -383,24 +398,26 @@ describe('store:pull', () => {
                         },
                     },
                 };
-                const pullOutput = { };
+                const pullOutput = {};
 
                 const {
                     store: { pull },
                     dispatch,
                     onError,
-                } = createTestStore({
-                    main: {
-                        graph: {
-                            edges: {
-                                [fromType]: { [fromId]: { [toType]: { [toNode1Id]: metadata } } },
-                            },
-                            index: {
-                                reverseEdges: {
-                                    [toType]: {
-                                        [toNode1Id]: {
-                                            [fromType]: {
-                                                [fromId]: true,
+                } = createTestStore(
+                    {
+                        main: {
+                            graph: {
+                                edges: {
+                                    [fromType]: { [fromId]: { [toType]: { [toNode1Id]: metadata } } },
+                                },
+                                index: {
+                                    reverseEdges: {
+                                        [toType]: {
+                                            [toNode1Id]: {
+                                                [fromType]: {
+                                                    [fromId]: true,
+                                                },
                                             },
                                         },
                                     },
@@ -408,9 +425,10 @@ describe('store:pull', () => {
                             },
                         },
                     },
-                }, {
-                    pull: () => pullOutput,
-                });
+                    {
+                        pull: () => pullOutput,
+                    },
+                );
                 /* #endregion */
 
                 /* #region Execution and Validation */
@@ -474,13 +492,16 @@ describe('store:pull', () => {
                     store: { pull },
                     dispatch,
                     onError,
-                } = createTestStore({
-                    main: {
-                        graph: { },
+                } = createTestStore(
+                    {
+                        main: {
+                            graph: {},
+                        },
                     },
-                }, {
-                    pull: () => pullOutput,
-                });
+                    {
+                        pull: () => pullOutput,
+                    },
+                );
                 /* #endregion */
 
                 /* #region Execution and Validation */
@@ -521,23 +542,26 @@ describe('store:pull', () => {
                         },
                     },
                 };
-                const pullOutput = { };
+                const pullOutput = {};
 
                 const {
                     store: { pull },
                     dispatch,
                     onError,
-                } = createTestStore({
-                    main: {
-                        graph: {
-                            rights: {
-                                [node1Id]: node1Rights,
+                } = createTestStore(
+                    {
+                        main: {
+                            graph: {
+                                rights: {
+                                    [node1Id]: node1Rights,
+                                },
                             },
                         },
                     },
-                }, {
-                    pull: () => pullOutput,
-                });
+                    {
+                        pull: () => pullOutput,
+                    },
+                );
                 /* #endregion */
 
                 /* #region Execution and Validation */
@@ -587,13 +611,16 @@ describe('store:pull', () => {
                     store: { pull },
                     dispatch,
                     onError,
-                } = createTestStore({
-                    main: {
-                        graph: { },
+                } = createTestStore(
+                    {
+                        main: {
+                            graph: {},
+                        },
                     },
-                }, {
-                    pull: () => pullOutput,
-                });
+                    {
+                        pull: () => pullOutput,
+                    },
+                );
                 /* #endregion */
 
                 /* #region Execution and Validation */
@@ -630,23 +657,26 @@ describe('store:pull', () => {
                         },
                     },
                 };
-                const pullOutput = { };
+                const pullOutput = {};
 
                 const {
                     store: { pull },
                     dispatch,
                     onError,
-                } = createTestStore({
-                    main: {
-                        graph: {
-                            files: {
-                                [node1Id]: node1Files,
+                } = createTestStore(
+                    {
+                        main: {
+                            graph: {
+                                files: {
+                                    [node1Id]: node1Files,
+                                },
                             },
                         },
                     },
-                }, {
-                    pull: () => pullOutput,
-                });
+                    {
+                        pull: () => pullOutput,
+                    },
+                );
                 /* #endregion */
 
                 /* #region Execution and Validation */
@@ -687,9 +717,14 @@ describe('store:pull', () => {
                 store: { pull },
                 dispatch,
                 onError,
-            } = createTestStore({}, {
-                pull: () => { throw apiError; },
-            });
+            } = createTestStore(
+                {},
+                {
+                    pull: () => {
+                        throw apiError;
+                    },
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -705,18 +740,23 @@ describe('store:pull', () => {
                 store: { pull },
                 dispatch,
                 onError,
-            } = createTestStore({}, {
-                pull: () => {},
-            });
+            } = createTestStore(
+                {},
+                {
+                    pull: () => {},
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
             await pull(undefined);
 
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'view',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'view',
+                }),
+            );
             expect(dispatch).not.toBeCalled();
             /* #endregion */
         });

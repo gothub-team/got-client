@@ -47,33 +47,36 @@ describe('store:push', () => {
                 store: { push },
                 dispatch,
                 onError,
-            } = createTestStore({
-                [graphName]: {
-                    graph: {
-                        nodes: {
-                            [nodeId1]: { id: nodeId1 },
-                            [nodeId2]: { id: nodeId2 },
-                        },
-                        edges: {
-                            [fromType1]: {
-                                [fromId1]: {
-                                    [toType1]: {
-                                        [nodeId1]: metadata1,
-                                        [nodeId2]: metadata1,
+            } = createTestStore(
+                {
+                    [graphName]: {
+                        graph: {
+                            nodes: {
+                                [nodeId1]: { id: nodeId1 },
+                                [nodeId2]: { id: nodeId2 },
+                            },
+                            edges: {
+                                [fromType1]: {
+                                    [fromId1]: {
+                                        [toType1]: {
+                                            [nodeId1]: metadata1,
+                                            [nodeId2]: metadata1,
+                                        },
                                     },
                                 },
                             },
-                        },
-                        rights: {
-                            [nodeId1]: { user: { [user]: rights } },
-                            [nodeId2]: { user: { [user]: rights } },
-                            [nodeId3]: { inherit: { from: fromId1 } },
+                            rights: {
+                                [nodeId1]: { user: { [user]: rights } },
+                                [nodeId2]: { user: { [user]: rights } },
+                                [nodeId3]: { inherit: { from: fromId1 } },
+                            },
                         },
                     },
                 },
-            }, {
-                push: () => pushOutput,
-            });
+                {
+                    push: () => pushOutput,
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -113,8 +116,12 @@ describe('store:push', () => {
                             },
                         },
                         rights: {
-                            [nodeId2]: { user: { [user]: { statusCode: 403, name: 'NoAdminRightError', element: rights } } },
-                            [nodeId3]: { inherit: { statusCode: 403, name: 'NoAdminRightError', element: { from: fromId1 } } },
+                            [nodeId2]: {
+                                user: { [user]: { statusCode: 403, name: 'NoAdminRightError', element: rights } },
+                            },
+                            [nodeId3]: {
+                                inherit: { statusCode: 403, name: 'NoAdminRightError', element: { from: fromId1 } },
+                            },
                         },
                     },
                     toGraphName: graphName,
@@ -145,11 +152,14 @@ describe('store:push', () => {
                 store: { push },
                 onError,
                 api,
-            } = createTestStore({
-                [graphName]: { graph },
-            }, {
-                push: () => {},
-            });
+            } = createTestStore(
+                {
+                    [graphName]: { graph },
+                },
+                {
+                    push: () => {},
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -181,12 +191,15 @@ describe('store:push', () => {
                 store: { push },
                 getState,
                 onError,
-            } = createTestStore({
-                main: {},
-                [graphName]: { graph },
-            }, {
-                push: () => apiResult,
-            });
+            } = createTestStore(
+                {
+                    main: {},
+                    [graphName]: { graph },
+                },
+                {
+                    push: () => apiResult,
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -218,12 +231,15 @@ describe('store:push', () => {
                 store: { push },
                 getState,
                 onError,
-            } = createTestStore({
-                main: {},
-                [graphName]: { graph },
-            }, {
-                push: () => apiResult,
-            });
+            } = createTestStore(
+                {
+                    main: {},
+                    [graphName]: { graph },
+                },
+                {
+                    push: () => apiResult,
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -259,12 +275,15 @@ describe('store:push', () => {
                 store: { push },
                 getState,
                 onError,
-            } = createTestStore({
-                main: {},
-                [graphName]: { graph },
-            }, {
-                push: () => apiResult,
-            });
+            } = createTestStore(
+                {
+                    main: {},
+                    [graphName]: { graph },
+                },
+                {
+                    push: () => apiResult,
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -305,12 +324,15 @@ describe('store:push', () => {
                 store: { push },
                 getState,
                 onError,
-            } = createTestStore({
-                main: {},
-                [graphName]: { graph },
-            }, {
-                push: () => apiResult,
-            });
+            } = createTestStore(
+                {
+                    main: {},
+                    [graphName]: { graph },
+                },
+                {
+                    push: () => apiResult,
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -343,12 +365,17 @@ describe('store:push', () => {
                 initialState,
                 dispatch,
                 onError,
-            } = createTestStore({
-                main: {},
-                [graphName]: { graph },
-            }, {
-                push: () => { throw apiError; },
-            });
+            } = createTestStore(
+                {
+                    main: {},
+                    [graphName]: { graph },
+                },
+                {
+                    push: () => {
+                        throw apiError;
+                    },
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -388,11 +415,14 @@ describe('store:push', () => {
                 store: { push },
                 onError,
                 api,
-            } = createTestStore({
-                [graphName]: { graph: reverseEdgesGraph },
-            }, {
-                push: () => {},
-            });
+            } = createTestStore(
+                {
+                    [graphName]: { graph: reverseEdgesGraph },
+                },
+                {
+                    push: () => {},
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -400,9 +430,11 @@ describe('store:push', () => {
 
             expect(onError).not.toBeCalled();
             expect(api.push).toBeCalled();
-            expect(api.push).toBeCalledWith(expect.not.objectContaining({
-                index: { reverseEdges: { fromType: { from: { toType: { to: true } } } } },
-            }));
+            expect(api.push).toBeCalledWith(
+                expect.not.objectContaining({
+                    index: { reverseEdges: { fromType: { from: { toType: { to: true } } } } },
+                }),
+            );
             /* #endregion */
         });
         test('should add reverse index only for successfully pushed edges to successgraph', async () => {
@@ -461,11 +493,14 @@ describe('store:push', () => {
                 store: { push },
                 getState,
                 onError,
-            } = createTestStore({
-                [graphName]: { graph },
-            }, {
-                push: () => apiResult,
-            });
+            } = createTestStore(
+                {
+                    [graphName]: { graph },
+                },
+                {
+                    push: () => apiResult,
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -554,11 +589,14 @@ describe('store:push', () => {
                 store: { push },
                 getState,
                 onError,
-            } = createTestStore({
-                [graphName]: { graph },
-            }, {
-                push: () => apiResult,
-            });
+            } = createTestStore(
+                {
+                    [graphName]: { graph },
+                },
+                {
+                    push: () => apiResult,
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -570,7 +608,11 @@ describe('store:push', () => {
                 },
                 edges: {
                     [fromType]: {
-                        [fromId2]: { [toType]: { [toId1]: { statusCode: 403, name: 'NoWriteRightError', element: { value: 2 } } } },
+                        [fromId2]: {
+                            [toType]: {
+                                [toId1]: { statusCode: 403, name: 'NoWriteRightError', element: { value: 2 } },
+                            },
+                        },
                     },
                 },
                 index: {
@@ -621,20 +663,23 @@ describe('store:push', () => {
                 store: { push },
                 onError,
                 api,
-            } = createTestStore({
-                [graphName]: {
-                    graph,
-                    files: {
-                        [nodeId]: {
-                            [prop]: {
-                                file,
+            } = createTestStore(
+                {
+                    [graphName]: {
+                        graph,
+                        files: {
+                            [nodeId]: {
+                                [prop]: {
+                                    file,
+                                },
                             },
                         },
                     },
                 },
-            }, {
-                push: () => {},
-            });
+                {
+                    push: () => {},
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -680,21 +725,24 @@ describe('store:push', () => {
                 store: { push },
                 onError,
                 api,
-            } = createTestStore({
-                [graphName]: graphData,
-            }, {
-                push: () => ({
-                    files: {
-                        [nodeId]: {
-                            [prop]: {
-                                statusCode: 200,
-                                uploadUrls,
+            } = createTestStore(
+                {
+                    [graphName]: graphData,
+                },
+                {
+                    push: () => ({
+                        files: {
+                            [nodeId]: {
+                                [prop]: {
+                                    statusCode: 200,
+                                    uploadUrls,
+                                },
                             },
                         },
-                    },
-                }),
-                upload: async () => {},
-            });
+                    }),
+                    upload: async () => {},
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -710,7 +758,10 @@ describe('store:push', () => {
 
             expect(onError).not.toBeCalled();
             expect(api.upload).toBeCalledWith(uploadUrls, file, {
-                contentType, uploadId: undefined, partSize: undefined, onProgress: expect.any(Function),
+                contentType,
+                uploadId: undefined,
+                partSize: undefined,
+                onProgress: expect.any(Function),
             });
             /* #endregion */
         });
@@ -751,22 +802,25 @@ describe('store:push', () => {
                 store: { push },
                 onError,
                 api,
-            } = createTestStore({
-                [graphName]: graphData,
-            }, {
-                push: () => ({
-                    files: {
-                        [nodeId]: {
-                            [prop]: {
-                                statusCode: 200,
-                                uploadId,
-                                uploadUrls,
+            } = createTestStore(
+                {
+                    [graphName]: graphData,
+                },
+                {
+                    push: () => ({
+                        files: {
+                            [nodeId]: {
+                                [prop]: {
+                                    statusCode: 200,
+                                    uploadId,
+                                    uploadUrls,
+                                },
                             },
                         },
-                    },
-                }),
-                upload: async () => {},
-            });
+                    }),
+                    upload: async () => {},
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -782,7 +836,10 @@ describe('store:push', () => {
 
             expect(onError).not.toBeCalled();
             expect(api.upload).toBeCalledWith(uploadUrls, file, {
-                contentType, uploadId, partSize: undefined, onProgress: expect.any(Function),
+                contentType,
+                uploadId,
+                partSize: undefined,
+                onProgress: expect.any(Function),
             });
             /* #endregion */
         });
@@ -828,25 +885,28 @@ describe('store:push', () => {
             const {
                 store: { push },
                 onError,
-            } = createTestStore({
-                [graphName]: graphData,
-            }, {
-                push: () => ({
-                    files: {
-                        [nodeId]: {
-                            [prop1]: {
-                                statusCode: 200,
-                                uploadUrls,
-                            },
-                            [prop2]: {
-                                statusCode: 200,
-                                uploadUrls,
+            } = createTestStore(
+                {
+                    [graphName]: graphData,
+                },
+                {
+                    push: () => ({
+                        files: {
+                            [nodeId]: {
+                                [prop1]: {
+                                    statusCode: 200,
+                                    uploadUrls,
+                                },
+                                [prop2]: {
+                                    statusCode: 200,
+                                    uploadUrls,
+                                },
                             },
                         },
-                    },
-                }),
-                upload: async () => ({ status: 200 }),
-            });
+                    }),
+                    upload: async () => ({ status: 200 }),
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -917,7 +977,12 @@ describe('store:push', () => {
             const contentType2 = 'text/plain';
             const uploadId2 = 'someUploadId2';
             const file2 = new Blob(['hello there2'], { type: contentType2 });
-            const uploadUrls2 = ['https://someurl3.com', 'https://someurl4.com', 'https://someurl5.com', 'https://someurl6.com'];
+            const uploadUrls2 = [
+                'https://someurl3.com',
+                'https://someurl4.com',
+                'https://someurl5.com',
+                'https://someurl6.com',
+            ];
 
             const graphData = {
                 graph: {
@@ -955,33 +1020,34 @@ describe('store:push', () => {
             const {
                 store: { push },
                 onError,
-            } = createTestStore({
-                [graphName]: graphData,
-            }, {
-                push: () => ({
-                    files: {
-                        [nodeId1]: {
-                            [prop1]: {
-                                statusCode: 200,
-                                uploadId: uploadId1,
-                                uploadUrls: uploadUrls1,
-                            },
-                        },
-                        [nodeId2]: {
-                            [prop2]: {
-                                statusCode: 200,
-                                uploadId: uploadId2,
-                                uploadUrls: uploadUrls2,
-                            },
-                        },
-                    },
-                }),
-                upload: async (_uploadUrls, b, { onProgress }) => {
-                    RA.mapIndexed(
-                        (val, index) => onProgress((index + 1) / R.length(_uploadUrls)),
-                    )(_uploadUrls);
+            } = createTestStore(
+                {
+                    [graphName]: graphData,
                 },
-            });
+                {
+                    push: () => ({
+                        files: {
+                            [nodeId1]: {
+                                [prop1]: {
+                                    statusCode: 200,
+                                    uploadId: uploadId1,
+                                    uploadUrls: uploadUrls1,
+                                },
+                            },
+                            [nodeId2]: {
+                                [prop2]: {
+                                    statusCode: 200,
+                                    uploadId: uploadId2,
+                                    uploadUrls: uploadUrls2,
+                                },
+                            },
+                        },
+                    }),
+                    upload: async (_uploadUrls, b, { onProgress }) => {
+                        RA.mapIndexed((val, index) => onProgress((index + 1) / R.length(_uploadUrls)))(_uploadUrls);
+                    },
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -992,9 +1058,9 @@ describe('store:push', () => {
             const error = jest.fn();
 
             uploads.subscribe({
-                next: e => next(e),
-                complete: e => complete(e),
-                error: e => error(e),
+                next: (e) => next(e),
+                complete: (e) => complete(e),
+                error: (e) => error(e),
             });
 
             await uploads.start();
@@ -1107,38 +1173,41 @@ describe('store:push', () => {
                 api,
                 getState,
                 onError,
-            } = createTestStore({
-                main: {
-                    graph: {
-                        files: {
-                            [nodeId]: {
-                                [prop]: {
-                                    url: someSignedUrl,
+            } = createTestStore(
+                {
+                    main: {
+                        graph: {
+                            files: {
+                                [nodeId]: {
+                                    [prop]: {
+                                        url: someSignedUrl,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    [graphName]: {
+                        graph: {
+                            files: {
+                                [nodeId]: {
+                                    [prop]: false,
                                 },
                             },
                         },
                     },
                 },
-                [graphName]: {
-                    graph: {
+                {
+                    push: () => ({
                         files: {
                             [nodeId]: {
-                                [prop]: false,
+                                [prop]: {
+                                    statusCode: 200,
+                                },
                             },
                         },
-                    },
+                    }),
                 },
-            }, {
-                push: () => ({
-                    files: {
-                        [nodeId]: {
-                            [prop]: {
-                                statusCode: 200,
-                            },
-                        },
-                    },
-                }),
-            });
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -1169,13 +1238,18 @@ describe('store:push', () => {
                 store: { push },
                 dispatch,
                 onError,
-            } = createTestStore({
-                [graphName]: {
-                    graph: {}, // graph needs to exist, otherwise push will not push
+            } = createTestStore(
+                {
+                    [graphName]: {
+                        graph: {}, // graph needs to exist, otherwise push will not push
+                    },
                 },
-            }, {
-                push: async () => { throw apiError; },
-            });
+                {
+                    push: async () => {
+                        throw apiError;
+                    },
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -1203,40 +1277,43 @@ describe('store:push', () => {
             const {
                 store: { push },
                 onError,
-            } = createTestStore({
-                [graphName]: {
-                    graph: {
+            } = createTestStore(
+                {
+                    [graphName]: {
+                        graph: {
+                            files: {
+                                [nodeId]: {
+                                    [prop]: {
+                                        contentType,
+                                        fileSize: file.size,
+                                        filename,
+                                    },
+                                },
+                            },
+                        },
                         files: {
                             [nodeId]: {
                                 [prop]: {
-                                    contentType,
-                                    fileSize: file.size,
-                                    filename,
+                                    file,
                                 },
                             },
                         },
                     },
-                    files: {
-                        [nodeId]: {
-                            [prop]: {
-                                file,
-                            },
-                        },
-                    },
                 },
-            }, {
-                push: () => ({
-                    files: {
-                        [nodeId]: {
-                            [prop]: {
-                                statusCode: 200,
-                                uploadUrls,
+                {
+                    push: () => ({
+                        files: {
+                            [nodeId]: {
+                                [prop]: {
+                                    statusCode: 200,
+                                    uploadUrls,
+                                },
                             },
                         },
-                    },
-                }),
-                upload: async () => Promise.reject(apiError),
-            });
+                    }),
+                    upload: async () => Promise.reject(apiError),
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -1264,18 +1341,23 @@ describe('store:push', () => {
                 store: { push },
                 dispatch,
                 onError,
-            } = createTestStore({}, {
-                push: () => {},
-            });
+            } = createTestStore(
+                {},
+                {
+                    push: () => {},
+                },
+            );
             /* #endregion */
 
             /* #region Execution and Validation */
             await push(undefined);
 
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'graphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'graphName',
+                }),
+            );
             expect(dispatch).not.toBeCalled();
             /* #endregion */
         });

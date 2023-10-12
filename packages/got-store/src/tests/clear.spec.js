@@ -84,10 +84,12 @@ describe('store:clear', () => {
 
         /* #region Execution and Validation */
         clear(undefined);
-        expect(onError).toBeCalledWith(expect.objectContaining({
-            name: MISSING_PARAM_ERROR,
-            missing: 'graphName',
-        }));
+        expect(onError).toBeCalledWith(
+            expect.objectContaining({
+                name: MISSING_PARAM_ERROR,
+                missing: 'graphName',
+            }),
+        );
 
         expect(getState()).toEqual(initialState);
         expect(dispatch).not.toBeCalled();

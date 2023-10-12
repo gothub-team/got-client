@@ -15,9 +15,7 @@ describe('useEqualRef', () => {
                 return value;
             }, [value]);
             onRender({ value, memoCalled });
-            return (
-                <div data-testid="exists" onClick={() => setState(Math.random())} />
-            );
+            return <div data-testid="exists" onClick={() => setState(Math.random())} />;
         });
 
         const { getByTestId } = render(<TestComponent />);
@@ -49,9 +47,7 @@ describe('useEqualRef', () => {
                 return value;
             }, [value]);
             onRender({ value, memoCalled });
-            return (
-                <div data-testid="exists" onClick={() => setState(Math.random())} />
-            );
+            return <div data-testid="exists" onClick={() => setState(Math.random())} />;
         });
 
         const { getByTestId } = render(<TestComponent />);
@@ -81,9 +77,7 @@ describe('useEqualRef', () => {
                 return value;
             }, [value]);
             onRender({ value, memoCalled });
-            return (
-                <div data-testid="exists" onClick={() => setState(Math.random())} />
-            );
+            return <div data-testid="exists" onClick={() => setState(Math.random())} />;
         });
 
         const { getByTestId } = render(<TestComponent />);
@@ -113,9 +107,7 @@ describe('useEqualRef', () => {
                 return value;
             }, [value]);
             onRender({ value, memoCalled });
-            return (
-                <div data-testid="exists" onClick={() => setState(Math.random())} />
-            );
+            return <div data-testid="exists" onClick={() => setState(Math.random())} />;
         });
 
         const { getByTestId } = render(<TestComponent />);
@@ -147,9 +139,7 @@ describe('useEqualRef', () => {
                 return value;
             }, [value]);
             onRender({ value, memoCalled });
-            return (
-                <div data-testid="exists" onClick={() => setState(Math.random())} />
-            );
+            return <div data-testid="exists" onClick={() => setState(Math.random())} />;
         });
 
         const { getByTestId } = render(<TestComponent />);
@@ -179,9 +169,7 @@ describe('useEqualRef', () => {
                 return value;
             }, [value]);
             onRender({ value, memoCalled });
-            return (
-                <div data-testid="exists" onClick={() => setState(Math.random())} />
-            );
+            return <div data-testid="exists" onClick={() => setState(Math.random())} />;
         });
 
         const { getByTestId } = render(<TestComponent />);

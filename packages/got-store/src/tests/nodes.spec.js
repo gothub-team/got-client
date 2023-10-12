@@ -35,10 +35,14 @@ describe('store:Nodes', () => {
             /* #region Test Bed Creation */
             const nodeId = 'node1';
             const node1 = {
-                id: nodeId, value1: 'og1', value2: 'og2',
+                id: nodeId,
+                value1: 'og1',
+                value2: 'og2',
             };
             const node2 = {
-                id: nodeId, value2: 'edit2', value3: 'edit3',
+                id: nodeId,
+                value2: 'edit2',
+                value3: 'edit3',
             };
             const graphName1 = 'graph1';
             const graphName2 = 'graph2';
@@ -69,7 +73,10 @@ describe('store:Nodes', () => {
             const output = select(selectNode(graphName1, graphName2)(nodeId));
 
             const expectedResult = {
-                id: nodeId, value1: 'og1', value2: 'edit2', value3: 'edit3',
+                id: nodeId,
+                value1: 'og1',
+                value2: 'edit2',
+                value3: 'edit3',
             };
 
             expect(onError).not.toBeCalled();
@@ -97,7 +104,7 @@ describe('store:Nodes', () => {
                 },
                 [graphName2]: {
                     graph: {
-                        nodes: { },
+                        nodes: {},
                     },
                 },
             });
@@ -212,17 +219,21 @@ describe('store:Nodes', () => {
 
             /* #region Execution and Validation */
             const output1 = select(selectNode()(nodeId));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'stack',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'stack',
+                }),
+            );
             expect(output1).toBeUndefined();
 
             const output2 = select(selectNode(graphName1)(undefined));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'nodeId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'nodeId',
+                }),
+            );
             expect(output2).toBeUndefined();
 
             expect(dispatch).not.toBeCalled();
@@ -335,7 +346,10 @@ describe('store:Nodes', () => {
             setNode(graphName1)(node2);
 
             const expectedResult = {
-                id: nodeId, value1: 'og1', value2: 'edit2', value3: 'edit3',
+                id: nodeId,
+                value1: 'og1',
+                value2: 'edit2',
+                value3: 'edit3',
             };
             expect(onError).not.toBeCalled();
             expect(getState()).toHaveProperty([graphName1, 'graph', 'nodes', nodeId], expectedResult);
@@ -358,22 +372,28 @@ describe('store:Nodes', () => {
 
             /* #region Execution and Validation */
             setNode(undefined)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'graphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'graphName',
+                }),
+            );
 
             setNode(graphName1)({ prop: 'someProp' });
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'node.id',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'node.id',
+                }),
+            );
 
             setNode(graphName1)(undefined);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'node',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'node',
+                }),
+            );
 
             expect(getState()).toEqual(initialState);
             expect(dispatch).not.toBeCalled();

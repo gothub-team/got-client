@@ -3,9 +3,9 @@ import { MISSING_PARAM_ERROR } from '../errors.js';
 
 describe('store:Views', () => {
     describe('selectView', () => {
-    // Basic
+        // Basic
         test('should select the correct view tree based on the given view (without alias)', async () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const from1Id = 'from1';
             const node1Id = 'node1';
             const node2Id = 'node2';
@@ -14,7 +14,7 @@ describe('store:Views', () => {
             const view = {
                 [from1Id]: {
                     edges: {
-                        [edgeTypes]: { },
+                        [edgeTypes]: {},
                     },
                 },
             };
@@ -39,9 +39,7 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
@@ -61,10 +59,10 @@ describe('store:Views', () => {
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node1Id]);
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node2Id]);
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node3Id]);
-        /* #endregion */
+            /* #endregion */
         });
         test('should select the correct view tree based on the given view (with alias)', async () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const from1Id = 'from1';
             const node1Id = 'node1';
             const node2Id = 'node2';
@@ -103,9 +101,7 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
@@ -125,10 +121,10 @@ describe('store:Views', () => {
             expect(viewTree).toHaveProperty([aliasNode, aliasEdge, node1Id]);
             expect(viewTree).toHaveProperty([aliasNode, aliasEdge, node2Id]);
             expect(viewTree).toHaveProperty([aliasNode, aliasEdge, node3Id]);
-        /* #endregion */
+            /* #endregion */
         });
         test('should always include the node IDs in the node views (without alias)', async () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const from1Id = 'from1';
             const node1Id = 'node1';
             const node2Id = 'node2';
@@ -137,7 +133,7 @@ describe('store:Views', () => {
             const view = {
                 [from1Id]: {
                     edges: {
-                        [edgeTypes]: { },
+                        [edgeTypes]: {},
                     },
                 },
             };
@@ -162,9 +158,7 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
@@ -182,7 +176,7 @@ describe('store:Views', () => {
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node1Id, 'nodeId'], node1Id);
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node2Id, 'nodeId'], node2Id);
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node3Id, 'nodeId'], node3Id);
-        /* #endregion */
+            /* #endregion */
         });
         // reverse edges
         test('should select the correct view tree with a reversed edge based on the given view (without alias)', async () => {
@@ -231,15 +225,13 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
                 main: { graph },
             });
-                /* #endregion */
+            /* #endregion */
 
             /* #region Execution and Validation */
             const viewTree = select(selectView('main')(view));
@@ -305,15 +297,13 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
                 main: { graph },
             });
-                /* #endregion */
+            /* #endregion */
 
             /* #region Execution and Validation */
             const viewTree = select(selectView('main')(view));
@@ -331,7 +321,7 @@ describe('store:Views', () => {
         });
         // should stack multiple graphs correctly
         test('stack multiple graphs correctly', async () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const from1Id = 'from1';
             const node1Id = 'node1';
             const node2Id = 'node2';
@@ -396,9 +386,7 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
@@ -421,11 +409,11 @@ describe('store:Views', () => {
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node1Id, 'node', 'value'], 'newValue');
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node2Id]);
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node3Id]);
-        /* #endregion */
+            /* #endregion */
         });
         // Includes
         test('should include nodes for nodes and edges', async () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const from1Id = 'from1';
             const node1Id = 'node1';
             const from1 = { id: from1Id, value: 'value' };
@@ -458,9 +446,7 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
@@ -476,10 +462,10 @@ describe('store:Views', () => {
             expect(viewTree).toHaveProperty([from1Id, 'node'], from1);
             // from/to nodes
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node1Id, 'node'], node1);
-        /* #endregion */
+            /* #endregion */
         });
         test('should include metadata for nodes and edges', async () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const from1Id = 'from1';
             const node1Id = 'node1';
             const node2Id = 'node2';
@@ -509,9 +495,7 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
@@ -526,10 +510,10 @@ describe('store:Views', () => {
             // from/to nodes
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node1Id, 'metadata'], node1Metadata);
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node2Id, 'metadata'], node2Metadata);
-        /* #endregion */
+            /* #endregion */
         });
         test('should include rights for nodes and edges', async () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const from1Id = 'from1';
             const node1Id = 'node1';
             const email = 'some@mail.me';
@@ -563,9 +547,7 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
@@ -581,10 +563,10 @@ describe('store:Views', () => {
             expect(viewTree).toHaveProperty([from1Id, 'rights'], from1Rights);
             // from/to nodes
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node1Id, 'rights'], node1Rights);
-        /* #endregion */
+            /* #endregion */
         });
         test('should include files for nodes and edges', async () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const from1Id = 'from1';
             const node1Id = 'node1';
             const from1Files = { someFile: { url: 'some.url/file1.txt' } };
@@ -617,9 +599,7 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
@@ -635,7 +615,7 @@ describe('store:Views', () => {
             expect(viewTree).toHaveProperty([from1Id, 'files'], from1Files);
             // from/to nodes
             expect(viewTree).toHaveProperty([from1Id, edgeTypes, node1Id, 'files'], node1Files);
-        /* #endregion */
+            /* #endregion */
         });
         test('shouldinclude all props for reverse edges', async () => {
             /* #region Test Bed Creation */
@@ -698,15 +678,13 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                },
+                store: { selectView },
                 select,
                 onError,
             } = createTestStore({
                 main: { graph },
             });
-                /* #endregion */
+            /* #endregion */
 
             /* #region Execution and Validation */
             const viewTree = select(selectView('main')(view));
@@ -728,7 +706,7 @@ describe('store:Views', () => {
         });
         // Errors
         test('should call `onError` in case of invalid input', async () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const view = {};
 
             const {
@@ -741,38 +719,44 @@ describe('store:Views', () => {
 
             /* #region Execution and Validation */
             const output1 = select(selectView()(view));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'stack',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'stack',
+                }),
+            );
             expect(output1).toBeUndefined();
 
             const output2 = select(selectView('main')());
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'view',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'view',
+                }),
+            );
             expect(output2).toBeUndefined();
 
             expect(dispatch).not.toBeCalled();
-        /* #endregion */
+            /* #endregion */
         });
     });
 
     describe('performance', () => {
         const testPerformance = (numParents, numChildren, numChildrenChildren, expectedTime) => {
-            const totalNum = numParents + (numParents * numChildren) + (numParents * numChildren * numChildrenChildren);
+            const totalNum = numParents + numParents * numChildren + numParents * numChildren * numChildrenChildren;
             test(`should select ${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) in under ${expectedTime}ms`, () => {
                 const runTimes = 10;
 
                 let totalTime = 0;
                 for (let counter = 0; counter < runTimes; counter += 1) {
                     const {
-                        store: {
-                            selectView,
-                        },
+                        store: { selectView },
                         select,
-                    } = createTestStore(generateRandomTestData(numParents, numChildren, numChildrenChildren), undefined, false);
+                    } = createTestStore(
+                        generateRandomTestData(numParents, numChildren, numChildrenChildren),
+                        undefined,
+                        false,
+                    );
 
                     const start = performance.now();
 
@@ -783,7 +767,11 @@ describe('store:Views', () => {
                     totalTime += runTime;
                 }
 
-                console.log(`${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in `, totalTime / runTimes, 'ms');
+                console.log(
+                    `${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in `,
+                    totalTime / runTimes,
+                    'ms',
+                );
 
                 expect(totalTime / runTimes).toBeLessThanOrEqual(expectedTime);
             });
@@ -799,7 +787,7 @@ describe('store:Views', () => {
 
     describe('getView', () => {
         test('should return the same value as select(selectView) (should select the correct view tree based on the given view (without alias))', () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const from1Id = 'from1';
             const node1Id = 'node1';
             const node2Id = 'node2';
@@ -808,7 +796,7 @@ describe('store:Views', () => {
             const view = {
                 [from1Id]: {
                     edges: {
-                        [edgeTypes]: { },
+                        [edgeTypes]: {},
                     },
                 },
             };
@@ -833,10 +821,7 @@ describe('store:Views', () => {
             };
 
             const {
-                store: {
-                    selectView,
-                    getView,
-                },
+                store: { selectView, getView },
                 select,
                 onError,
             } = createTestStore({
@@ -873,7 +858,7 @@ describe('store:Views', () => {
             expect(getterOutput).toHaveProperty([from1Id, edgeTypes, node3Id]);
             /* #endregion */
 
-        /* #endregion */
+            /* #endregion */
         });
     });
 });

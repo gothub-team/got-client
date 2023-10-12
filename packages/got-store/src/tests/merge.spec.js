@@ -1938,11 +1938,7 @@ describe('store:merge', () => {
                     const testData = generateRandomTestData(numParents, numChildren, numChildrenChildren);
                     const {
                         store: { mergeGraph },
-                    } = createTestStore(
-                        testData,
-                        undefined,
-                        false,
-                    );
+                    } = createTestStore(testData, undefined, false);
 
                     const {
                         main: { graph },
