@@ -420,7 +420,7 @@ export const createRawStore = ({ api, dispatch, select }) => {
             for (let i = 0; i < keys.length; i += 1) {
                 const toId = keys[i];
                 const metadata = queryObj.reverse ? selectMetadata(stack, edgeTypes, toId, nodeId, state) : values[i];
-                if (!metadata) return;
+                if (!metadata) continue;
 
                 if (metadata) {
                     edgeBag[toId] = queryNode(queryObj, toId, metadata);
