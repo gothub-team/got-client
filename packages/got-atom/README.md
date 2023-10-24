@@ -134,10 +134,16 @@ const DarkmodeToggle = () => {
 
 ## Persistent states
 
-If the key points to a value in the local store, persistAtom will set the atom. It then subscribes to the atom and
-updates the local store on every change.
+The `persistAtom` function provides a mechanism to persist an atom's value in the browser's localStorage. When the
+provided key points to a value in the local store, `persistAtom` will set the atom's value with it. Subsequently, it
+subscribes to the atom's changes and updates the local store on every change.
 
-We can also pass transform functions, if we only want to modify the state or store a smaller part of it.
+For scenarios where you don't want to save the entire atom state or want to transform the state before saving, you can
+use the `outbound` and `inbound` transform functions.
+
+-   `outbound`: Transforms the atom state before it's saved to the local store.
+-   `inbound`: Used when reading from the local store to potentially transform the saved state back to the atom's
+    expected shape.
 
 ```js
 const settingsAtom = atom({
@@ -145,14 +151,14 @@ const settingsAtom = atom({
     language: 'en',
 });
 
-// will simply get/set state
+// basic usage
 persistAtom(settingsAtom, 'settings');
 
-// only save language settings
+// with transform functions
 persistAtom(settingsAtom, 'language', {
-    // only return language to be saved
+    // only save the language
     outbound: (state) => state.language,
-    // insert language setting from saved
+    // merge saved language with current state
     inbound: (localState, state) => ({ ...state, language: localState }),
 });
 ```
