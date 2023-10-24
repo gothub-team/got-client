@@ -131,3 +131,28 @@ const DarkmodeToggle = () => {
     );
 };
 ```
+
+## Persistent states
+
+If the key points to a value in the local store, persistAtom will set the atom. It then subscribes to the atom and
+updates the local store on every change.
+
+We can also pass transform functions, if we only want to modify the state or store a smaller part of it.
+
+```js
+const settingsAtom = atom({
+    darkmode: true,
+    language: 'en',
+});
+
+// will simply get/set state
+persistAtom(settingsAtom, 'settings');
+
+// only save language settings
+persistAtom(settingsAtom, 'language', {
+    // only return language to be saved
+    outbound: (state) => state.language,
+    // insert language setting from saved
+    inbound: (localState, state) => ({ ...state, language: localState }),
+});
+```
