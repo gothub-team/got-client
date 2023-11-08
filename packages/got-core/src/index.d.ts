@@ -654,8 +654,8 @@ export declare type GetEdgeToIdsFn = (
  * the edgeTypes and the resulting view path (with node/edge aliases).
  */
 export declare const doViewGraph: (params: {
-    nodes: doViewGraphNodesFn;
-    edges: doViewGraphEdgesFn;
+    nodes?: doViewGraphNodesFn;
+    edges?: doViewGraphEdgesFn;
 }) => (view: View) => (fnGetEdgeToIds: GetEdgeToIdsFn) => void;
 
 /**
