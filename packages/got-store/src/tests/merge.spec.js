@@ -1,4 +1,4 @@
-import { createTestStore } from './shared.js';
+import { createTestStore, generateRandomTestData } from './shared.js';
 import { MISSING_PARAM_ERROR } from '../errors.js';
 
 describe('store:merge', () => {
@@ -700,7 +700,10 @@ describe('store:merge', () => {
             merge(graphName2, graphName1); // merge stack2 into stack1
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'edges', fromType1, fromId1, toType1, nodeId1], false);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'edges', fromType1, fromId1, toType1, nodeId1],
+                false,
+            );
             /* #endregion */
         });
         test('should keep edge marked with undefined for deletion', () => {
@@ -751,7 +754,10 @@ describe('store:merge', () => {
             merge(graphName2, graphName1); // merge stack2 into stack1
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'edges', fromType1, fromId1, toType1, nodeId1], undefined);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'edges', fromType1, fromId1, toType1, nodeId1],
+                undefined,
+            );
             /* #endregion */
         });
     });
@@ -1033,7 +1039,10 @@ describe('store:merge', () => {
             merge(graphName2, graphName1); // merge stack2 into stack1
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1], false);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1],
+                false,
+            );
             /* #endregion */
         });
         test('should keep reverse edge marked as undefined', () => {
@@ -1087,7 +1096,10 @@ describe('store:merge', () => {
             merge(graphName2, graphName1); // merge stack2 into stack1
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1], undefined);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1],
+                undefined,
+            );
             /* #endregion */
         });
     });
@@ -1729,7 +1741,7 @@ describe('store:merge', () => {
     describe('Error handling', () => {
         // Missing Graphs in state
         test('should not modify toGraph if fromGraph does not exist', () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const nodeId1 = 'node1';
             const node1 = { id: nodeId1 };
             const graphName1 = 'graph1';
@@ -1756,10 +1768,10 @@ describe('store:merge', () => {
 
             expect(onError).not.toBeCalled();
             expect(getState()[graphName1]).toEqual(initialState[graphName1]);
-        /* #endregion */
+            /* #endregion */
         });
         test('should copy graph if toGraph does not exist', () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const nodeId1 = 'node1';
             const nodeId2 = 'node2';
             const node1 = { id: nodeId1 };
@@ -1807,11 +1819,11 @@ describe('store:merge', () => {
             expect(onError).not.toBeCalled();
             expect(getState()[graphName1]).toEqual(expectedState[graphName1]);
             expect(getState()[graphName2]).toEqual(expectedState[graphName2]);
-        /* #endregion */
+            /* #endregion */
         });
         // Invalid Input
         test('should call `onError` in case of invalid input', () => {
-        /* #region Test Bed Creation */
+            /* #region Test Bed Creation */
             const nodeId1 = 'node1';
             const nodeId2 = 'node2';
 
@@ -1847,20 +1859,115 @@ describe('store:merge', () => {
 
             /* #region Execution and Validation */
             merge(undefined, graphName1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromGraphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromGraphName',
+                }),
+            );
 
             merge(graphName2, undefined);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toGraphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toGraphName',
+                }),
+            );
 
             expect(getState()).toEqual(initialState);
             expect(dispatch).not.toBeCalled();
-        /* #endregion */
+            /* #endregion */
         });
+    });
+
+    describe('performance different graph', () => {
+        const testPerformance = (numParents, numChildren, numChildrenChildren, expectedTime) => {
+            const totalNum = numParents + numParents * numChildren + numParents * numChildren * numChildrenChildren;
+            test(`should merge ${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) in under ${expectedTime}ms`, () => {
+                const runTimes = 10;
+
+                let totalTime = 0;
+                for (let counter = 0; counter < runTimes; counter += 1) {
+                    const {
+                        store: { mergeGraph },
+                    } = createTestStore(
+                        generateRandomTestData(numParents, numChildren, numChildrenChildren),
+                        undefined,
+                        false,
+                    );
+
+                    const {
+                        main: { graph },
+                    } = generateRandomTestData(numParents, numChildren, numChildrenChildren);
+
+                    const start = performance.now();
+
+                    mergeGraph(graph, 'main');
+
+                    const end = performance.now();
+                    const runTime = end - start;
+                    totalTime += runTime;
+                }
+
+                console.log(
+                    `${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in `,
+                    totalTime / runTimes,
+                    'ms',
+                );
+
+                expect(totalTime / runTimes).toBeLessThanOrEqual(expectedTime);
+            });
+        };
+
+        testPerformance(1000, 0, 0, 10);
+        testPerformance(1, 1000, 0, 10);
+        testPerformance(1, 1, 1000, 10);
+        testPerformance(100, 10, 0, 10);
+        testPerformance(100, 100, 0, 100);
+        testPerformance(100, 100, 10, 1000);
+    });
+
+    describe('performance same graph', () => {
+        const testPerformance = (numParents, numChildren, numChildrenChildren, expectedTime) => {
+            const totalNum = numParents + numParents * numChildren + numParents * numChildren * numChildrenChildren;
+            test(`should merge ${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) in under ${expectedTime}ms`, () => {
+                const runTimes = 10;
+
+                let totalTime = 0;
+                for (let counter = 0; counter < runTimes; counter += 1) {
+                    const testData = generateRandomTestData(numParents, numChildren, numChildrenChildren);
+                    const {
+                        store: { mergeGraph },
+                    } = createTestStore(testData, undefined, false);
+
+                    const {
+                        main: { graph },
+                    } = testData;
+
+                    const start = performance.now();
+
+                    mergeGraph(graph, 'main');
+
+                    const end = performance.now();
+                    const runTime = end - start;
+                    totalTime += runTime;
+                }
+
+                console.log(
+                    `${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in `,
+                    totalTime / runTimes,
+                    'ms',
+                );
+
+                expect(totalTime / runTimes).toBeLessThanOrEqual(expectedTime);
+            });
+        };
+
+        testPerformance(1000, 0, 0, 10);
+        testPerformance(1, 1000, 0, 10);
+        testPerformance(1, 1, 1000, 10);
+        testPerformance(100, 10, 0, 10);
+        testPerformance(100, 100, 0, 100);
+        testPerformance(100, 100, 10, 1000);
     });
 });

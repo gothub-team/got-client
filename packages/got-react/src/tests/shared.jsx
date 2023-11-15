@@ -9,7 +9,7 @@ import '@testing-library/jest-dom';
 import { generateNewRandom } from '@gothub-team/got-util';
 import { gotReducer, createHooks } from '../index.js';
 
-export const delay = ms => new Promise(resolve => setTimeout(() => resolve(ms), ms));
+export const delay = (ms) => new Promise((resolve) => setTimeout(() => resolve(ms), ms));
 
 export const testReducer = (state = 0, action) => {
     if (action.type === 'TEST_ACTION') {
@@ -24,17 +24,15 @@ export const getMockSetup = () => {
         got: gotReducer,
         test: testReducer,
     });
-    const reduxStore = createReduxStore(
-        rootReducer,
-    );
+    const reduxStore = createReduxStore(rootReducer);
 
     const store = createStore({
         dispatch: reduxStore.dispatch,
-        select: selector => selector(R.propOr({}, 'got', reduxStore.getState())),
+        select: (selector) => selector(R.propOr({}, 'got', reduxStore.getState())),
         onWarn: () => {},
     });
 
-    const mockStore = R.map(fn => jest.fn(fn), store);
+    const mockStore = R.map((fn) => jest.fn(fn), store);
 
     const { useGraph } = createHooks({
         baseState: R.propOr({}, 'got'),
@@ -49,10 +47,10 @@ export const getMockSetup = () => {
     };
 };
 
-export const createTestComponent = _Component => {
+export const createTestComponent = (_Component) => {
     const renderPayloads = [];
 
-    const onRender = payload => {
+    const onRender = (payload) => {
         renderPayloads.push(payload);
     };
 
@@ -63,17 +61,14 @@ export const createTestComponent = _Component => {
 
     const TestComponent = ({ ...props }) => (
         <Provider store={reduxStore}>
-            <Component
-                useGraph={useGraph}
-                onRender={onRender}
-                gotStore={store}
-                {...props}
-            />
+            <Component useGraph={useGraph} onRender={onRender} gotStore={store} {...props} />
         </Provider>
     );
 
     return {
-        TestComponent, ...mockSetup, renderPayloads,
+        TestComponent,
+        ...mockSetup,
+        renderPayloads,
     };
 };
 

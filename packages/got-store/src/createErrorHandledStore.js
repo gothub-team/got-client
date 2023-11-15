@@ -2,13 +2,7 @@
 import { validateInput } from './errors.js';
 
 export const createErrorHandledStore = (options, store) => {
-    const {
-        api,
-        dispatch,
-        select,
-        onError = console.error,
-        onWarn = console.warn,
-    } = options || {};
+    const { api, dispatch, select, onError = console.error, onWarn = console.warn } = options || {};
 
     const validateError = validateInput(onError);
     const validateWarn = validateInput(onWarn);
@@ -56,7 +50,7 @@ export const createErrorHandledStore = (options, store) => {
             return store.mergeOverwriteGraph(fromGraph, toGraphName);
         }
     };
-    const clear = graphName => {
+    const clear = (graphName) => {
         if (
             validateError({
                 graphName,

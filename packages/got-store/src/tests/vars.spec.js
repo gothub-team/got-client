@@ -145,17 +145,21 @@ describe('store:Vars', () => {
 
             /* #region Execution and Validation */
             const output1 = select(selectVar()(varName));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'stack',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'stack',
+                }),
+            );
             expect(output1).toBeUndefined();
 
             const output2 = select(selectVar(graphName1)(undefined));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'name',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'name',
+                }),
+            );
             expect(output2).toBeUndefined();
 
             expect(dispatch).not.toBeCalled();
@@ -323,16 +327,20 @@ describe('store:Vars', () => {
 
             /* #region Execution and Validation */
             setVar(undefined)(varName, varValue1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'graphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'graphName',
+                }),
+            );
 
             setVar(graphName1)(undefined, varValue1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'name',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'name',
+                }),
+            );
 
             expect(getState()).toEqual(initialState);
             expect(dispatch).not.toBeCalled();

@@ -1,4 +1,3 @@
-
 export declare interface Node {
     id: string;
     [key: string]: any;
@@ -12,28 +11,29 @@ export declare type FORBIDDEN = {
     name: 'NoWriteRightError' | 'NoAdminRightError';
 };
 export declare type GraphElementResult = OK | FORBIDDEN;
-export declare type UploadElementResult = {
-    statusCode: 200;
-    uploadUrls: Array<string>;
-    uploadId?: string;
-} | FORBIDDEN;
+export declare type UploadElementResult =
+    | {
+          statusCode: 200;
+          uploadUrls: Array<string>;
+          uploadId?: string;
+      }
+    | FORBIDDEN;
 
-export declare type PushBody = Omit<GraphLayer<
-Node | boolean,
-EdgeMetadataView | boolean,
-never,
-boolean,
-string,
-UploadNodeFileView
->, 'index'>;
-export declare type PushResult = Omit<GraphLayer<
-    GraphElementResult,
-    GraphElementResult,
-    never,
-    GraphElementResult,
-    GraphElementResult,
-    UploadElementResult
->, 'index'>;
+export declare type PushBody = Omit<
+    GraphLayer<Node | boolean, EdgeMetadataView | boolean, never, boolean, string, UploadNodeFileView>,
+    'index'
+>;
+export declare type PushResult = Omit<
+    GraphLayer<
+        GraphElementResult,
+        GraphElementResult,
+        never,
+        GraphElementResult,
+        GraphElementResult,
+        UploadElementResult
+    >,
+    'index'
+>;
 
 export declare interface GraphError<TElement> extends FORBIDDEN {
     element: TElement;
@@ -80,7 +80,7 @@ export declare interface GraphLayer<TNode, TEdge, TReverseEdge, TRight, TInherit
                 };
             };
         };
-    }
+    };
     rights?: {
         [nodeId: string]: {
             user?: {
@@ -89,7 +89,7 @@ export declare interface GraphLayer<TNode, TEdge, TReverseEdge, TRight, TInherit
                     write: TRight;
                     admin: TRight;
                 };
-            },
+            };
             inherit?: {
                 from: TInheritRights;
             };
@@ -97,9 +97,9 @@ export declare interface GraphLayer<TNode, TEdge, TReverseEdge, TRight, TInherit
     };
     files?: {
         [nodeId: string]: {
-            [prop: string]: TFile,
+            [prop: string]: TFile;
         };
-    }
+    };
 }
 
 export declare interface GraphState {
@@ -111,11 +111,11 @@ export declare interface GraphState {
     files: {
         [nodeId: string]: {
             [name: string]: {
-                status: string,
-                file: Blob,
-            }
-        }
-    }
+                status: string;
+                file: Blob;
+            };
+        };
+    };
 }
 
 export declare interface State {
@@ -227,7 +227,7 @@ export declare type SetVarFn = (
 /**
  * Declares a function type that returns a node by the given ID from the current
  * graph or the graphs stacked below.
- * 
+ *
  * @returns The requested node body.
  */
 export declare type GetNodeFn<TReturn> = (
@@ -247,7 +247,6 @@ export declare type SetNodeFn = (
     node: Node,
 ) => void;
 
-
 export declare type GetMetadataFn<TReturn> = (
     /**
      * `fromType` and `toType` of the given edge seperated with `/`
@@ -258,12 +257,12 @@ export declare type GetMetadataFn<TReturn> = (
     /**
      * The node ID which the edge is pointing from.
      */
-    fromId: string
+    fromId: string,
 ) => (
     /**
      * The node ID which the edge is pointing to.
      */
-     toId: string
+    toId: string,
 ) => TReturn;
 
 /**
@@ -278,11 +277,11 @@ export declare type GetEdgeFn<TReturn> = (
      */
     edgeTypes: string,
 ) => (
-        /**
-         * The node ID which the edge is pointing from.
-         */
-        fromId: string
-    ) => TReturn;
+    /**
+     * The node ID which the edge is pointing from.
+     */
+    fromId: string,
+) => TReturn;
 
 /**
  * Declares a curried function type that operates on a given reverse edge index with a given nodeId.
@@ -295,11 +294,11 @@ export declare type GetReverseEdgeFn<TReturn> = (
      * @example 'book/chapter'
      */
     edgeTypes: string,
- ) => (
+) => (
     /**
      * The node ID which the edge is pointing to.
      */
-    toId: string
+    toId: string,
 ) => TReturn;
 
 /**
@@ -312,23 +311,23 @@ export declare type SetEdgeFn = (
      * `fromType` and `toType` of the given edge seperated with `/`
      * @example 'book/chapter'
      */
-    edgeTypes: string
+    edgeTypes: string,
 ) => (
-        /**
-         * The node ID which the edge is pointing from.
-         */
-        fromId: string
-    ) => (
-            /**
-             * The node which the edge is pointing to.
-             */
-            toNode: Node,
+    /**
+     * The node ID which the edge is pointing from.
+     */
+    fromId: string,
+) => (
+    /**
+     * The node which the edge is pointing to.
+     */
+    toNode: Node,
 
-            /**
-             * The metadata to be set on the given edge.
-             */
-            metadata?: EdgeMetadataView,
-        ) => void;
+    /**
+     * The metadata to be set on the given edge.
+     */
+    metadata?: EdgeMetadataView,
+) => void;
 
 /**
  * Declares a function type that returns a rights view for the given node ID.
@@ -348,19 +347,19 @@ export declare type SetRightsFn = (
     /**
      * The node ID which the rights operation should be executed on.
      */
-    nodeId: string
+    nodeId: string,
 ) => (
-        /**
-         * The users email which rights should be granted or revoked for.
-         */
-        email: string,
-        /**
-         * The right types which should be granted or revoked. `true` will grant the
-         * right type, `false` will revoke the right type whereas `undefined` will
-         * perform no action for that right type.
-         */
-        rights: RightTypes,
-    ) => void;
+    /**
+     * The users email which rights should be granted or revoked for.
+     */
+    email: string,
+    /**
+     * The right types which should be granted or revoked. `true` will grant the
+     * right type, `false` will revoke the right type whereas `undefined` will
+     * perform no action for that right type.
+     */
+    rights: RightTypes,
+) => void;
 
 /**
  * Delares a curried function type that grants or revokes rights for a given role
@@ -370,19 +369,41 @@ export declare type SetRoleRightsFn = (
     /**
      * The node ID which the rights operation should be executed on.
      */
-    nodeId: string
+    nodeId: string,
 ) => (
-        /**
-         * The role which rights should be granted or revoked for.
-         */
-        role: string,
-        /**
-         * The right types which should be granted or revoked. `true` will grant the
-         * right type, `false` will revoke the right type whereas `undefined` will
-         * perform no action for that right type.
-         */
-        rights: RightTypes,
-    ) => void;
+    /**
+     * The role which rights should be granted or revoked for.
+     */
+    role: string,
+    /**
+     * The right types which should be granted or revoked. `true` will grant the
+     * right type, `false` will revoke the right type whereas `undefined` will
+     * perform no action for that right type.
+     */
+    rights: RightTypes,
+) => void;
+
+/**
+ * Delares a curried function type that grants or revokes rights for a given role
+ * on a given node.
+ */
+export declare type SetRoleRightsFn = (
+    /**
+     * The node ID which the rights operation should be executed on.
+     */
+    nodeId: string,
+) => (
+    /**
+     * The role which rights should be granted or revoked for.
+     */
+    role: string,
+    /**
+     * The right types which should be granted or revoked. `true` will grant the
+     * right type, `false` will revoke the right type whereas `undefined` will
+     * perform no action for that right type.
+     */
+    rights: RightTypes,
+) => void;
 
 /**
  * Delares a curried function type that inherits all rights from one node to another.
@@ -391,13 +412,13 @@ export declare type InheritRightsFn = (
     /**
      * The node ID which should inherit rights from another node.
      */
-    nodeId: string
+    nodeId: string,
 ) => (
-        /**
-         * The node ID which rights should be inherited from.
-         */
-        fromId: string
-    ) => void;
+    /**
+     * The node ID which rights should be inherited from.
+     */
+    fromId: string,
+) => void;
 
 /**
  * Declares a function type that returns a files view for the given node ID.
@@ -419,19 +440,19 @@ export declare type SetFileFn = (
      */
     nodeId: string,
 ) => (
-        /**
-         * The prop name which the file should be attachted as.
-         */
-        prop: string,
-        /**
-         * The filename which the file should be attached as.
-         */
-        filename: string,
-        /**
-         * The file to be attached to the node. Must contain a valid `contentType`.
-         */
-        file: Blob,
-    ) => void;
+    /**
+     * The prop name which the file should be attachted as.
+     */
+    prop: string,
+    /**
+     * The filename which the file should be attached as.
+     */
+    filename: string,
+    /**
+     * The file to be attached to the node. Must contain a valid `contentType`.
+     */
+    file: Blob,
+) => void;
 
 /**
  * Declares a function type that removes a file from a given node
@@ -443,12 +464,11 @@ export declare type RemoveFileFn = (
      */
     nodeId: string,
 ) => (
-        /**
-         * The prop name which the file should be removed from.
-         */
-        prop: string,
-    ) => void;
-
+    /**
+     * The prop name which the file should be removed from.
+     */
+    prop: string,
+) => void;
 
 export declare type RightTypes = {
     /**
@@ -468,38 +488,36 @@ export declare type RightTypes = {
     admin?: boolean;
 };
 export declare type NodeEdgesView = {
-    [toId: string]: EdgeMetadataView | boolean,
-}
+    [toId: string]: EdgeMetadataView | boolean;
+};
 export declare type NodeRightsView = {
     user: {
         [email: string]: RightTypes;
-    }
-}
+    };
+};
 export declare type NodeFilesView = {
     [propName: string]: NodeFileView | boolean;
-}
+};
 
 export declare type NodeFileView = DownloadNodeFileView | UploadNodeFileView;
 
 export declare type DownloadNodeFileView = {
-    url: string,
-    etag: string,
-    contentType: string,
-    modifiedDate: string,
-}
+    url: string;
+    etag: string;
+    contentType: string;
+    modifiedDate: string;
+};
 
 export declare type UploadNodeFileView = {
-    filename: string,
-    contentType: string,
-    fileSize: number,
-    partSize?: number,
-}
+    filename: string;
+    contentType: string;
+    fileSize: number;
+    partSize?: number;
+};
 
 export declare type EdgeMetadataView = {
     [key: string]: any;
-}
-
-
+};
 
 /**
  * Checks if the given edgeTypes string is valid to be used with got functions.
@@ -582,7 +600,7 @@ export declare const mergeGraphsLeft: (left: Graph, right: Graph) => Graph;
  * True will only overwrite if the existing value is False or Undefined.
  * Graph objects marked with undefined will have their paths removed.
  */
- export declare const mergeOverwriteGraphsRight: (left: Graph, right: Graph) => Graph;
+export declare const mergeOverwriteGraphsRight: (left: Graph, right: Graph) => Graph;
 
 /**
  * Merges two graphs, data of the left graph will overwrite data of the right graph.
@@ -592,7 +610,7 @@ export declare const mergeGraphsLeft: (left: Graph, right: Graph) => Graph;
  * True will only overwrite if the existing value is False or Undefined.
  * Graph objects marked with undefined will have their paths removed.
  */
- export declare const mergeOverwriteGraphsLeft: (left: Graph, right: Graph) => Graph;
+export declare const mergeOverwriteGraphsLeft: (left: Graph, right: Graph) => Graph;
 
 /**
  * Checks if the given query object has set the flag to include node
@@ -624,34 +642,51 @@ export declare const includeFiles: (queryObj: NodeView | EdgeView) => boolean;
  */
 export declare const isReverse: (queryObj: NodeView | EdgeView) => boolean;
 
+export declare type doViewGraphNodesFn = (
+    queryObj: NodeView | EdgeView,
+    nodeId: string,
+    edgePath: string,
+    NodeViewPath: string[],
+    metadata: EdgeMetadataView | boolean,
+) => void;
+export declare type doViewGraphEdgesFn = (
+    nestedQueryObj: NodeView | EdgeView,
+    nodeId: string,
+    edgeTypes: string,
+    edgeViewPath: string[],
+) => void;
 
-export declare type doViewGraphNodesFn = (queryObj: NodeView | EdgeView, nodeId: string, edgePath: string, NodeViewPath: string[], metadata: EdgeMetadataView | boolean ) => void;
-export declare type doViewGraphEdgesFn = (nestedQueryObj: NodeView | EdgeView, nodeId: string, edgeTypes: string, edgeViewPath: string[]) => void;
-
-export declare type GetEdgeToIdsFn = (fromType: string, nodeId: string, toType: string, options: { reverse?: boolean }) => {
-    [toI: string]: EdgeMetadataView | boolean,
-}
+export declare type GetEdgeToIdsFn = (
+    fromType: string,
+    nodeId: string,
+    toType: string,
+    options: { reverse?: boolean },
+) => {
+    [toI: string]: EdgeMetadataView | boolean;
+};
 
 /**
  * Curried function to recursively traverse a graph with the help of the nodeIds found by the fnGetEdgeToIds following the given view.
- * 
+ *
  * For every node covered by the given view, the nodes callback will be invoked with the relevant query object, the nodes ID,
  * the edgePath pointing to that node (if not a root node of the view), the path for the node in a resulting view path (with node/edge aliases)
  * and the metadata of the edge pointing towards this node (if not a root node of the view).
- * 
+ *
  * For every edge covered by the given view, the edge callback will be invoked with the relevant query object, the fromId of the edge,
  * the edgeTypes and the resulting view path (with node/edge aliases).
  */
-export declare const doViewGraph: ({nodes: doViewGraphNodesFn, edges: doViewGraphEdgesFn}) => 
-    (view: View) => 
-        (fnGetEdgeToIds: GetEdgeToIdsFn) => 
-            void;
+export declare const doViewGraph: (params: {
+    nodes: doViewGraphNodesFn;
+    edges: doViewGraphEdgesFn;
+}) => (view: View) => (fnGetEdgeToIds: GetEdgeToIdsFn) => void;
 
 /**
  * Curried function to map over a subgraph of a given graph defined by a given view.
  * fnMap will be applied to every object relevat to the given view, with the result being added to the graph to be returned.
  */
-export declare const pickMapGraph: (fnMap: (object: any, path: string[]) => any) => (view: View) => (graph: Graph) => Graph;
+export declare const pickMapGraph: (
+    fnMap: (object: any, path: string[]) => any,
+) => (view: View) => (graph: Graph) => Graph;
 
 /**
  * Curried function to Create a subgraph of a given graph defined by a given view.
@@ -663,7 +698,12 @@ export declare const filterGraph: (view: View) => (graph: Graph) => Graph;
  * Elements found at the given path in every layer of the stack will be merged with fnMergeLeft,
  * which merges element prioritizing data of the left input.
  */
-export declare const selectPathFromStack: (path: string[], stack: string[], fnMergeLeft: (left: any, right: any) => any, state: State) => any;
+export declare const selectPathFromStack: (
+    path: string[],
+    stack: string[],
+    fnMergeLeft: (left: any, right: any) => any,
+    state: State,
+) => any;
 
 /**
  * Selects a map of toIds and their edge metadata from a given graph.
@@ -675,14 +715,20 @@ export declare const selectEdgeIds: (graph: Graph) => GetEdgeToIdsFn;
  */
 export declare const createSuccessAndErrorGraphs: (pushedGraph: Graph, apiResult: PushResult) => [Graph, ErrorGraph];
 
-/** 
+/**
  * Selects the nodes edges view in a given stack from the state.
  * Elements found at the given path in every layer of the stack will be merged prioritizing data higher up the stack.
  */
-export declare const selectEdgeFromStack = (fromType: string, from: string, toType: string, stack: string[], state: State) => NodeEdgesView;
+export declare const selectEdgeFromStack: (
+    fromType: string,
+    from: string,
+    toType: string,
+    stack: string[],
+    state: State,
+) => NodeEdgesView;
 
-/** 
+/**
  * Selects a node in a given stack from the state.
  * Elements found at the given path in every layer of the stack will be merged prioritizing data higher up the stack.
  */
-export declare const selectNodeFromStack = (nodeId: string, stack: string[], state: State) => any;
+export declare const selectNodeFromStack: (nodeId: string, stack: string[], state: State) => any;
