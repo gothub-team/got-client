@@ -384,28 +384,6 @@ export declare type SetRoleRightsFn = (
 ) => void;
 
 /**
- * Delares a curried function type that grants or revokes rights for a given role
- * on a given node.
- */
-export declare type SetRoleRightsFn = (
-    /**
-     * The node ID which the rights operation should be executed on.
-     */
-    nodeId: string,
-) => (
-    /**
-     * The role which rights should be granted or revoked for.
-     */
-    role: string,
-    /**
-     * The right types which should be granted or revoked. `true` will grant the
-     * right type, `false` will revoke the right type whereas `undefined` will
-     * perform no action for that right type.
-     */
-    rights: RightTypes,
-) => void;
-
-/**
  * Delares a curried function type that inherits all rights from one node to another.
  */
 export declare type InheritRightsFn = (
