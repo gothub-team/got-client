@@ -16,7 +16,7 @@ jobs:
   # This workflow contains a single job called "build"
   publish:
     name: "Publish npm packages"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     if: "github.repository_owner == 'gothub-team' && contains(github.event.head_commit.message, '[release]')"
     steps:
     - name: Checkout

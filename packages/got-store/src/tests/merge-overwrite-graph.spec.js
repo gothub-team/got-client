@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { createTestStore } from './shared.js';
+import { createTestStore, generateRandomTestData } from './shared.js';
 import { MISSING_PARAM_ERROR } from '../errors.js';
 
 describe('store:mergeOverwriteGraph', () => {
@@ -97,7 +97,7 @@ describe('store:mergeOverwriteGraph', () => {
                 store: { mergeOverwriteGraph },
                 getState,
                 onError,
-            } = createTestStore({ });
+            } = createTestStore({});
             /* #endregion */
 
             /* #region Execution and Validation */
@@ -840,7 +840,10 @@ describe('store:mergeOverwriteGraph', () => {
             mergeOverwriteGraph(graph, graphName1);
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1], false);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1],
+                false,
+            );
             /* #endregion */
         });
         test('should dissoc reverse edge marked as undefined', () => {
@@ -892,13 +895,16 @@ describe('store:mergeOverwriteGraph', () => {
             mergeOverwriteGraph(graph, graphName1);
 
             expect(onError).not.toBeCalled();
-            const hasPath = R.hasPath([graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1], getState());
+            const hasPath = R.hasPath(
+                [graphName1, 'graph', 'index', 'reverseEdges', toType1, toId1, fromType1, fromId1],
+                getState(),
+            );
             expect(hasPath).toBeFalsy();
             /* #endregion */
         });
     });
 
-    describe('Rights', () => {
+    describe('User Rights', () => {
         test('should merge node rights object into toGraph (seperate nodeIds)', () => {
             /* #region Test Bed Creation */
             const nodeId1 = 'node1';
@@ -1011,6 +1017,134 @@ describe('store:mergeOverwriteGraph', () => {
                     graph: {
                         rights: {
                             [nodeId1]: { user: { [user1]: { read: true } } },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            mergeOverwriteGraph(graph, graphName1);
+
+            expect(onError).not.toBeCalled();
+            const hasPath = R.hasPath([graphName1, 'graph', 'rights', nodeId1], getState());
+            expect(hasPath).toBeFalsy();
+            /* #endregion */
+        });
+    });
+    describe('Role Rights', () => {
+        test('should merge node rights object into toGraph (seperate nodeIds)', () => {
+            /* #region Test Bed Creation */
+            const nodeId1 = 'node1';
+            const nodeId2 = 'node2';
+            const role1 = 'role1';
+            const graphName1 = 'graph1';
+
+            const graph = {
+                rights: {
+                    [nodeId2]: { role: { [role1]: { read: true, admin: true } } },
+                },
+            };
+
+            const {
+                store: { mergeOverwriteGraph },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            mergeOverwriteGraph(graph, graphName1);
+
+            const expectedGraph = {
+                graph: {
+                    rights: {
+                        [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        [nodeId2]: { role: { [role1]: { read: true, admin: true } } },
+                    },
+                },
+            };
+            expect(onError).not.toBeCalled();
+            expect(getState()).toHaveProperty(graphName1, expectedGraph);
+            /* #endregion */
+        });
+        test('should overwrite node rights object in toGraph (overwrite rights)', () => {
+            /* #region Test Bed Creation */
+            const nodeId1 = 'node1';
+            const role1 = 'role1';
+            const graphName1 = 'graph1';
+
+            const graph = {
+                rights: {
+                    [nodeId1]: { role: { [role1]: { read: false, admin: true } } },
+                },
+            };
+
+            const {
+                store: { mergeOverwriteGraph },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true, write: true } } },
+                        },
+                    },
+                },
+            });
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            mergeOverwriteGraph(graph, graphName1);
+
+            const expectedGraph = {
+                graph: {
+                    rights: {
+                        [nodeId1]: {
+                            role: {
+                                [role1]: {
+                                    read: false,
+                                    admin: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            };
+            expect(onError).not.toBeCalled();
+            expect(getState()).toHaveProperty(graphName1, expectedGraph);
+            /* #endregion */
+        });
+        test('should dissoc node rights object marked with undefined', () => {
+            /* #region Test Bed Creation */
+            const nodeId1 = 'node1';
+            const role1 = 'role1';
+            const graphName1 = 'graph1';
+
+            const graph = {
+                rights: {
+                    [nodeId1]: undefined,
+                },
+            };
+
+            const {
+                store: { mergeOverwriteGraph },
+                getState,
+                onError,
+            } = createTestStore({
+                [graphName1]: {
+                    graph: {
+                        rights: {
+                            [nodeId1]: { role: { [role1]: { read: true } } },
                         },
                     },
                 },
@@ -1223,20 +1357,71 @@ describe('store:mergeOverwriteGraph', () => {
 
             /* #region Execution and Validation */
             mergeGraph(undefined, graphName1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromGraph',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromGraph',
+                }),
+            );
 
             mergeGraph({}, undefined);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toGraphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toGraphName',
+                }),
+            );
 
             expect(getState()).toEqual(initialState);
             expect(dispatch).not.toBeCalled();
             /* #endregion */
         });
+    });
+
+    describe('performance', () => {
+        const testPerformance = (numParents, numChildren, numChildrenChildren, expectedTime) => {
+            const totalNum = numParents + numParents * numChildren + numParents * numChildren * numChildrenChildren;
+            test(`should merge ${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) in under ${expectedTime}ms`, () => {
+                const runTimes = 10;
+
+                let totalTime = 0;
+                for (let counter = 0; counter < runTimes; counter += 1) {
+                    const {
+                        store: { mergeOverwriteGraph },
+                    } = createTestStore(
+                        generateRandomTestData(numParents, numChildren, numChildrenChildren),
+                        undefined,
+                        false,
+                    );
+
+                    const {
+                        main: { graph },
+                    } = generateRandomTestData(numParents, numChildren, numChildrenChildren);
+
+                    const start = performance.now();
+
+                    mergeOverwriteGraph(graph, 'main');
+
+                    const end = performance.now();
+                    const runTime = end - start;
+                    totalTime += runTime;
+                }
+
+                console.log(
+                    `${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in `,
+                    totalTime / runTimes,
+                    'ms',
+                );
+
+                expect(totalTime / runTimes).toBeLessThanOrEqual(expectedTime);
+            });
+        };
+
+        testPerformance(1000, 0, 0, 10);
+        testPerformance(1, 1000, 0, 10);
+        testPerformance(1, 1, 1000, 10);
+        testPerformance(100, 10, 0, 10);
+        testPerformance(100, 100, 0, 100);
+        testPerformance(100, 100, 10, 1000);
     });
 });

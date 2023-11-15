@@ -1,16 +1,17 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import * as R from 'ramda';
 import * as uuid from 'uuid';
+import { assocPathMutate } from '@gothub-team/got-util';
+import * as R from 'ramda';
 import { createStore, gotReducer } from '../index.js';
 
-export const createTestStore = (initialState = {}, api = undefined) => {
-    let state = R.clone(initialState);
+export const createTestStore = (initialState = {}, api = undefined, clone = true) => {
+    let state = clone ? R.clone(initialState) : initialState;
 
     const getState = () => state;
 
-    const select = selector => selector(state);
+    const select = (selector) => selector(state);
 
-    const dispatch = jest.fn(action => {
+    const dispatch = jest.fn((action) => {
         try {
             state = gotReducer(state, action);
         } catch (error) {
@@ -23,10 +24,10 @@ export const createTestStore = (initialState = {}, api = undefined) => {
 
     const _api = api
         ? {
-            push: jest.fn(api.push),
-            pull: jest.fn(api.pull),
-            upload: jest.fn(api.upload),
-        }
+              push: jest.fn(api.push),
+              pull: jest.fn(api.pull),
+              upload: jest.fn(api.upload),
+          }
         : undefined;
 
     const store = createStore({
@@ -49,34 +50,54 @@ export const createTestStore = (initialState = {}, api = undefined) => {
     };
 };
 
-export const generateRandomString = (length = 5) => Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, length);
+export const generateRandomString = (length = 5) =>
+    Math.random()
+        .toString(36)
+        .replace(/[^a-z]+/g, '')
+        .substr(0, length);
 
-export const generateRandomTestData = (numParents, numChildrenPerParent) => {
-    const {
-        store: { add },
-        getState,
-    } = createTestStore({ });
+export const generateRandomTestData = (numParents, numChildren, numChildrenChildren) => {
+    const graph = { nodes: {}, edges: {} };
 
     // generate debug data
     for (let i = 0; i < numParents; i += 1) {
         const parentId = uuid.v4();
         const parent = {
-            id: parentId, createdDate: new Date().toISOString(), str: `${generateRandomString()}/${generateRandomString()}`, arr: [generateRandomString(), generateRandomString()],
+            id: parentId,
+            createdDate: new Date().toISOString(),
+            str: `${generateRandomString()}/${generateRandomString()}`,
+            arr: [generateRandomString(), generateRandomString()],
         };
-        add('main')('root/parent')('root')(parent);
-        for (let j = 0; j < numChildrenPerParent; j += 1) {
+        assocPathMutate(['nodes', parentId], parent)(graph);
+        assocPathMutate(['edges', 'root', 'root', 'parent', parentId], true)(graph);
+        for (let j = 0; j < numChildren; j += 1) {
             const childId = uuid.v4();
             const child = {
-                id: childId, createdDate: new Date().toISOString(), bool: true, num: Math.random(),
+                id: childId,
+                createdDate: new Date().toISOString(),
+                bool: true,
+                num: Math.random(),
             };
-            add('main')('parent/child')(parentId)(child);
+            assocPathMutate(['nodes', childId], child)(graph);
+            assocPathMutate(['edges', 'parent', parentId, 'child', childId], true)(graph);
+            for (let k = 0; k < numChildrenChildren; k += 1) {
+                const childChildId = uuid.v4();
+                const childChild = {
+                    id: childChildId,
+                    createdDate: new Date().toISOString(),
+                    bool: true,
+                    num: Math.random(),
+                };
+                assocPathMutate(['nodes', childChildId], childChild)(graph);
+                assocPathMutate(['edges', 'child', childId, 'childchild', childChildId], true)(graph);
+            }
         }
     }
-    return getState();
+    return { stateId: 12345, main: { graph } };
 };
 
 export const randomTestDataView = {
-    'root': {
+    root: {
         as: 'root',
         edges: {
             'root/parent': {
@@ -91,6 +112,15 @@ export const randomTestDataView = {
                         include: {
                             node: true,
                             edges: true,
+                        },
+                        edges: {
+                            'child/childchild': {
+                                as: 'childchildren',
+                                include: {
+                                    node: true,
+                                    edges: true,
+                                },
+                            },
                         },
                     },
                 },

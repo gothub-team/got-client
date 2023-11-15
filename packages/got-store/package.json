@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-store",
-    "version": "0.21.30",
+    "version": "0.21.42",
     "description": "Functions to interact with local (in-memory) got graphs and sync them with remote got providers.",
     "main": "dist/cjs/index.js",
     "types": "src/index.d.ts",
@@ -33,7 +33,7 @@
         "@babel/cli": "^7.17.10",
         "@babel/core": "^7.17.10",
         "@babel/preset-env": "^7.17.10",
-        "@gothub-team/got-api": "^0.1.25",
+        "@gothub-team/got-api": "^0.1.27",
         "babel-jest": "^28.1.0",
         "babel-loader": "^8.2.5",
         "babel-plugin-transform-runtime": "^6.23.0",
@@ -45,7 +45,7 @@
     },
     "scripts": {
         "test": "jest ./src --passWithNoTests",
-        "test:fn": "jest ./src/tests/$1.spec.js --passWithNoTests",
+        "test:fn": "jest ./src/tests/$0.spec.js --passWithNoTests",
         "build": "webpack --config webpack.config.js; babel src -d dist/cjs --ignore 'src/**/*.spec.js','src/tests'"
     },
     "jest": {

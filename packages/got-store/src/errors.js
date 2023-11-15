@@ -6,7 +6,11 @@ import { isEdgeTypesString } from '@gothub-team/got-core';
 export const MISSING_PARAM_ERROR = 'MissingParamError';
 export class MissingParamError extends Error {
     constructor(missing, example) {
-        super(missing ? `Parameter '${missing}' is missing.${example ? `\nProvide parameter like:\n\n '${example}'.` : ''}` : '');
+        super(
+            missing
+                ? `Parameter '${missing}' is missing.${example ? `\nProvide parameter like:\n\n '${example}'.` : ''}`
+                : '',
+        );
         this.name = MISSING_PARAM_ERROR;
         this.missing = missing;
     }
@@ -14,7 +18,11 @@ export class MissingParamError extends Error {
 export const INVALID_PARAM_ERROR = 'InvalidParamError';
 export class InvalidParamError extends Error {
     constructor(invalid, example) {
-        super(invalid ? `Parameter '${invalid}' is invalid.${example ? `\nProvide parameter like:\n\n '${example}'.` : ''}` : '');
+        super(
+            invalid
+                ? `Parameter '${invalid}' is invalid.${example ? `\nProvide parameter like:\n\n '${example}'.` : ''}`
+                : '',
+        );
         this.name = INVALID_PARAM_ERROR;
         this.invalid = invalid;
     }
@@ -28,68 +36,93 @@ export class ConfigurationError extends Error {
     }
 }
 
-const viewExample = JSON.stringify({
-    'todo-list1': {
-        include: {
-            node: true,
-            rights: true,
-        },
-        edges: {
-            'todo-list/todo': {
-                include: {
-                    edges: true,
-                    metadata: true,
+const viewExample = JSON.stringify(
+    {
+        'todo-list1': {
+            include: {
+                node: true,
+                rights: true,
+            },
+            edges: {
+                'todo-list/todo': {
+                    include: {
+                        edges: true,
+                        metadata: true,
+                    },
                 },
             },
         },
     },
-}, null, 2);
-const graphExample = JSON.stringify({
-    nodes: {
-        node1: {
-            id: 'node1',
-            someProp: 'someValue',
+    null,
+    2,
+);
+const graphExample = JSON.stringify(
+    {
+        nodes: {
+            node1: {
+                id: 'node1',
+                someProp: 'someValue',
+            },
         },
     },
-}, null, 2);
-const nodeExample = JSON.stringify({
-    id: 'todo123',
-    text: 'buy groceries',
-}, null, 2);
-const rightsExample = JSON.stringify({
-    read: true,
-    write: true,
-    admin: false,
-}, null, 2);
-const fileExample = 'new Blob([\'hello there\'], { type: \'text/plain\' })';
+    null,
+    2,
+);
+const nodeExample = JSON.stringify(
+    {
+        id: 'todo123',
+        text: 'buy groceries',
+    },
+    null,
+    2,
+);
+const rightsExample = JSON.stringify(
+    {
+        read: true,
+        write: true,
+        admin: false,
+    },
+    null,
+    2,
+);
+const fileExample = "new Blob(['hello there'], { type: 'text/plain' })";
 
 const validators = {
     api: (value, onError) => {
         if (!value || !value.pull || !value.push) {
-            onError && onError(new ConfigurationError(
-                'api',
-                '"api" is missing in configuration. "push()" and "pull()" will fail.',
-            ));
+            onError &&
+                onError(
+                    new ConfigurationError(
+                        'api',
+                        '"api" is missing in configuration. "push()" and "pull()" will fail.',
+                    ),
+                );
             return false;
         }
         return true;
     },
     dispatch: (value, onError) => {
         if (!value) {
-            onError && onError(new ConfigurationError(
-                'dispatch',
-                '"dispatch" is missing in configuration. "push()", "pull()" and all mutators will fail.',
-            ));
+            onError &&
+                onError(
+                    new ConfigurationError(
+                        'dispatch',
+                        '"dispatch" is missing in configuration. "push()", "pull()" and all mutators will fail.',
+                    ),
+                );
             return false;
         }
         return true;
     },
     select: (value, onError) => {
         if (!value) {
-            onError && onError(new ConfigurationError(
-                'select',
-                '"select" is missing in configuration. "push()", "pull()" will fail.',
-            ));
+            onError &&
+                onError(
+                    new ConfigurationError(
+                        'select',
+                        '"select" is missing in configuration. "push()", "pull()" will fail.',
+                    ),
+                );
             return false;
         }
         return true;
@@ -184,6 +217,13 @@ const validators = {
         }
         return true;
     },
+    role: (value, onError) => {
+        if (!value) {
+            onError && onError(new MissingParamError('role', 'todo123'));
+            return false;
+        }
+        return true;
+    },
     rights: (value, onError) => {
         if (!value) {
             onError && onError(new MissingParamError('rights', rightsExample));
@@ -244,9 +284,10 @@ const validators = {
     },
 };
 
-export const validateInput = onError => input => R.compose(
-    R.call,
-    R.allPass,
-    R.map(inputKey => () => validators[inputKey](input[inputKey], onError)),
-    R.keys,
-)(input);
+export const validateInput = (onError) => (input) =>
+    R.compose(
+        R.call,
+        R.allPass,
+        R.map((inputKey) => () => validators[inputKey](input[inputKey], onError)),
+        R.keys,
+    )(input);

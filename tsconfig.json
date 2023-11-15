@@ -1,0 +1,4 @@
+{
+    "include": [".eslintrc.cjs", "src", "declare", "packages"],
+    "exclude": ["node_modules", "dist"]
+}

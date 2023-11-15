@@ -407,7 +407,7 @@ describe('store:Edges', () => {
             /* #region Execution and Validation */
             const output = select(selectEdge(graphName1, graphName2)(`${fromType}/${toType}`)(fromId));
 
-            const expectedOutput = { };
+            const expectedOutput = {};
 
             expect(onError).not.toBeCalled();
             expect(output).toEqual(expectedOutput);
@@ -535,7 +535,7 @@ describe('store:Edges', () => {
                 [graphName2]: {
                     graph: {
                         edges: {
-                            [fromType]: { [fromId]: { [toType]: { } } },
+                            [fromType]: { [fromId]: { [toType]: {} } },
                         },
                     },
                 },
@@ -624,31 +624,39 @@ describe('store:Edges', () => {
 
             /* #region Execution and Validation */
             const output1 = select(selectEdge()(`${fromType}/${toType}`)(fromId));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'stack',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'stack',
+                }),
+            );
             expect(output1).toEqual({});
 
             const output2 = select(selectEdge(graphName1)(undefined)(fromId));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'edgeTypes',
+                }),
+            );
             expect(output2).toEqual({});
 
             const output3 = select(selectEdge(graphName1)(`${fromType}`)(fromId));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: INVALID_PARAM_ERROR,
-                invalid: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: INVALID_PARAM_ERROR,
+                    invalid: 'edgeTypes',
+                }),
+            );
             expect(output3).toEqual({});
 
             const output4 = select(selectEdge(graphName1)(`${fromType}/${toType}`)(undefined));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromId',
+                }),
+            );
             expect(output4).toEqual({});
 
             expect(dispatch).not.toBeCalled();
@@ -735,31 +743,39 @@ describe('store:Edges', () => {
 
             /* #region Execution and Validation */
             const output1 = getEdge()(`${fromType}/${toType}`)(fromId);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'stack',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'stack',
+                }),
+            );
             expect(output1).toEqual({});
 
             const output2 = getEdge(graphName1)(undefined)(fromId);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'edgeTypes',
+                }),
+            );
             expect(output2).toEqual({});
 
             const output3 = getEdge(graphName1)(`${fromType}`)(fromId);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: INVALID_PARAM_ERROR,
-                invalid: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: INVALID_PARAM_ERROR,
+                    invalid: 'edgeTypes',
+                }),
+            );
             expect(output3).toEqual({});
 
             const output4 = getEdge(graphName1)(`${fromType}/${toType}`)(undefined);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromId',
+                }),
+            );
             expect(output4).toEqual({});
 
             expect(dispatch).not.toBeCalled();
@@ -1210,31 +1226,39 @@ describe('store:Edges', () => {
 
             /* #region Execution and Validation */
             const output1 = select(selectReverseEdge()(`${fromType}/${toType}`)(toId1));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'stack',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'stack',
+                }),
+            );
             expect(output1).toEqual({});
 
             const output2 = select(selectReverseEdge(graphName1)(undefined)(toId1));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'edgeTypes',
+                }),
+            );
             expect(output2).toEqual({});
 
             const output3 = select(selectReverseEdge(graphName1)(`${fromType}`)(toId1));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: INVALID_PARAM_ERROR,
-                invalid: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: INVALID_PARAM_ERROR,
+                    invalid: 'edgeTypes',
+                }),
+            );
             expect(output3).toEqual({});
 
             const output4 = select(selectReverseEdge(graphName1)(`${fromType}/${toType}`)(undefined));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toId',
+                }),
+            );
             expect(output4).toEqual({});
 
             expect(dispatch).not.toBeCalled();
@@ -1345,31 +1369,39 @@ describe('store:Edges', () => {
 
             /* #region Execution and Validation */
             const output1 = getReverseEdge()(`${fromType}/${toType}`)(toId1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'stack',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'stack',
+                }),
+            );
             expect(output1).toEqual({});
 
             const output2 = getReverseEdge(graphName1)(undefined)(toId1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'edgeTypes',
+                }),
+            );
             expect(output2).toEqual({});
 
             const output3 = getReverseEdge(graphName1)(`${fromType}`)(toId1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: INVALID_PARAM_ERROR,
-                invalid: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: INVALID_PARAM_ERROR,
+                    invalid: 'edgeTypes',
+                }),
+            );
             expect(output3).toEqual({});
 
             const output4 = getReverseEdge(graphName1)(`${fromType}/${toType}`)(undefined);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toId',
+                }),
+            );
             expect(output4).toEqual({});
 
             expect(dispatch).not.toBeCalled();
@@ -1459,7 +1491,10 @@ describe('store:Edges', () => {
 
             expect(onError).not.toBeCalled();
             expect(getState()).toHaveProperty([graphName1, 'graph', 'nodes', nodeId], node1);
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'edges', fromType, fromId, toType, nodeId], node1metadata);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'edges', fromType, fromId, toType, nodeId],
+                node1metadata,
+            );
             /* #endregion */
         });
         test('should patch node if node already exists', () => {
@@ -1491,7 +1526,10 @@ describe('store:Edges', () => {
             add(graphName1)(`${fromType}/${toType}`)(fromId)(node2);
 
             const expectedNode = {
-                id: nodeId, value1: 'og1', value2: 'edit2', value3: 'edit3',
+                id: nodeId,
+                value1: 'og1',
+                value2: 'edit2',
+                value3: 'edit3',
             };
             expect(onError).not.toBeCalled();
             expect(getState()).toHaveProperty([graphName1, 'graph', 'nodes', nodeId], expectedNode);
@@ -1534,11 +1572,16 @@ describe('store:Edges', () => {
             add(graphName1)(`${fromType}/${toType}`)(fromId)(node1, node1metadata2);
 
             const expectedMetadata = {
-                value1: 'og1', value2: 'edit2', value3: 'edit3',
+                value1: 'og1',
+                value2: 'edit2',
+                value3: 'edit3',
             };
             expect(onError).not.toBeCalled();
             expect(getState()).toHaveProperty([graphName1, 'graph', 'nodes', nodeId], node1);
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'edges', fromType, fromId, toType, nodeId], expectedMetadata);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'edges', fromType, fromId, toType, nodeId],
+                expectedMetadata,
+            );
             /* #endregion */
         });
         test('should index edge as reverse as well', () => {
@@ -1562,7 +1605,10 @@ describe('store:Edges', () => {
             add(graphName1)(`${fromType}/${toType}`)(fromId)(node1, edgeFromToMetadata);
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'index', 'reverseEdges', toType, nodeId, fromType, fromId], true);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'index', 'reverseEdges', toType, nodeId, fromType, fromId],
+                true,
+            );
             /* #endregion */
         });
         test('should call `onError` in case of invalid input', () => {
@@ -1586,40 +1632,52 @@ describe('store:Edges', () => {
 
             /* #region Execution and Validation */
             add(undefined)(`${fromType}/${toType}`)(fromId)(node1, node1metadata);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'graphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'graphName',
+                }),
+            );
 
             add(graphName1)(undefined)(fromId)(node1, node1metadata);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'edgeTypes',
+                }),
+            );
 
             add(graphName1)(`${fromType}`)(fromId)(node1, node1metadata);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: INVALID_PARAM_ERROR,
-                invalid: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: INVALID_PARAM_ERROR,
+                    invalid: 'edgeTypes',
+                }),
+            );
 
             add(graphName1)(`${fromType}/${toType}`)(undefined)(node1, node1metadata);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromId',
+                }),
+            );
 
             add(graphName1)(`${fromType}/${toType}`)(fromId)({ prop: 'someProp' }, node1metadata);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toNode.id',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toNode.id',
+                }),
+            );
 
             add(graphName1)(`${fromType}/${toType}`)(fromId)(undefined, node1metadata);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toNode',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toNode',
+                }),
+            );
 
             expect(getState()).toEqual(initialState);
             expect(dispatch).not.toBeCalled();
@@ -1752,7 +1810,10 @@ describe('store:Edges', () => {
             remove(graphName1)(`${fromType}/${toType}`)(fromId)(node1);
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'index', 'reverseEdges', toType, nodeId, fromType, fromId], false);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'index', 'reverseEdges', toType, nodeId, fromType, fromId],
+                false,
+            );
             /* #endregion */
         });
         test('should call `onError` in case of invalid input', () => {
@@ -1793,40 +1854,52 @@ describe('store:Edges', () => {
 
             /* #region Execution and Validation */
             remove(undefined)(`${fromType}/${toType}`)(fromId)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'graphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'graphName',
+                }),
+            );
 
             remove(graphName1)(undefined)(fromId)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'edgeTypes',
+                }),
+            );
 
             remove(graphName1)(`${fromType}`)(fromId)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: INVALID_PARAM_ERROR,
-                invalid: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: INVALID_PARAM_ERROR,
+                    invalid: 'edgeTypes',
+                }),
+            );
 
             remove(graphName1)(`${fromType}/${toType}`)(undefined)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromId',
+                }),
+            );
 
             remove(graphName1)(`${fromType}/${toType}`)(fromId)({ prop: 'someProp' });
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toNode.id',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toNode.id',
+                }),
+            );
 
             remove(graphName1)(`${fromType}/${toType}`)(fromId)(undefined);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toNode',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toNode',
+                }),
+            );
 
             expect(getState()).toEqual(initialState);
             expect(dispatch).not.toBeCalled();
@@ -1916,7 +1989,10 @@ describe('store:Edges', () => {
 
             expect(onError).not.toBeCalled();
             expect(getState()).not.toHaveProperty([graphName1, 'graph', 'nodes', nodeId], node1);
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'edges', fromType, fromId, toType, nodeId], node1metadata1);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'edges', fromType, fromId, toType, nodeId],
+                node1metadata1,
+            );
             /* #endregion */
         });
         test('should patch metadata if edge already exists', () => {
@@ -1955,11 +2031,16 @@ describe('store:Edges', () => {
             assoc(graphName1)(`${fromType}/${toType}`)(fromId)(node1, node1metadata2);
 
             const expectedMetadata = {
-                value1: 'og1', value2: 'edit2', value3: 'edit3',
+                value1: 'og1',
+                value2: 'edit2',
+                value3: 'edit3',
             };
             expect(onError).not.toBeCalled();
             expect(getState()).not.toHaveProperty([graphName1, 'graph', 'nodes', nodeId], node1);
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'edges', fromType, fromId, toType, nodeId], expectedMetadata);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'edges', fromType, fromId, toType, nodeId],
+                expectedMetadata,
+            );
             /* #endregion */
         });
         test('should index edge as reverse as well', () => {
@@ -1983,7 +2064,10 @@ describe('store:Edges', () => {
             assoc(graphName1)(`${fromType}/${toType}`)(fromId)(node1, edgeFromToMetadata);
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'index', 'reverseEdges', toType, nodeId, fromType, fromId], true);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'index', 'reverseEdges', toType, nodeId, fromType, fromId],
+                true,
+            );
             /* #endregion */
         });
         test('should call `onError` in case of invalid input', () => {
@@ -2006,40 +2090,52 @@ describe('store:Edges', () => {
 
             /* #region Execution and Validation */
             assoc(undefined)(`${fromType}/${toType}`)(fromId)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'graphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'graphName',
+                }),
+            );
 
             assoc(graphName1)(undefined)(fromId)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'edgeTypes',
+                }),
+            );
 
             assoc(graphName1)(`${fromType}`)(fromId)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: INVALID_PARAM_ERROR,
-                invalid: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: INVALID_PARAM_ERROR,
+                    invalid: 'edgeTypes',
+                }),
+            );
 
             assoc(graphName1)(`${fromType}/${toType}`)(undefined)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromId',
+                }),
+            );
 
             assoc(graphName1)(`${fromType}/${toType}`)(fromId)({ prop: 'someProp' });
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toNode.id',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toNode.id',
+                }),
+            );
 
             assoc(graphName1)(`${fromType}/${toType}`)(fromId)(undefined);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toNode',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toNode',
+                }),
+            );
 
             expect(getState()).toEqual(initialState);
             expect(dispatch).not.toBeCalled();
@@ -2172,7 +2268,10 @@ describe('store:Edges', () => {
             dissoc(graphName1)(`${fromType}/${toType}`)(fromId)(node1);
 
             expect(onError).not.toBeCalled();
-            expect(getState()).toHaveProperty([graphName1, 'graph', 'index', 'reverseEdges', toType, nodeId, fromType, fromId], false);
+            expect(getState()).toHaveProperty(
+                [graphName1, 'graph', 'index', 'reverseEdges', toType, nodeId, fromType, fromId],
+                false,
+            );
             /* #endregion */
         });
         test('should call `onError` in case of invalid input', () => {
@@ -2213,40 +2312,52 @@ describe('store:Edges', () => {
 
             /* #region Execution and Validation */
             dissoc(undefined)(`${fromType}/${toType}`)(fromId)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'graphName',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'graphName',
+                }),
+            );
 
             dissoc(graphName1)(undefined)(fromId)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'edgeTypes',
+                }),
+            );
 
             dissoc(graphName1)(`${fromType}`)(fromId)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: INVALID_PARAM_ERROR,
-                invalid: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: INVALID_PARAM_ERROR,
+                    invalid: 'edgeTypes',
+                }),
+            );
 
             dissoc(graphName1)(`${fromType}/${toType}`)(undefined)(node1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromId',
+                }),
+            );
 
             dissoc(graphName1)(`${fromType}/${toType}`)(fromId)({ prop: 'someProp' });
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toNode.id',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toNode.id',
+                }),
+            );
 
             dissoc(graphName1)(`${fromType}/${toType}`)(fromId)(undefined);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toNode',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toNode',
+                }),
+            );
 
             expect(getState()).toEqual(initialState);
             expect(dispatch).not.toBeCalled();

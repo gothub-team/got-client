@@ -109,38 +109,48 @@ describe('store:Metadata', () => {
 
             /* #region Execution and Validation */
             const output1 = select(selectMetadata()(`${fromType}/${toType}`)(fromId1)(toId1));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'stack',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'stack',
+                }),
+            );
             expect(output1).toEqual(undefined);
 
             const output2 = select(selectMetadata(graphName1)()(fromId1)(toId1));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'edgeTypes',
+                }),
+            );
             expect(output2).toEqual(undefined);
 
             const output3 = select(selectMetadata(graphName1)(`${fromType}`)(fromId1)(toId1));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: INVALID_PARAM_ERROR,
-                invalid: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: INVALID_PARAM_ERROR,
+                    invalid: 'edgeTypes',
+                }),
+            );
             expect(output3).toEqual(undefined);
 
             const output4 = select(selectMetadata(graphName1)(`${fromType}/${toType}`)()(toId1));
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromId',
+                }),
+            );
             expect(output4).toEqual(undefined);
 
             const output5 = select(selectMetadata(graphName1)(`${fromType}/${toType}`)(fromId1)());
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toId',
+                }),
+            );
             expect(output5).toEqual(undefined);
 
             /* #endregion */
@@ -225,38 +235,48 @@ describe('store:Metadata', () => {
 
             /* #region Execution and Validation */
             const output1 = getMetadata()(`${fromType}/${toType}`)(fromId1)(toId1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'stack',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'stack',
+                }),
+            );
             expect(output1).toEqual(undefined);
 
             const output2 = getMetadata(graphName1)()(fromId1)(toId1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'edgeTypes',
+                }),
+            );
             expect(output2).toEqual(undefined);
 
             const output3 = getMetadata(graphName1)(`${fromType}`)(fromId1)(toId1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: INVALID_PARAM_ERROR,
-                invalid: 'edgeTypes',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: INVALID_PARAM_ERROR,
+                    invalid: 'edgeTypes',
+                }),
+            );
             expect(output3).toEqual(undefined);
 
             const output4 = getMetadata(graphName1)(`${fromType}/${toType}`)()(toId1);
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'fromId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'fromId',
+                }),
+            );
             expect(output4).toEqual(undefined);
 
             const output5 = getMetadata(graphName1)(`${fromType}/${toType}`)(fromId1)();
-            expect(onError).toBeCalledWith(expect.objectContaining({
-                name: MISSING_PARAM_ERROR,
-                missing: 'toId',
-            }));
+            expect(onError).toBeCalledWith(
+                expect.objectContaining({
+                    name: MISSING_PARAM_ERROR,
+                    missing: 'toId',
+                }),
+            );
             expect(output5).toEqual(undefined);
 
             /* #endregion */
