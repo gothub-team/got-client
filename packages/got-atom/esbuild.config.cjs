@@ -14,3 +14,16 @@ build({
         }),
     ],
 });
+build({
+    bundle: false,
+    target: 'node16.0',
+    platform: 'node',
+    format: 'esm',
+    entryPoints: ['./src/index.ts', './src/persist.ts'],
+    outdir: './dist/module',
+    plugins: [
+        dtsPlugin({
+            outDir: './dist/types',
+        }),
+    ],
+});

@@ -5,6 +5,7 @@
         "packages/*"
     ],
     "main": "dist/cjs/index.js",
+    "module": "dist/module/index.js",
     "types": "dist/types/index.d.ts",
     "repository": {
         "type": "git",
