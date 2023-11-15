@@ -1,53 +1,66 @@
 const path = require('path');
 
-module.exports = {
-    output: {
-        path: path.resolve(__dirname, 'dist/min'),
-        library: {
-            type: 'commonjs',
-        },
-        filename: 'index.js',
-        assetModuleFilename: '[name][ext]',
-        publicPath: '',
-    },
+const commonConfig = {
+    // Mode can be 'development' or 'production'
     mode: 'production',
-    target: 'web',
+
+    // Entry file of your library
+    entry: './src/index.js',
+    // External dependencies that shouldn't be bundled
     externals: {
         ramda: 'ramda',
         'ramda-adjunct': 'ramda-adjunct',
     },
-    experiments: {
-        outputModule: true,
-    },
+
+    // Module resolution
     module: {
         rules: [
             {
-                test: /\.d\.ts$/,
-                type: 'asset/resource',
-            },
-            {
-                test: /\.js$/, // include .js files
-                enforce: 'pre', // preload the jshint loader
-                exclude: /node_modules/, // exclude any and all files in the node_modules folder
-                include: __dirname,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: [
-                                [
-                                    '@babel/preset-env',
-                                    {
-                                        targets: {
-                                            node: 'current',
-                                        },
-                                    },
-                                ],
-                            ],
-                        },
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env'],
+                        plugins: ['@babel/plugin-transform-runtime'],
                     },
-                ],
+                },
             },
         ],
     },
+
+    // Source maps (optional, can be omitted for smaller bundle size)
+    devtool: 'source-map',
+
+    // Configure how modules are resolved
+    resolve: {
+        extensions: ['.js'],
+    },
 };
+
+const cjsConfig = {
+    ...commonConfig,
+    // Output configuration
+    output: {
+        path: path.resolve(__dirname, 'dist/cjs'),
+        filename: 'index.js',
+        libraryTarget: 'commonjs',
+        globalObject: 'this',
+    },
+};
+
+const esmConfig = {
+    ...commonConfig,
+    // Output configuration
+    output: {
+        path: path.resolve(__dirname, 'dist/module'),
+        filename: 'index.js',
+        libraryTarget: 'module',
+        globalObject: 'this',
+    },
+    experiments: {
+        outputModule: true,
+    },
+};
+
+module.exports = [cjsConfig, esmConfig];
