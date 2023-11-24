@@ -296,7 +296,7 @@ export declare interface CreateHooksOptions {
      * Function to select the got state from the current redux state.
      * Per default it is assumed that the redux state is the got state.
      */
-    baseState: (reduxState: any) => State;
+    baseState?: (reduxState: any) => State;
 }
 
 export declare interface CreateResult {
