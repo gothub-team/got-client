@@ -125,6 +125,22 @@ export declare interface State {
 export declare type View = Record<string, NodeView>;
 export declare type EdgesView = Record<string, EdgeView>;
 
+export declare type NodeInclude = {
+    /**
+     * Whether or not the body of the root node should be included.
+     */
+    node?: boolean;
+    /**
+     * Whether or not all rights of the parent node should be included. Only
+     * returns rights if the currrent user has admin rights on the parent node.
+     */
+    rights?: boolean;
+    /**
+     * Whether or not all files attached to the parent node should be included.
+     */
+    files?: boolean;
+};
+
 export declare interface NodeView {
     /**
      * Defines an optional alias for the node view
@@ -134,26 +150,38 @@ export declare interface NodeView {
      * Options defining which elements of the parent node should be included in the
      * result view tree.
      */
-    include?: {
-        /**
-         * Whether or not the body of the root node should be included.
-         */
-        node?: boolean;
-        /**
-         * Whether or not all rights of the parent node should be included. Only
-         * returns rights if the currrent user has admin rights on the parent node.
-         */
-        rights?: boolean;
-        /**
-         * Whether or not all files attached to the parent node should be included.
-         */
-        files?: boolean;
-    };
+    include?: NodeInclude;
     /**
      * Hashmap of edge types that are pointing from the parent node.
      */
     edges?: EdgesView;
 }
+
+export declare type EdgeInclude = {
+    /**
+     * Whether or not the body of the node the parent edge is pointing to should be included.
+     */
+    node?: boolean;
+    /**
+     * Whether or not the parent edge to should be included.
+     */
+    edges?: boolean;
+    /**
+     * Whether or not metadata of the parent edge should be included.
+     */
+    metadata?: boolean;
+    /**
+     * Whether or not all rights of the node the parent edge is pointing
+     * to should be included. Only returns rights if the currrent user has admin
+     * rights on the node.
+     */
+    rights?: boolean;
+    /**
+     * Whether or not all files attached to the node the parent edge is pointing
+     * to should be included.
+     */
+    files?: boolean;
+};
 export declare interface EdgeView {
     /**
      * Defines an optional alias for the edge view
@@ -167,31 +195,7 @@ export declare interface EdgeView {
      * Options defining which elements of the node the parent edge is pointing to
      * should be included in the result view tree.
      */
-    include?: {
-        /**
-         * Whether or not the body of the node the parent edge is pointing to should be included.
-         */
-        node?: boolean;
-        /**
-         * Whether or not the parent edge to should be included.
-         */
-        edges?: boolean;
-        /**
-         * Whether or not metadata of the parent edge should be included.
-         */
-        metadata?: boolean;
-        /**
-         * Whether or not all rights of the node the parent edge is pointing
-         * to should be included. Only returns rights if the currrent user has admin
-         * rights on the node.
-         */
-        rights?: boolean;
-        /**
-         * Whether or not all files attached to the node the parent edge is pointing
-         * to should be included.
-         */
-        files?: boolean;
-    };
+    include?: EdgeInclude;
     /**
      * Hashmap of edge types that are pointing from all nodes the parent edge is
      * pointing to.
@@ -654,8 +658,8 @@ export declare type GetEdgeToIdsFn = (
  * the edgeTypes and the resulting view path (with node/edge aliases).
  */
 export declare const doViewGraph: (params: {
-    nodes: doViewGraphNodesFn;
-    edges: doViewGraphEdgesFn;
+    nodes?: doViewGraphNodesFn;
+    edges?: doViewGraphEdgesFn;
 }) => (view: View) => (fnGetEdgeToIds: GetEdgeToIdsFn) => void;
 
 /**
