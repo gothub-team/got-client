@@ -41,15 +41,12 @@
         "babel-plugin-transform-runtime": "^6.23.0",
         "babel-polyfill": "^6.26.0",
         "jest": "^29.7.0",
-        "uuid": "^8.3.2",
-        "webpack": "^5.72.1",
-        "webpack-cli": "4.9.2"
+        "uuid": "^8.3.2"
     },
     "scripts": {
         "test": "jest ./src --passWithNoTests",
         "test:fn": "jest ./src/tests/$0.spec.js --passWithNoTests",
-        "build": "node ./esbuild.config.cjs",
-        "build:old": "webpack --config webpack.config.js"
+        "build": "node ./esbuild.config.cjs"
     },
     "jest": {
         "moduleFileExtensions": [
