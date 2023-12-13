@@ -44,7 +44,8 @@
     "scripts": {
         "test": "jest ./src --passWithNoTests",
         "test:fn": "jest ./src/tests/$1.spec.js --passWithNoTests",
-        "build": "webpack --config webpack.config.js"
+        "build": "node ./esbuild.config.cjs",
+        "build:old": "webpack --config webpack.config.js"
     },
     "jest": {
         "moduleFileExtensions": [
