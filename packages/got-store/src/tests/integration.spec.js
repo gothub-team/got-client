@@ -1,4 +1,4 @@
-import { createTestStore } from './shared.js';
+import { createTestStore } from './shared.spec.js';
 
 describe('view after actions', () => {
     test('should select the correct view tree after remove', async () => {

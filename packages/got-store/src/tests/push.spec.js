@@ -3,7 +3,7 @@ import * as RA from 'ramda-adjunct';
 import { Blob } from 'buffer';
 import { toPromise } from '@gothub-team/got-util';
 import { MISSING_PARAM_ERROR } from '../errors.js';
-import { createTestStore } from './shared.js';
+import { createTestStore } from './shared.spec.js';
 import { GOT_ACTION_UPLOAD_COMPLETE, GOT_ACTION_UPLOAD_PROGRESS } from '../reducer.js';
 
 describe('store:push', () => {
