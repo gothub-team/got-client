@@ -366,6 +366,8 @@ export const createRawStore = ({ api, dispatch, select }) => {
                 toGraphName,
             },
         });
+
+        return apiResult;
     };
     const selectView = (stack, view, state) => {
         const queryNode = (queryObj, nodeId, metadata) => {
