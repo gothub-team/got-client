@@ -56,7 +56,7 @@ export declare interface CreateGraphResult {
      * @throws When the pull operation fails no merge is executed and error is
      * forwarded to the caller.
      */
-    pull: (view: View) => Promise<void>;
+    pull: (view: View) => Promise<Graph>;
     /**
      * Returns the view tree for a given view based
      * on the specified graph stack with graphs higher in the stack overriding

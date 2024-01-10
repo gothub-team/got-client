@@ -272,7 +272,7 @@ export declare interface GotStore {
      * @throws When the pull operation fails no merge is executed and error is
      * forwarded to the caller.
      */
-    pull: (view: View) => Promise<void>;
+    pull: (view: View) => Promise<Graph>;
 
     /**
      * Returns the view tree for a given view based
