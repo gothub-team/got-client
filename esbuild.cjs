@@ -20,7 +20,13 @@ function getAllFiles(dirPath, arrayOfFiles = []) {
     return arrayOfFiles;
 }
 
+const clean = () => {
+    fs.existsSync('./dist') && fs.rmSync('./dist', { recursive: true, force: true });
+};
+
 const buildTs = async () => {
+    clean();
+
     const entryFiles = getAllFiles('./src');
     // compiled code
     await build({
@@ -49,6 +55,8 @@ const buildTs = async () => {
 };
 
 const buildJs = async () => {
+    clean();
+
     const entryFiles = getAllFiles('./src');
     // compiled code
     await build({
