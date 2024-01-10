@@ -2918,13 +2918,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gothub-team/got-api@npm:^0.1.27":
-  version: 0.1.27
-  resolution: "@gothub-team/got-api@npm:0.1.27"
+"@gothub-team/got-api@npm:^0.1.28":
+  version: 0.1.28
+  resolution: "@gothub-team/got-api@npm:0.1.28"
   dependencies:
     "@gothub-team/got-srp": ^0.3.20
     buffer: ^6.0.3
-  checksum: 7a7b96dec4258d131489dfe4fac80c6cba1bdb76758f85b5f32d7b1faf793b3a4476b094b7f1184f3a8dccf00cd2a4da7d6cd972ff0b31c86fa761ff7ee3a488
+  checksum: 8a8c6a1b90c3d1ed972a305599a56f7f30cbb69a364f2b26f4ce65a3097bf22ade47415a79bf8b23aef859a8fc88db52be458aebf3d9c668e10d69f370c4d179
   languageName: node
   linkType: hard
 
@@ -2970,7 +2970,7 @@ __metadata:
     "@babel/plugin-transform-runtime": ^7.23.3
     "@babel/preset-env": ^7.23.3
     "@babel/preset-react": ^7.23.3
-    "@gothub-team/got-api": ^0.1.27
+    "@gothub-team/got-api": ^0.1.28
     "@gothub-team/got-core": "workspace:*"
     "@gothub-team/got-store": "workspace:*"
     "@gothub-team/got-util": "workspace:*"
@@ -3016,7 +3016,7 @@ __metadata:
     "@babel/core": ^7.23.3
     "@babel/plugin-transform-runtime": ^7.23.3
     "@babel/preset-env": ^7.23.3
-    "@gothub-team/got-api": ^0.1.27
+    "@gothub-team/got-api": ^0.1.28
     "@gothub-team/got-core": "workspace:*"
     "@gothub-team/got-util": "workspace:*"
     babel-jest: ^28.1.0
