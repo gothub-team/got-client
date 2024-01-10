@@ -24,8 +24,8 @@
         "node": ">=17.0.0"
     },
     "dependencies": {
-        "ramda": "^0.28.0",
-        "ramda-adjunct": "^3.1.0"
+        "ramda": "^0.29.1",
+        "ramda-adjunct": "^4.1.1"
     },
     "devDependencies": {
         "@babel/cli": "^7.23.0",
