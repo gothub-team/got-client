@@ -4,6 +4,10 @@ import { assocPathMutate } from '@gothub-team/got-util';
 import * as R from 'ramda';
 import { createStore, gotReducer } from '../index.js';
 
+test('dummy test', () => {
+    expect(true).toBe(true);
+});
+
 export const createTestStore = (initialState = {}, api = undefined, clone = true) => {
     let state = clone ? R.clone(initialState) : initialState;
 

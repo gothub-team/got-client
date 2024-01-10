@@ -1,4 +1,4 @@
-import { createTestStore } from './shared.js';
+import { createTestStore } from './shared.spec.js';
 import { MISSING_PARAM_ERROR } from '../errors.js';
 
 describe('store:mergeGraph', () => {

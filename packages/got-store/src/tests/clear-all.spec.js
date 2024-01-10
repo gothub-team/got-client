@@ -1,6 +1,6 @@
 import { gotReducer } from '../index.js';
 import { GOT_ACTION_CLEAR_ALL } from '../reducer.js';
-import { createTestStore } from './shared.js';
+import { createTestStore } from './shared.spec.js';
 
 describe('store:clear-all', () => {
     test('should call `dispatch` with correct parameters', () => {

@@ -56,7 +56,7 @@ export declare interface CreateGraphResult {
      * @throws When the pull operation fails no merge is executed and error is
      * forwarded to the caller.
      */
-    pull: (view: View) => Promise<void>;
+    pull: (view: View) => Promise<Graph>;
     /**
      * Returns the view tree for a given view based
      * on the specified graph stack with graphs higher in the stack overriding
@@ -296,7 +296,7 @@ export declare interface CreateHooksOptions {
      * Function to select the got state from the current redux state.
      * Per default it is assumed that the redux state is the got state.
      */
-    baseState: (reduxState: any) => State;
+    baseState?: (reduxState: any) => State;
 }
 
 export declare interface CreateResult {

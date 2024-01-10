@@ -1,5 +1,5 @@
 import { MISSING_PARAM_ERROR } from '../errors.js';
-import { createTestStore } from './shared.js';
+import { createTestStore } from './shared.spec.js';
 
 describe('store:Vars', () => {
     describe('selectVar', () => {

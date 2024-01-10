@@ -1,5 +1,5 @@
 import { Blob } from 'buffer';
-import { createTestStore } from './shared.js';
+import { createTestStore } from './shared.spec.js';
 import { INVALID_PARAM_ERROR, MISSING_PARAM_ERROR } from '../errors.js';
 
 describe('store:files', () => {

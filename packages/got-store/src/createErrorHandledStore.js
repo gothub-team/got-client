@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 import { validateInput } from './errors.js';
+import * as R from 'ramda';
 
 export const createErrorHandledStore = (options, store) => {
     const { api, dispatch, select, onError = console.error, onWarn = console.warn } = options || {};
@@ -391,11 +392,17 @@ export const createErrorHandledStore = (options, store) => {
                 view,
             })
         ) {
+            if (R.isEmpty(view)) {
+                onWarn && onWarn('Pull view is empty');
+                return {};
+            }
+
             try {
                 const res = await store.pull(view, toGraphName);
                 return res;
             } catch (error) {
-                return onError && onError(error);
+                onError && onError(error);
+                return {};
             }
         }
     };

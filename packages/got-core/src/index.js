@@ -267,7 +267,7 @@ export const selectEdgeToIds =
 export const createSuccessAndErrorGraphs = (graph, apiResult) =>
     reduceObj([
         [
-            R.propEq('statusCode', 200),
+            R.propEq(200, 'statusCode'),
             (val, path) =>
                 R.compose(
                     R.when(R.always(R.head(path) === 'edges'), (acc) => {
@@ -282,7 +282,7 @@ export const createSuccessAndErrorGraphs = (graph, apiResult) =>
                 ),
         ],
         [
-            R.propEq('statusCode', 403),
+            R.propEq(403, 'statusCode'),
             (val, path) =>
                 R.compose(
                     R.when(R.always(R.head(path) === 'edges'), (acc) => {

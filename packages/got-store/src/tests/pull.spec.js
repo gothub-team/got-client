@@ -1,5 +1,5 @@
 import { MISSING_PARAM_ERROR } from '../errors.js';
-import { createTestStore } from './shared.js';
+import { createTestStore } from './shared.spec.js';
 
 describe('store:pull', () => {
     describe('API', () => {
@@ -63,6 +63,42 @@ describe('store:pull', () => {
 
             expect(onError).not.toBeCalled();
             expect(api.pull).toBeCalledWith(view);
+            /* #endregion */
+        });
+    });
+
+    describe('Return', () => {
+        test('should return the graph that is returned by the API', async () => {
+            /* #region Test Bed Creation */
+            const nodeId = 'node1';
+            const view = {
+                [nodeId]: {
+                    include: {
+                        node: true,
+                    },
+                },
+            };
+
+            const pullResult = {
+                nodes: {
+                    [nodeId]: { id: nodeId },
+                },
+            };
+
+            const {
+                store: { pull },
+            } = createTestStore(
+                {},
+                {
+                    pull: () => pullResult,
+                },
+            );
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            const res = await pull(view);
+
+            expect(res).toBe(pullResult);
             /* #endregion */
         });
     });
@@ -697,6 +733,41 @@ describe('store:pull', () => {
                 });
                 /* #endregion */
             });
+        });
+    });
+
+    describe('Warn Handling', () => {
+        test('should call `onWarn` when view is an empty object', async () => {
+            /* #region Test Bed Creation */
+            const view = {};
+
+            const {
+                store: { pull },
+                onWarn,
+                dispatch,
+            } = createTestStore({}, {});
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            await pull(view);
+
+            expect(onWarn).toHaveBeenCalled();
+            expect(dispatch).not.toHaveBeenCalled();
+            /* #endregion */
+        });
+        test('should return empty graph when view is an empty object', async () => {
+            /* #region Test Bed Creation */
+            const view = {};
+
+            const {
+                store: { pull },
+            } = createTestStore({}, {});
+            /* #endregion */
+
+            /* #region Execution and Validation */
+            const res = await pull(view);
+            expect(res).toEqual({});
+            /* #endregion */
         });
     });
 
