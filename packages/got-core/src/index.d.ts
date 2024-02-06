@@ -147,6 +147,11 @@ export declare interface NodeView {
      */
     as?: string;
     /**
+     * Defines an optional role to pull the view as.
+     * Any '$NODEID' in the role name will be replaced by the nodeId.
+     */
+    role?: string;
+    /**
      * Options defining which elements of the parent node should be included in the
      * result view tree.
      */
@@ -187,6 +192,11 @@ export declare interface EdgeView {
      * Defines an optional alias for the edge view
      */
     as?: string;
+    /**
+     * Defines an optional role to pull the view as.
+     * Any '$NODEID' in the role name will be replaced by the toIds of the edge.
+     */
+    role?: string;
     /**
      * Defines if the edge should be read out in reverse.
      */
