@@ -117,4 +117,12 @@ export const App = () => (
 );
 
 export default App;
+
+const Content = () => {
+    return (
+        <div>
+            <h1>Welcome to got</h1>
+        </div>
+    );
+};
 ```
