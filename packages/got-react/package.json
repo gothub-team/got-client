@@ -37,6 +37,7 @@
         "@babel/plugin-transform-runtime": "^7.23.3",
         "@babel/preset-env": "^7.23.3",
         "@babel/preset-react": "^7.23.3",
+        "@gothub-team/got-atom": "workspace:*",
         "@gothub-team/got-core": "workspace:*",
         "@gothub-team/got-util": "workspace:*",
         "@testing-library/jest-dom": "^6.1.4",
