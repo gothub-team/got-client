@@ -7,7 +7,7 @@ import * as R from 'ramda';
 import '@testing-library/jest-dom';
 import { generateNewRandom } from '@gothub-team/got-util';
 import { gotReducer, createHooks } from '../index.js';
-import { atom, useAtom } from '@gothub-team/got-atom';
+import { atom, useAtom, useAtomAsync } from '@gothub-team/got-atom';
 
 export const delay = (ms) => new Promise((resolve) => setTimeout(() => resolve(ms), ms));
 
@@ -62,7 +62,14 @@ export const createTestComponentRedux = (_Component) => {
 
     const TestComponent = ({ ...props }) => (
         <Provider store={reduxStore}>
-            <Component useSelector={useSelectorRedux} dispatch={reduxStore.dispatch} useGraph={useGraph} onRender={onRender} gotStore={store} {...props} />
+            <Component
+                useSelector={useSelectorRedux}
+                dispatch={reduxStore.dispatch}
+                useGraph={useGraph}
+                onRender={onRender}
+                gotStore={store}
+                {...props}
+            />
         </Provider>
     );
 
@@ -119,7 +126,77 @@ export const createTestComponentAtom = (_Component) => {
     const Component = React.memo(_Component);
 
     const TestComponent = ({ ...props }) => (
-        <Component useSelector={useSelector} dispatch={dispatch} useGraph={useGraph} onRender={onRender} gotStore={store} {...props} />
+        <Component
+            useSelector={useSelector}
+            dispatch={dispatch}
+            useGraph={useGraph}
+            onRender={onRender}
+            gotStore={store}
+            {...props}
+        />
+    );
+
+    return {
+        TestComponent,
+        dispatch,
+        getState,
+        useGraph,
+        store,
+        mockStore,
+        renderPayloads,
+    };
+};
+
+export const getMockSetupAtomAsync = () => {
+    const storeAtom = atom({});
+
+    const dispatch = (action) => storeAtom.set(gotReducer(storeAtom.get(), action));
+    const store = createStore({
+        dispatch,
+        select: (selector) => selector(storeAtom.get()),
+        onWarn: () => {},
+    });
+
+    const mockStore = R.map((fn) => jest.fn(fn), store);
+
+    const useSelector = (fnSelect, fnEquals) => useAtomAsync(storeAtom, fnSelect, fnEquals);
+    const { useGraph } = createHooks({
+        baseState: R.identity,
+        useSelector,
+        store: mockStore,
+    });
+
+    return {
+        store,
+        mockStore,
+        useGraph,
+        getState: storeAtom.get,
+        dispatch,
+        useSelector,
+    };
+};
+
+export const createTestComponentAtomAsync = (_Component) => {
+    const renderPayloads = [];
+
+    const onRender = (payload) => {
+        renderPayloads.push(payload);
+    };
+
+    const mockSetup = getMockSetupAtomAsync();
+    const { dispatch, getState, useGraph, store, mockStore, useSelector } = mockSetup;
+
+    const Component = React.memo(_Component);
+
+    const TestComponent = ({ ...props }) => (
+        <Component
+            useSelector={useSelector}
+            dispatch={dispatch}
+            useGraph={useGraph}
+            onRender={onRender}
+            gotStore={store}
+            {...props}
+        />
     );
 
     return {

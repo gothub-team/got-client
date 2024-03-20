@@ -10,6 +10,7 @@ import {
     createTestComponentRedux,
     createTestComponentAtom,
     delay,
+    createTestComponentAtomAsync,
 } from './shared.jsx';
 import { setFnEquals } from '../index.js';
 
@@ -47,6 +48,8 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
 
                 const testState1 = getState().test;
                 await act(() => dispatch({ type: 'TEST_ACTION' }));
+                await delay(100);
+
                 const testState2 = getState().test;
                 await act(() => dispatch({ type: 'TEST_ACTION' }));
                 const testState3 = getState().test;
@@ -74,7 +77,9 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
             const element = getByTestId('element');
 
             await act(() => element.click());
+            await delay(100);
             await act(() => element.click());
+            await delay(100);
 
             expect(renderPayloads.length).toBe(1);
             atomOrRedux === 'Redux' && expect(fnSelect).toHaveBeenCalledTimes(3 + 1); // +1 since useSelector calls selector an additional time after component mount
@@ -118,6 +123,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
                 const element = getByTestId('element');
 
                 await act(() => element.click());
+                await delay(100);
                 await act(() => element.click());
                 expect(renderPayloads.length).toBe(3);
 
@@ -172,6 +178,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
                 const element = getByTestId('element');
 
                 await act(() => element.click());
+                await delay(100);
                 await act(() => element.click());
                 expect(renderPayloads.length).toBe(3);
 
@@ -215,6 +222,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
                 await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
 
                 await act(() => store.setNode('main')({ id: 'node1', prop: 'secondValue' }));
+                await delay(100);
                 await act(() => store.setNode('main')({ id: 'node1', prop: 'thirdValue' }));
 
                 await delay(100);
@@ -234,6 +242,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
 
                 await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
                 await act(() => store.setNode('main')({ id: 'node3', prop: 'secondValue' }));
+                await delay(100);
                 await act(() => store.setNode('main')({ id: 'node4', prop: 'thirdValue' }));
 
                 await delay(100);
@@ -293,6 +302,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
                 const element = getByTestId('element');
 
                 await act(() => element.click());
+                await delay(100);
                 await act(() => element.click());
 
                 await delay(100);
@@ -352,6 +362,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
                 const element = getByTestId('element');
 
                 await act(() => element.click());
+                await delay(100);
                 await act(() => element.click());
 
                 await delay(100);
@@ -378,6 +389,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
                 const element = getByTestId('element');
 
                 await act(() => element.click());
+                await delay(100);
                 await act(() => element.click());
 
                 await delay(100);
@@ -401,6 +413,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
 
                 await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
                 await act(() => store.setNode('main')({ id: 'node1', prop: 'secondValue' }));
+                await delay(100);
                 await act(() => store.setNode('main')({ id: 'node1', prop: 'thirdValue' }));
 
                 await delay(100);
@@ -423,6 +436,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
 
                 await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
                 await act(() => store.setNode('main')({ id: 'node3', prop: 'secondValue' }));
+                await delay(100);
                 await act(() => store.setNode('main')({ id: 'node4', prop: 'thirdValue' }));
 
                 await delay(100);
@@ -450,6 +464,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
                 const element = getByTestId('element');
 
                 await act(() => element.click());
+                await delay(100);
                 await act(() => element.click());
                 expect(renderPayloads.length).toBe(3);
 
@@ -506,6 +521,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
 
                 await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
                 await act(() => store.setNode('main')({ id: 'node1', prop: 'secondValue' }));
+                await delay(100);
                 await act(() => store.setNode('main')({ id: 'node1', prop: 'thirdValue' }));
 
                 await delay(100);
@@ -528,6 +544,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
 
                 await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
                 await act(() => store.setNode('main')({ id: 'node3', prop: 'secondValue' }));
+                await delay(100);
                 await act(() => store.setNode('main')({ id: 'node4', prop: 'thirdValue' }));
 
                 await delay(100);
@@ -646,6 +663,7 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
 
                 await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
                 await act(() => store.setNode('main')({ id: 'node3', prop: 'secondValue' }));
+                await delay(100);
                 await act(() => store.setNode('main')({ id: 'node4', prop: 'thirdValue' }));
 
                 await delay(100);
@@ -672,7 +690,9 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
                 render(<TestComponent />);
 
                 await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+
                 await act(() => store.setNode('main')({ id: 'node1', prop: 'secondValue' }));
+                await delay(100);
                 await act(() => store.setNode('main')({ id: 'node1', prop: 'thirdValue' }));
 
                 await delay(100);
@@ -748,5 +768,14 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
     });
 };
 
-runTestsWith(createTestComponentAtom, 'Atom');
-runTestsWith(createTestComponentRedux, 'Redux');
+describe('atom sync', () => {
+    runTestsWith(createTestComponentAtom, 'Atom');
+});
+describe('atom async', () => {
+    runTestsWith(createTestComponentAtomAsync, 'Atom');
+});
+describe('redux', () => {
+    runTestsWith(createTestComponentRedux, 'Redux');
+});
+
+// TODO: write test to check if update batching is working
