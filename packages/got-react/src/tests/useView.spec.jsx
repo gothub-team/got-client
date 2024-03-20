@@ -16,7 +16,7 @@ import { setFnEquals } from '../index.js';
 // TODO fix JSX detection
 // TODO use workspace module, for now it causes hook errors for some reason
 const runTestsWith = (createTestComponent, atomOrRedux) => {
-    describe(`${atomOrRedux  } verifying test setup`, () => {
+    describe(`${atomOrRedux} verifying test setup`, () => {
         test('should render only once when rendering a plain component', async () => {
             const { TestComponent, renderPayloads } = createTestComponent(({ onRender }) => {
                 onRender();
@@ -31,33 +31,32 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
             await delay(100);
             expect(renderPayloads.length).toBe(1);
         });
-        atomOrRedux === 'Redux' && test('should rerender on related test redux updates', async () => {
-            const { TestComponent, dispatch, getState, renderPayloads } = createTestComponent(
-                ({ onRender, useSelector }) => {
-                    const value = useSelector(R.prop('test'));
-                    onRender(value);
-                    return <div data-testid="element" />;
-                },
-            );
+        atomOrRedux === 'Redux' &&
+            test('should rerender on related test redux updates', async () => {
+                const { TestComponent, dispatch, getState, renderPayloads } = createTestComponent(
+                    ({ onRender, useSelector }) => {
+                        const value = useSelector(R.prop('test'));
+                        onRender(value);
+                        return <div data-testid="element" />;
+                    },
+                );
 
-            render(<TestComponent />);
+                render(<TestComponent />);
 
-            await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+                await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
 
-            const testState1 = getState().test;
-            console.log('testState1', getState());
-            await act(() => dispatch({ type: 'TEST_ACTION' }));
-            const testState2 = getState().test;
-            console.log('testState2', getState());
-            await act(() => dispatch({ type: 'TEST_ACTION' }));
-            const testState3 = getState().test;
-            await delay(100);
+                const testState1 = getState().test;
+                await act(() => dispatch({ type: 'TEST_ACTION' }));
+                const testState2 = getState().test;
+                await act(() => dispatch({ type: 'TEST_ACTION' }));
+                const testState3 = getState().test;
+                await delay(100);
 
-            expect(testState1).not.toEqual(testState2);
-            expect(testState2).not.toEqual(testState3);
+                expect(testState1).not.toEqual(testState2);
+                expect(testState2).not.toEqual(testState3);
 
-            expect(renderPayloads.length).toBe(3);
-        });
+                expect(renderPayloads.length).toBe(3);
+            });
         test('should call selector on related test redux updates', async () => {
             const fnSelect = jest.fn(R.prop('invalid-prop'));
 
@@ -78,11 +77,12 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
             await act(() => element.click());
 
             expect(renderPayloads.length).toBe(1);
-            expect(fnSelect).toHaveBeenCalledTimes(3 + 1); // +1 since useSelector calls selector an additional time after component mount
+            atomOrRedux === 'Redux' && expect(fnSelect).toHaveBeenCalledTimes(3 + 1); // +1 since useSelector calls selector an additional time after component mount
+            atomOrRedux === 'Atom' && expect(fnSelect).toHaveBeenCalledTimes(3); // 1 for init, 2 updates
         });
     });
 
-    describe(`${atomOrRedux  } useView`, () => {
+    describe(`${atomOrRedux} useView`, () => {
         describe('Return value', () => {
             test('should select the same data as the store when rendering only once', async () => {
                 const { TestComponent, store, renderPayloads } = createTestComponent(({ useGraph, onRender }) => {
@@ -300,38 +300,39 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
                 expect(renderPayloads.length).toBe(3);
                 expect(mockStore.selectView).toHaveBeenCalledTimes(1);
             });
-            atomOrRedux === 'Redux' && test('should call selectView only once when rendering multiple times due to unrelated test redux updates', async () => {
-                const { TestComponent, mockStore, dispatch, getState, renderPayloads } = createTestComponent(
-                    ({ useGraph, onRender, useSelector }) => {
-                        const value = useSelector(R.prop('test'));
-                        const { useView } = useGraph(...basicStack);
-                        const viewRes = useView(basicView);
-                        onRender([value, viewRes]);
-                        return <div data-testid="element" />;
-                    },
-                );
+            atomOrRedux === 'Redux' &&
+                test('should call selectView only once when rendering multiple times due to unrelated test redux updates', async () => {
+                    const { TestComponent, mockStore, dispatch, getState, renderPayloads } = createTestComponent(
+                        ({ useGraph, onRender, useSelector }) => {
+                            const value = useSelector(R.prop('test'));
+                            const { useView } = useGraph(...basicStack);
+                            const viewRes = useView(basicView);
+                            onRender([value, viewRes]);
+                            return <div data-testid="element" />;
+                        },
+                    );
 
-                render(<TestComponent />);
+                    render(<TestComponent />);
 
-                await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+                    await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
 
-                const testState1 = getState().test;
-                await act(() => dispatch({ type: 'TEST_ACTION' }));
-                const testState2 = getState().test;
-                await act(() => dispatch({ type: 'TEST_ACTION' }));
-                const testState3 = getState().test;
-                await delay(100);
+                    const testState1 = getState().test;
+                    await act(() => dispatch({ type: 'TEST_ACTION' }));
+                    const testState2 = getState().test;
+                    await act(() => dispatch({ type: 'TEST_ACTION' }));
+                    const testState3 = getState().test;
+                    await delay(100);
 
-                expect(testState1).toEqual(renderPayloads[0][0]);
-                expect(testState1).not.toEqual(testState2);
-                expect(testState2).toEqual(renderPayloads[1][0]);
-                expect(testState2).not.toEqual(testState3);
-                expect(testState3).toEqual(renderPayloads[2][0]);
+                    expect(testState1).toEqual(renderPayloads[0][0]);
+                    expect(testState1).not.toEqual(testState2);
+                    expect(testState2).toEqual(renderPayloads[1][0]);
+                    expect(testState2).not.toEqual(testState3);
+                    expect(testState3).toEqual(renderPayloads[2][0]);
 
-                expect(renderPayloads.length).toBe(3);
+                    expect(renderPayloads.length).toBe(3);
 
-                expect(mockStore.selectView).toHaveBeenCalledTimes(1);
-            });
+                    expect(mockStore.selectView).toHaveBeenCalledTimes(1);
+                });
             test('should call selectView only once when rendering multiple times with equal view objects', async () => {
                 const { TestComponent, store, mockStore, renderPayloads } = createTestComponent(
                     ({ useGraph, onRender }) => {
@@ -454,40 +455,41 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
 
                 expect(mockSelector).toHaveBeenCalledTimes(1);
             });
-            atomOrRedux === 'Redux' && test('should call fnTransform only once when rendering multiple times due to unrelated test redux updates', async () => {
-                const mockSelector = jest.fn(R.identity);
+            atomOrRedux === 'Redux' &&
+                test('should call fnTransform only once when rendering multiple times due to unrelated test redux updates', async () => {
+                    const mockSelector = jest.fn(R.identity);
 
-                const { TestComponent, dispatch, getState, renderPayloads } = createTestComponent(
-                    ({ useGraph, onRender, useSelector }) => {
-                        const value = useSelector(R.prop('test'));
-                        const { useView } = useGraph(...basicStack);
-                        const viewRes = useView(basicView, mockSelector);
-                        onRender([value, viewRes]);
-                        return <div data-testid="element" />;
-                    },
-                );
+                    const { TestComponent, dispatch, getState, renderPayloads } = createTestComponent(
+                        ({ useGraph, onRender, useSelector }) => {
+                            const value = useSelector(R.prop('test'));
+                            const { useView } = useGraph(...basicStack);
+                            const viewRes = useView(basicView, mockSelector);
+                            onRender([value, viewRes]);
+                            return <div data-testid="element" />;
+                        },
+                    );
 
-                render(<TestComponent />);
+                    render(<TestComponent />);
 
-                await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+                    await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
 
-                const testState1 = getState().test;
-                await act(() => dispatch({ type: 'TEST_ACTION' }));
-                const testState2 = getState().test;
-                await act(() => dispatch({ type: 'TEST_ACTION' }));
-                const testState3 = getState().test;
-                await delay(100);
+                    const testState1 = getState().test;
+                    await act(() => dispatch({ type: 'TEST_ACTION' }));
+                    const testState2 = getState().test;
+                    await act(() => dispatch({ type: 'TEST_ACTION' }));
+                    const testState3 = getState().test;
+                    await delay(100);
 
-                expect(testState1).toEqual(renderPayloads[0][0]);
-                expect(testState1).not.toEqual(testState2);
-                expect(testState2).toEqual(renderPayloads[1][0]);
-                expect(testState2).not.toEqual(testState3);
-                expect(testState3).toEqual(renderPayloads[2][0]);
+                    expect(testState1).toEqual(renderPayloads[0][0]);
+                    expect(testState1).not.toEqual(testState2);
+                    expect(testState2).toEqual(renderPayloads[1][0]);
+                    expect(testState2).not.toEqual(testState3);
+                    expect(testState3).toEqual(renderPayloads[2][0]);
 
-                expect(renderPayloads.length).toBe(3);
+                    expect(renderPayloads.length).toBe(3);
 
-                expect(mockSelector).toHaveBeenCalledTimes(1);
-            });
+                    expect(mockSelector).toHaveBeenCalledTimes(1);
+                });
             test('should call fnTransform multiple times when view relevant data change', async () => {
                 const mockSelector = jest.fn(R.identity);
 
@@ -590,42 +592,43 @@ const runTestsWith = (createTestComponent, atomOrRedux) => {
 
                 expect(fnEquals).toHaveBeenCalledTimes(0);
             });
-            atomOrRedux === 'Redux' && test('should not call fnEquals when rendering multiple times due to unrelated redux updates', async () => {
-                const fnEquals = jest.fn(equals);
-                setFnEquals(fnEquals);
+            atomOrRedux === 'Redux' &&
+                test('should not call fnEquals when rendering multiple times due to unrelated redux updates', async () => {
+                    const fnEquals = jest.fn(equals);
+                    setFnEquals(fnEquals);
 
-                const { TestComponent, dispatch, getState, renderPayloads } = createTestComponent(
-                    ({ useGraph, onRender, useSelector }) => {
-                        const value = useSelector(R.prop('test'));
-                        const { useView } = useGraph(...basicStack);
-                        const viewRes = useView(basicView);
-                        onRender([value, viewRes]);
-                        return <div data-testid="element" />;
-                    },
-                );
+                    const { TestComponent, dispatch, getState, renderPayloads } = createTestComponent(
+                        ({ useGraph, onRender, useSelector }) => {
+                            const value = useSelector(R.prop('test'));
+                            const { useView } = useGraph(...basicStack);
+                            const viewRes = useView(basicView);
+                            onRender([value, viewRes]);
+                            return <div data-testid="element" />;
+                        },
+                    );
 
-                render(<TestComponent />);
+                    render(<TestComponent />);
 
-                await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+                    await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
 
-                const testState1 = getState().test;
-                await act(() => dispatch({ type: 'TEST_ACTION' }));
-                const testState2 = getState().test;
-                await act(() => dispatch({ type: 'TEST_ACTION' }));
-                const testState3 = getState().test;
-                await delay(100);
+                    const testState1 = getState().test;
+                    await act(() => dispatch({ type: 'TEST_ACTION' }));
+                    const testState2 = getState().test;
+                    await act(() => dispatch({ type: 'TEST_ACTION' }));
+                    const testState3 = getState().test;
+                    await delay(100);
 
-                expect(testState1).toEqual(renderPayloads[0][0]);
-                expect(testState1).not.toEqual(testState2);
-                expect(testState2).toEqual(renderPayloads[1][0]);
-                expect(testState2).not.toEqual(testState3);
-                expect(testState3).toEqual(renderPayloads[2][0]);
+                    expect(testState1).toEqual(renderPayloads[0][0]);
+                    expect(testState1).not.toEqual(testState2);
+                    expect(testState2).toEqual(renderPayloads[1][0]);
+                    expect(testState2).not.toEqual(testState3);
+                    expect(testState3).toEqual(renderPayloads[2][0]);
 
-                setFnEquals(equals);
-                expect(renderPayloads.length).toBe(3);
+                    setFnEquals(equals);
+                    expect(renderPayloads.length).toBe(3);
 
-                expect(fnEquals).toHaveBeenCalledTimes(0);
-            });
+                    expect(fnEquals).toHaveBeenCalledTimes(0);
+                });
             test('should call fnEquals every time when rendering multiple times due to view unrelated data change', async () => {
                 const fnEquals = jest.fn(equals);
                 setFnEquals(fnEquals);
