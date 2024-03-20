@@ -54,6 +54,7 @@ export const useCreateAtom = <T>(initialValue: T) => useMemo(() => atom<T>(initi
 export const useAtom = <T, R = T>(
     { value, subscribe, unsubscribe }: Atom<T>,
     selector: Selector<T, R> = (s) => s as unknown as R,
+    fnEquals: (a: R | undefined, b: R) => boolean = equals as unknown as (a: R | undefined, b: R) => boolean,
 ) => {
     const localValue = useRef(selector(value.current));
     const [, forceUpdate] = useReducer(() => ({}), {});
@@ -64,7 +65,7 @@ export const useAtom = <T, R = T>(
         const updatedValue = selector(value.current);
         // TODO: fix this eslint-disable
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        if (!equals(localValue.current, updatedValue)) {
+        if (!fnEquals(localValue.current, updatedValue)) {
             localValue.current = updatedValue;
         }
     }
@@ -75,7 +76,7 @@ export const useAtom = <T, R = T>(
                 const updatedValue = selectorRef.current(newValue);
                 // TODO: fix this eslint-disable
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                if (!equals(localValue.current, updatedValue)) {
+                if (!fnEquals(localValue.current, updatedValue)) {
                     localValue.current = updatedValue;
                     forceUpdate();
                 }

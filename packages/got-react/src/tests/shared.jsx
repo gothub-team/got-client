@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { createStore } from '@gothub-team/got-store';
 import { combineReducers, createStore as createReduxStore } from 'redux';
 import * as R from 'ramda';
@@ -35,6 +35,7 @@ export const getMockSetup = () => {
 
     const { useGraph } = createHooks({
         baseState: R.propOr({}, 'got'),
+        useSelector,
         store: mockStore,
     });
 

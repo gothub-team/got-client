@@ -294,6 +294,10 @@ export declare interface CreateHooksOptions {
      */
     store: GotStore;
     /**
+     * Selector hook of the current store.
+     */
+    useSelector: (fnSelect: (state: State) => unknown, fnEquals: (next: unknown, prev: unknown) => boolean) => any;
+    /**
      * Function to select the got state from the current redux state.
      * Per default it is assumed that the redux state is the got state.
      */
@@ -382,6 +386,14 @@ export declare interface SetupOptions {
      * preferred over redux store.
      */
     atom?: Atom<State>;
+    /**
+     * Selector hook of the current store. Can be useAtom or useSelector.
+     * 
+     * @example
+     * (fnSelect, fnEquals) => useSelector(fnSelect, fnEquals);
+     * (fnSelect, fnEquals) => useAtom(atom, fnSelect, fnEquals);
+     */
+    useSelector: CreateHooksOptions['useSelector'];
     /**
      * Name of the got state in the current redux state.
      * Per default it is assumed that the got state is named `got`.

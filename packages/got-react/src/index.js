@@ -8,9 +8,9 @@ import { configureUseGraph } from './useGraph.js';
 export { gotReducer } from '@gothub-team/got-store';
 export { setFnEquals } from './useGraph.js';
 
-export const createHooks = ({ store, baseState = R.identity }) => {
+export const createHooks = ({ store, useSelector, baseState = R.identity }) => {
     const createGraph = configureCreateGraph(store);
-    const useGraph = configureUseGraph({ store, baseState, createGraph });
+    const useGraph = configureUseGraph({ store, useSelector, baseState, createGraph });
 
     return {
         createGraph,
@@ -22,6 +22,7 @@ export const setup = ({
     host, // string
     reduxStore, // Redux Store
     atom,
+    useSelector,
     baseState, // string
     onError = console.error,
     onWarn = console.warn,
@@ -50,6 +51,7 @@ export const setup = ({
     });
     const { createGraph, useGraph } = createHooks({
         store,
+        useSelector,
         baseState: baseState ? R.prop(baseState) : R.identity,
     });
     return {
