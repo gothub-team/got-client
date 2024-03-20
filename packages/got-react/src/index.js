@@ -33,6 +33,10 @@ export const setup = ({
         onError('You must provide either a Redux store or an Atom');
         return;
     }
+    if (!useSelector) {
+        onError('You must provide a useSelector function');
+        return;
+    }
     const api = createApi({
         host,
         adminMode,
