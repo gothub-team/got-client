@@ -1,6 +1,5 @@
 import * as R from 'ramda';
 import * as RA from 'ramda-adjunct';
-import { useSelector } from 'react-redux';
 import { useCallback, useMemo, useRef } from 'react';
 import equal from 'fast-deep-equal';
 import { useEqualRef } from './util.js';
@@ -13,7 +12,7 @@ export const setFnEquals = (fn) => {
 const useViewEquality = (next, prev) => (next.requireEqCheck ? fnEquals(next.result, prev.result) : true);
 
 export const configureUseGraph =
-    ({ store, baseState = R.identity, createGraph }) =>
+    ({ store, useSelector, baseState = R.identity, createGraph }) =>
     (...stack) => {
         const currentGraphName = R.nth(-1, stack);
 

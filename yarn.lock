@@ -2079,7 +2079,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gothub-team/got-atom@workspace:packages/got-atom":
+"@gothub-team/got-atom@workspace:*, @gothub-team/got-atom@workspace:packages/got-atom":
   version: 0.0.0-use.local
   resolution: "@gothub-team/got-atom@workspace:packages/got-atom"
   dependencies:
@@ -2122,6 +2122,7 @@ __metadata:
     "@babel/preset-env": ^7.23.3
     "@babel/preset-react": ^7.23.3
     "@gothub-team/got-api": ^0.1.28
+    "@gothub-team/got-atom": "workspace:*"
     "@gothub-team/got-core": "workspace:*"
     "@gothub-team/got-store": "workspace:*"
     "@gothub-team/got-util": "workspace:*"
@@ -2146,7 +2147,6 @@ __metadata:
     uuid: ^8.3.2
   peerDependencies:
     react: ">=17.0.2"
-    react-redux: ">=7.2.3"
   languageName: unknown
   linkType: soft
 
