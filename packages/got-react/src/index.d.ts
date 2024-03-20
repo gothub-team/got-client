@@ -24,6 +24,7 @@ import {
 } from '@gothub-team/got-core';
 import { type GotStore, type PushObservables, type ViewNodeTree } from '@gothub-team/got-store';
 import { type GotAction } from '@gothub-team/got-store/src/got-action';
+import { type Atom } from '@gothub-team/got-atom';
 
 export { gotReducer } from '@gothub-team/got-store';
 
@@ -293,6 +294,10 @@ export declare interface CreateHooksOptions {
      */
     store: GotStore;
     /**
+     * Selector hook of the current store.
+     */
+    useSelector: (fnSelect: (state: State) => unknown, fnEquals: (next: unknown, prev: unknown) => boolean) => any;
+    /**
      * Function to select the got state from the current redux state.
      * Per default it is assumed that the redux state is the got state.
      */
@@ -372,14 +377,28 @@ export declare interface SetupOptions {
      */
     host: string;
     /**
-     * Redux store handling all got data.
+     * Redux store handling the got state. If no atom is provided the redux store is used.
+     * Atom is preferred over redux store.
      */
-    reduxStore: ReduxStore;
+    reduxStore?: ReduxStore;
+    /**
+     * Atom handling the got state. If no redux store is provided the atom is used. Atom is
+     * preferred over redux store.
+     */
+    atom?: Atom<State>;
+    /**
+     * Selector hook of the current store. Can be useAtom or useSelector.
+     * 
+     * @example
+     * (fnSelect, fnEquals) => useSelector(fnSelect, fnEquals);
+     * (fnSelect, fnEquals) => useAtom(atom, fnSelect, fnEquals);
+     */
+    useSelector: CreateHooksOptions['useSelector'];
     /**
      * Name of the got state in the current redux state.
      * Per default it is assumed that the got state is named `got`.
      */
-    baseState: string;
+    baseState?: string;
     /**
      * Error handler to be called by store in case of runtime errors.
      * Set to `null` to disable errors.

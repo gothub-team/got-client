@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { Provider } from 'react-redux';
+import { Provider, useSelector as useSelectorRedux } from 'react-redux';
 import { createStore } from '@gothub-team/got-store';
 import { combineReducers, createStore as createReduxStore } from 'redux';
 import * as R from 'ramda';
 import '@testing-library/jest-dom';
 import { generateNewRandom } from '@gothub-team/got-util';
 import { gotReducer, createHooks } from '../index.js';
+import { atom, useAtom } from '@gothub-team/got-atom';
 
 export const delay = (ms) => new Promise((resolve) => setTimeout(() => resolve(ms), ms));
 
@@ -18,7 +19,7 @@ export const testReducer = (state = 0, action) => {
     return state;
 };
 
-export const getMockSetup = () => {
+export const getMockSetupRedux = () => {
     const rootReducer = combineReducers({
         got: gotReducer,
         test: testReducer,
@@ -35,6 +36,7 @@ export const getMockSetup = () => {
 
     const { useGraph } = createHooks({
         baseState: R.propOr({}, 'got'),
+        useSelector: useSelectorRedux,
         store: mockStore,
     });
 
@@ -46,27 +48,87 @@ export const getMockSetup = () => {
     };
 };
 
-export const createTestComponent = (_Component) => {
+export const createTestComponentRedux = (_Component) => {
     const renderPayloads = [];
 
     const onRender = (payload) => {
         renderPayloads.push(payload);
     };
 
-    const mockSetup = getMockSetup();
-    const { reduxStore, useGraph, store } = mockSetup;
+    const mockSetup = getMockSetupRedux();
+    const { reduxStore, useGraph, store, mockStore } = mockSetup;
 
     const Component = React.memo(_Component);
 
     const TestComponent = ({ ...props }) => (
         <Provider store={reduxStore}>
-            <Component useGraph={useGraph} onRender={onRender} gotStore={store} {...props} />
+            <Component useSelector={useSelectorRedux} dispatch={reduxStore.dispatch} useGraph={useGraph} onRender={onRender} gotStore={store} {...props} />
         </Provider>
     );
 
     return {
         TestComponent,
-        ...mockSetup,
+        dispatch: reduxStore.dispatch,
+        getState: reduxStore.getState,
+        useGraph,
+        store,
+        mockStore,
+        renderPayloads,
+    };
+};
+
+export const getMockSetupAtom = () => {
+    const storeAtom = atom({});
+
+    const dispatch = (action) => storeAtom.set(gotReducer(storeAtom.get(), action));
+    const store = createStore({
+        dispatch,
+        select: (selector) => selector(storeAtom.get()),
+        onWarn: () => {},
+    });
+
+    const mockStore = R.map((fn) => jest.fn(fn), store);
+
+    const useSelector = (fnSelect, fnEquals) => useAtom(storeAtom, fnSelect, fnEquals);
+    const { useGraph } = createHooks({
+        baseState: R.identity,
+        useSelector,
+        store: mockStore,
+    });
+
+    return {
+        store,
+        mockStore,
+        useGraph,
+        getState: storeAtom.get,
+        dispatch,
+        useSelector,
+    };
+};
+
+export const createTestComponentAtom = (_Component) => {
+    const renderPayloads = [];
+
+    const onRender = (payload) => {
+        renderPayloads.push(payload);
+    };
+
+    const mockSetup = getMockSetupAtom();
+    const { dispatch, getState, useGraph, store, mockStore, useSelector } = mockSetup;
+
+    const Component = React.memo(_Component);
+
+    const TestComponent = ({ ...props }) => (
+        <Component useSelector={useSelector} dispatch={dispatch} useGraph={useGraph} onRender={onRender} gotStore={store} {...props} />
+    );
+
+    return {
+        TestComponent,
+        dispatch,
+        getState,
+        useGraph,
+        store,
+        mockStore,
         renderPayloads,
     };
 };
