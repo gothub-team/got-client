@@ -43,13 +43,14 @@ export const setup = ({
         sessionStore: getLocalStorageSessionStore(`got-auth_${host}`),
         sessionExpireTime,
     });
-    const dispatch = atom ? action => atom.set(gotReducer(atom.get(), action)) : reduxStore.dispatch;
+    const dispatch = atom ? (action) => atom.set(gotReducer(atom.get(), action)) : reduxStore.dispatch;
     const getState = atom ? atom.get : reduxStore.getState;
     const store = createStore({
         api,
         dispatch,
-        select: (selector) =>
-            baseState ? selector(R.propOr({}, baseState, getState())) : selector(getState()),
+        select: baseState
+            ? (selector) => selector(R.propOr({}, baseState, getState()))
+            : (selector) => selector(getState()),
         onError,
         onWarn,
     });
