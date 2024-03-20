@@ -65,7 +65,7 @@ export const useAtom = <T, R = T>(
         const updatedValue = selector(value.current);
         // TODO: fix this eslint-disable
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        if (!fnEquals(localValue.current, updatedValue)) {
+        if (!fnEquals(updatedValue, localValue.current)) {
             localValue.current = updatedValue;
         }
     }
@@ -76,7 +76,7 @@ export const useAtom = <T, R = T>(
                 const updatedValue = selectorRef.current(newValue);
                 // TODO: fix this eslint-disable
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                if (!fnEquals(localValue.current, updatedValue)) {
+                if (!fnEquals(updatedValue, localValue.current)) {
                     localValue.current = updatedValue;
                     forceUpdate();
                 }
