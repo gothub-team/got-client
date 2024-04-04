@@ -369,8 +369,66 @@ export const createRawStore = ({ api, dispatch, select }) => {
 
         return apiResult;
     };
+
+    const mergeRight = (left, right) => {
+        if (left === undefined || right === false) {
+            return right;
+        }
+        if (right === undefined) {
+            return left;
+        }
+        if (right === true) {
+            return left || right;
+        }
+
+        if (typeof right === 'object') {
+            return R.mergeRight(left, right);
+        }
+
+        return right;
+    };
+
+    const mergeNodeRight = mergeRight;
+    const selectFromNodeStack = (nodeStack, nodeId) => {
+        let acc;
+        for (let i = 0; i < nodeStack.length; i += 1) {
+            const node = nodeStack[i][nodeId];
+            if (node != null) {
+                acc = mergeNodeRight(acc, node);
+            }
+        }
+        return acc;
+    };
+
+    const selectFromEdgeStack = (edgeStack, fromType, fromId, toType) => {
+        if (edgeStack.length === 0) return {};
+        if (edgeStack.length === 1) return edgeStack[0][fromType]?.[fromId]?.[toType] ?? {};
+
+        let acc = {};
+        for (let i = 0; i < edgeStack.length; i += 1) {
+            const edge = edgeStack[i][fromType]?.[fromId]?.[toType];
+            if (edge != null) {
+                const toIds = Object.keys(edge);
+                for (let j = 0; j < toIds.length; j += 1) {
+                    const toId = toIds[j];
+                    const metadata = edge[toId];
+                    if (metadata) {
+                        acc[toId] = mergeRight(acc[toId], metadata);
+                    } else if (metadata === false || metadata === null) {
+                        delete acc[toId];
+                    }
+                }
+            }
+        }
+        return acc;
+    };
+
     const selectView = (stack, view, state) => {
-        const queryNode = (queryObj, nodeId, metadata) => {
+        const nodeStack = stack.map((graphName) => state[graphName]?.graph?.nodes).filter(Boolean);
+        const edgeStack = stack.map((graphName) => state[graphName]?.graph?.edges).filter(Boolean);
+        const reverseEdgeStack = stack.map((graphName) => state[graphName]?.graph?.index?.reverseEdges).filter(Boolean);
+
+        const queryNode = (queryObj, nodeId, node, metadata) => {
             const bag = { nodeId };
             const { include } = queryObj;
 
@@ -379,7 +437,7 @@ export const createRawStore = ({ api, dispatch, select }) => {
                 bag.metadata = metadata;
             }
             if (include?.node) {
-                bag.node = selectNode(stack, nodeId, state);
+                bag.node = node;
             }
             if (include?.rights) {
                 bag.rights = selectRights(stack, nodeId, state);
@@ -394,9 +452,11 @@ export const createRawStore = ({ api, dispatch, select }) => {
                 const keys = Object.keys(edges);
                 for (let i = 0; i < keys.length; i += 1) {
                     const edgeTypes = keys[i];
-                    const edgeAlias = edges[edgeTypes].as ?? edgeTypes;
+                    const subQueryObj = edges[edgeTypes];
+                    if (!subQueryObj) continue;
+                    const edgeAlias = subQueryObj.as ?? edgeTypes;
 
-                    bag[edgeAlias] = queryEdge(edges[edgeTypes], edgeTypes, nodeId);
+                    bag[edgeAlias] = queryEdge(subQueryObj, edgeTypes, nodeId);
                 }
             }
 
@@ -404,40 +464,44 @@ export const createRawStore = ({ api, dispatch, select }) => {
         };
 
         const queryEdge = (queryObj, edgeTypes, nodeId) => {
-            const [fromType, toType] = R.split('/', edgeTypes);
+            const [fromType, toType] = edgeTypes.split('/');
             const edgeIds = queryObj.reverse
-                ? selectPathFromStack(
-                      ['graph', 'index', 'reverseEdges', toType, nodeId, fromType],
-                      stack,
-                      mergeWith(mergeLeft),
-                      state,
-                  )
-                : selectEdgeFromStack(fromType, nodeId, toType, stack, state);
+                ? selectFromEdgeStack(reverseEdgeStack, toType, nodeId, fromType)
+                : selectFromEdgeStack(edgeStack, fromType, nodeId, toType);
 
             if (!edgeIds) return;
 
             const edgeBag = {};
             const keys = Object.keys(edgeIds);
-            const values = Object.values(edgeIds);
             for (let i = 0; i < keys.length; i += 1) {
                 const toId = keys[i];
-                const metadata = queryObj.reverse ? selectMetadata(stack, edgeTypes, toId, nodeId, state) : values[i];
+                const metadata = queryObj.reverse
+                    ? selectMetadata(stack, edgeTypes, toId, nodeId, state)
+                    : edgeIds[toId];
                 if (!metadata) continue;
 
-                if (metadata) {
-                    edgeBag[toId] = queryNode(queryObj, toId, metadata);
-                }
+                const toNode = selectFromNodeStack(nodeStack, toId);
+                if (!toNode) continue;
+
+                edgeBag[toId] = queryNode(queryObj, toId, toNode, metadata);
             }
 
             return edgeBag;
         };
 
         const result = {};
-        R.forEachObjIndexed((nestedQueryObj, nodeId) => {
-            const nodeAlias = nestedQueryObj.as ?? nodeId;
+        const rootIds = Object.keys(view);
+        for (let i = 0; i < rootIds.length; i += 1) {
+            const nodeId = rootIds[i];
+            const queryObj = view[nodeId];
+            if (!queryObj) continue;
 
-            result[nodeAlias] = queryNode(nestedQueryObj, nodeId);
-        }, view);
+            const nodeAlias = queryObj?.as ?? nodeId;
+            const node = selectFromNodeStack(nodeStack, nodeId);
+            if (!node) continue;
+
+            result[nodeAlias] = queryNode(queryObj, nodeId, node);
+        }
 
         return result;
     };
