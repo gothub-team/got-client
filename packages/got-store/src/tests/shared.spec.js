@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import * as uuid from 'uuid';
 import { assocPathMutate } from '@gothub-team/got-util';
 import * as R from 'ramda';
@@ -61,7 +60,12 @@ export const generateRandomString = (length = 5) =>
         .substr(0, length);
 
 export const generateRandomTestData = (numParents, numChildren, numChildrenChildren) => {
-    const graph = { nodes: {}, edges: {} };
+    const graph = {
+        nodes: {
+            root: { id: 'root' },
+        },
+        edges: {},
+    };
 
     // generate debug data
     for (let i = 0; i < numParents; i += 1) {
@@ -97,7 +101,7 @@ export const generateRandomTestData = (numParents, numChildren, numChildrenChild
             }
         }
     }
-    return { stateId: 12345, main: { graph } };
+    return { stateId: 12345, main: { graph }, temp: { graph } };
 };
 
 export const randomTestDataView = {
