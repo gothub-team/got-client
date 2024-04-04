@@ -371,21 +371,30 @@ export const createRawStore = ({ api, dispatch, select }) => {
     };
 
     const mergeRight = (left, right) => {
-        if (left === undefined || right === false) {
-            return right;
-        }
+        // right does not overwrite
         if (right === undefined) {
             return left;
         }
+
+        // right is false or null and overwrites
+        if (!right) {
+            return right;
+        }
+
+        // right is true, take truthy left or overwrite with true
         if (right === true) {
             return left || right;
         }
 
-        if (typeof right === 'object') {
-            return R.mergeRight(left, right);
+        // right is object
+
+        // if left is falsy or true, overwrite
+        if (!left || left === true) {
+            return right;
         }
 
-        return right;
+        // left is also object, merge
+        return { ...left, ...right };
     };
 
     const mergeNodeRight = mergeRight;
