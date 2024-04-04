@@ -618,6 +618,11 @@ describe('store:Views', () => {
                 },
             };
             const graph = {
+                nodes: {
+                    [from1Id]: { id: from1Id },
+                    [node1Id]: { id: node1Id },
+                    [node2Id]: { id: node2Id },
+                },
                 edges: {
                     from: {
                         [from1Id]: {
@@ -667,6 +672,10 @@ describe('store:Views', () => {
                 },
             };
             const graph = {
+                nodes: {
+                    [from1Id]: { id: from1Id },
+                    [node1Id]: { id: node1Id },
+                },
                 edges: {
                     from: {
                         [from1Id]: {
@@ -719,6 +728,10 @@ describe('store:Views', () => {
                 },
             };
             const graph = {
+                nodes: {
+                    [from1Id]: { id: from1Id },
+                    [node1Id]: { id: node1Id },
+                },
                 edges: {
                     from: {
                         [from1Id]: {
@@ -877,6 +890,24 @@ describe('store:Views', () => {
         });
     });
 
+    const testExampleViewRes = (viewRes, numParents, numChildren, numChildrenChildren) => {
+        const parents = viewRes?.root?.parents;
+        const parentIds = parents ? Object.keys(parents) : [];
+        expect(parentIds.length).toBe(numParents);
+        for (let i = 0; i < numParents; i += 1) {
+            const parentId = parentIds[i];
+            const children = parents[parentId]?.children;
+            const childIds = children ? Object.keys(children) : [];
+            expect(childIds.length).toBe(numChildren);
+            for (let j = 0; j < numChildren; j += 1) {
+                const childId = childIds[j];
+                const childChildren = children[childId]?.childchildren;
+                const childChildIds = childChildren ? Object.keys(childChildren) : [];
+                expect(childChildIds.length).toBe(numChildrenChildren);
+            }
+        }
+    };
+
     describe('performance', () => {
         const testPerformance = (numParents, numChildren, numChildrenChildren, expectedTime) => {
             const totalNum = numParents + numParents * numChildren + numParents * numChildren * numChildrenChildren;
@@ -896,11 +927,15 @@ describe('store:Views', () => {
 
                     const start = performance.now();
 
-                    select(selectView('main', 'temp')(randomTestDataView));
+                    const viewRes = select(selectView('main', 'temp')(randomTestDataView));
 
                     const end = performance.now();
                     const runTime = end - start;
                     totalTime += runTime;
+
+                    if (counter === 0) {
+                        testExampleViewRes(viewRes, numParents, numChildren, numChildrenChildren);
+                    }
                 }
 
                 console.log(
