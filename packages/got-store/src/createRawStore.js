@@ -397,13 +397,12 @@ export const createRawStore = ({ api, dispatch, select }) => {
         return { ...left, ...right };
     };
 
-    const mergeNodeRight = mergeRight;
     const selectFromNodeStack = (nodeStack, nodeId) => {
         let acc;
         for (let i = 0; i < nodeStack.length; i += 1) {
             const node = nodeStack[i][nodeId];
             if (node != null) {
-                acc = mergeNodeRight(acc, node);
+                acc = mergeRight(acc, node);
             }
         }
         return acc;
