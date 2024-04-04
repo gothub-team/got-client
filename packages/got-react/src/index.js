@@ -7,6 +7,7 @@ import { configureUseGraph } from './useGraph.js';
 
 export { gotReducer } from '@gothub-team/got-store';
 export { setFnEquals } from './useGraph.js';
+export { createLocalGraph } from './createLocalGraph.js';
 
 export const createHooks = ({ store, useSelector, baseState = R.identity }) => {
     const createGraph = configureCreateGraph(store);
