@@ -1,8 +1,23 @@
 import * as R from 'ramda';
 
+export const validateStack = (stack) => {
+    if (!stack.length || stack.length === 0) {
+        return 'Stack is empty';
+    }
+
+    for (let i = 0; i < stack.length; i += 1) {
+        if (typeof stack[i] !== 'string') {
+            return `Invalid stack: ${stack}`;
+        }
+    }
+};
+
 export const configureCreateGraph =
     (store) =>
     (...stack) => {
+        const stackError = validateStack(stack);
+        if (stackError) throw new Error(stackError);
+
         const currentGraphName = R.nth(-1, stack);
         const nextBelowGraphName = R.nth(-2, stack);
         const bottomGraphName = R.head(stack);

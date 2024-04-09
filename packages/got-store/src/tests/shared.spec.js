@@ -101,7 +101,11 @@ export const generateRandomTestData = (numParents, numChildren, numChildrenChild
             }
         }
     }
-    return { stateId: 12345, main: { graph }, temp: { graph } };
+    return {
+        stateId: 12345,
+        main: { graph },
+        //   temp: { graph }
+    };
 };
 
 export const randomTestDataView = {
