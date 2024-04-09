@@ -452,7 +452,7 @@ export declare const createHooks: (options: CreateHooksOptions) => CreateResult;
  *
  * By default the local graph will operate on the stack ['main', 'edit']. All edits made on the local graph will be stored in the "edit" graph.
  *
- * The local graph can be merged to the global got store by calling `mergeGraph(getGraph('edit'))`,
+ * The local graph can be merged to the global got store by calling `mergeGraph(getGraph())`,
  * where `getGraph` is a function returned by `createLocalGraph` and `mergeGraph` is the function relating to the global store.
  *
  * The local graph does not have any API capabilities.
@@ -460,5 +460,5 @@ export declare const createHooks: (options: CreateHooksOptions) => CreateResult;
 export declare const createLocalGraph: (initialState: State) => CreateGraphResult & {
     store: GotStore;
     getState: () => State;
-    getGraph: () => Graph;
+    getGraph: (graphName?: string) => Graph;
 };
