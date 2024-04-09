@@ -40,7 +40,6 @@ import {
     GOT_ACTION_UPLOAD_ERROR,
     GOT_ACTION_UPLOAD_PROGRESS,
 } from './reducer.js';
-import { get } from 'http';
 
 export const createRawStore = ({ api, dispatch, select }) => {
     const merge = (fromGraphName, toGraphName) => {
@@ -132,9 +131,20 @@ export const createRawStore = ({ api, dispatch, select }) => {
         const [fromType, toType] = R.split('/', edgeTypes);
 
         const reverseEdgeStack = getReverseEdgeStack(state, stack);
+        const edgeStack = getEdgeStack(state, stack);
 
-        // TODO: we got the metadata here before as well
-        return edgeFromEdgeStack(reverseEdgeStack, toType, toId, fromType);
+        const fromIds = Object.keys(edgeFromEdgeStack(reverseEdgeStack, toType, toId, fromType));
+
+        const edge = {};
+        for (let i = 0; i < fromIds.length; i += 1) {
+            const fromId = fromIds[i];
+            const metadata = metadataFromEdgeStack(edgeStack, fromType, fromId, toType, toId);
+            if (metadata) {
+                edge[fromId] = metadata;
+            }
+        }
+
+        return edge;
     };
     const getReverseEdge = (stack, edgeTypes, toId) =>
         select((state) => selectReverseEdge(stack, edgeTypes, toId, state));
