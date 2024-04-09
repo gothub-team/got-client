@@ -58,6 +58,12 @@ export declare const convergeOverPaths: (
 // TODO docs, types
 export declare const convergePaths: (paths: string[][]) => <TRes>(fnConverge: (props: any[]) => TRes) => TRes;
 
+export type GraphObj = boolean | object | undefined | null;
+/**
+ * Curried function. Merges two objects with props of the right input taking priority over those of the left.
+ */
+export declare const mergeGraphObjRight: (left: GraphObj, right: GraphObj) => GraphObj;
+
 /**
  * Curried function. Merges two objects with props of the right input taking priority over those of the left.
  */

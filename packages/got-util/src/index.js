@@ -68,6 +68,33 @@ export const mergeRight = R.curry((left, right) => {
 });
 export const mergeLeft = R.flip(mergeRight);
 
+export const mergeGraphObjRight = (left, right) => {
+    // right does not overwrite
+    if (right === undefined) {
+        return left;
+    }
+
+    // right is false or null and overwrites
+    if (!right) {
+        return right;
+    }
+
+    // right is true, take truthy left or overwrite with true
+    if (right === true) {
+        return left || right;
+    }
+
+    // right is object
+
+    // if left is falsy or true, overwrite
+    if (!left || left === true) {
+        return right;
+    }
+
+    // left is also object, merge
+    return { ...left, ...right };
+};
+
 export const mergeWith = R.curry((fnMerge, left, right) => R.mergeWith(fnMerge, maybeObject(left), maybeObject(right)));
 
 export const mergeDeepRight = R.curry((left, right) => R.mergeDeepRight(maybeObject(left), maybeObject(right)));

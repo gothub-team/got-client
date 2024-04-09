@@ -12,6 +12,8 @@ import {
     assocPathMutate,
     forEachObjDepth,
     dissocPathMutate,
+    mergeGraphObjRight,
+    mergeDeepRight,
 } from '@gothub-team/got-util';
 
 export const isEdgeTypesString = R.compose(
@@ -327,6 +329,88 @@ export const selectNodeFromStack = (nodeId, stack, state) => {
         const val = state[graphName]?.graph?.nodes?.[nodeId];
         if (val !== undefined) {
             acc = mergeNodeLeft(val)(acc);
+        }
+    }
+    return acc;
+};
+
+const getAnyStack = (fnSelect) => (state, stack) => {
+    let acc = [];
+    for (let i = 0; i < stack.length; i += 1) {
+        const graphName = stack[i];
+        const val = fnSelect(state, graphName);
+        val && acc.push(val);
+    }
+    return acc;
+};
+
+export const getNodeStack = getAnyStack((state, graphName) => state[graphName]?.graph?.nodes);
+export const getEdgeStack = getAnyStack((state, graphName) => state[graphName]?.graph?.edges);
+export const getReverseEdgeStack = getAnyStack((state, graphName) => state[graphName]?.graph?.index?.reverseEdges);
+export const getRightStack = getAnyStack((state, graphName) => state[graphName]?.graph?.rights);
+export const getFileStack = getAnyStack((state, graphName) => state[graphName]?.graph?.files);
+
+export const nodeFromNodeStack = (nodeStack, nodeId) => {
+    let acc;
+    for (let i = 0; i < nodeStack.length; i += 1) {
+        const node = nodeStack[i][nodeId];
+        if (node != null) {
+            acc = mergeGraphObjRight(acc, node);
+        }
+    }
+    return acc;
+};
+
+export const edgeFromEdgeStack = (edgeStack, fromType, fromId, toType) => {
+    if (edgeStack.length === 0) return {};
+
+    let acc = {};
+    for (let i = 0; i < edgeStack.length; i += 1) {
+        const edge = edgeStack[i][fromType]?.[fromId]?.[toType];
+        if (edge != null) {
+            const toIds = Object.keys(edge);
+            for (let j = 0; j < toIds.length; j += 1) {
+                const toId = toIds[j];
+                const metadata = edge[toId];
+                if (metadata) {
+                    acc[toId] = mergeGraphObjRight(acc[toId], metadata);
+                } else if (metadata === false || metadata === null) {
+                    delete acc[toId];
+                }
+            }
+        }
+    }
+    return acc;
+};
+
+export const metadataFromEdgeStack = (edgeStack, fromType, fromId, toType, toId) => {
+    let acc;
+    for (let i = 0; i < edgeStack.length; i += 1) {
+        const node = edgeStack[i][fromType]?.[fromId]?.[toType]?.[toId];
+        if (node != null) {
+            acc = mergeGraphObjRight(acc, node);
+        }
+    }
+    return acc;
+};
+
+export const rightFromRightStack = (rightStack, nodeId) => {
+    let acc;
+    for (let i = 0; i < rightStack.length; i += 1) {
+        const node = rightStack[i][nodeId];
+        if (node != null) {
+            acc = mergeDeepRight(acc, node);
+        }
+    }
+    return acc;
+};
+
+export const filesFromFileStack = (fileStack, nodeId) => {
+    let acc;
+    for (let i = 0; i < fileStack.length; i += 1) {
+        const node = fileStack[i][nodeId];
+        if (node != null) {
+            acc = mergeGraphObjRight(acc, node);
         }
     }
     return acc;
