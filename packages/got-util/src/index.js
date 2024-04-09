@@ -42,8 +42,6 @@ export const useSubscriber = () => {
     return { subscribe, unsubscribe, subscriber: { next, complete, error } };
 };
 
-export const assocWhen = R.curry((shouldAssoc, prop, value) => R.when(shouldAssoc, R.assoc(prop, value)));
-
 export const overPath = R.curry((path, fnOver) => R.over(R.lensPath(path), fnOver));
 
 export const maybeObject = R.unless(RA.isObj, R.always({}));
@@ -95,21 +93,9 @@ export const mergeGraphObjRight = (left, right) => {
     return { ...left, ...right };
 };
 
-export const mergeWith = R.curry((fnMerge, left, right) => R.mergeWith(fnMerge, maybeObject(left), maybeObject(right)));
-
 export const mergeDeepRight = R.curry((left, right) => R.mergeDeepRight(maybeObject(left), maybeObject(right)));
 export const mergeDeepLeft = R.flip(mergeDeepRight);
 
-export const pickMapObj = (pickMapFns) => (obj) => {
-    const [getResult, setResult] = useResult([]);
-    forEachCondObj(
-        RA.mapIndexed(([fnPick, fnMap], index) => [
-            fnPick,
-            (val, newPath) => setResult(R.assocPath([index, ...newPath], fnMap(val, newPath))),
-        ])(pickMapFns),
-    )(obj);
-    return getResult();
-};
 export const reduceObj = (reduceFns) => (obj) => {
     const [getResult, setResult] = useResult([]);
     forEachCondObj(

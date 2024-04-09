@@ -41,11 +41,6 @@ export declare const useSubscriber: () => {
 };
 
 /**
- * Curried function that assocs the value under the given prop only when shouldAssoc evaluates to be truthy.
- */
-export declare const assocWhen: (shouldAssoc: boolean) => (prop: string) => (value: any) => (object: object) => object;
-
-/**
  * Defaults to empty object if input is not of type object
  */
 export declare const maybeObject: (input: any) => object;
@@ -83,13 +78,6 @@ export declare const mergeDeepRight: (left: any, right: any) => any;
  * Curried function. Deep merges two objects with data of the left input taking priority over those of the right.
  */
 export declare const mergeDeepLeft: (left: any, right: any) => any;
-
-/**
- * Creates object for every pickMapFn tuple [fnPick, fnMap]. Picks objects when fnPick evaluates truthy, applies fnMap to all picked objects.
- */
-export declare const pickMapObj: (
-    pickMapFns: [(val: any, path: string[]) => boolean, (val: any, path: string[]) => any],
-) => (obj: object) => object[];
 
 /**
  * Creates object for every reduceFns tuple [fnPick, fnReduce]. Picks objects when fnPick evaluates truthy, applies fnReduce on the accumulator

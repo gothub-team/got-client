@@ -8,7 +8,6 @@ import {
     reduceObj,
     useResult,
     getPathOr,
-    mergeWith,
     assocPathMutate,
     forEachObjDepth,
     dissocPathMutate,
@@ -299,40 +298,6 @@ export const createSuccessAndErrorGraphs = (graph, apiResult) =>
                 ),
         ],
     ])(apiResult);
-
-const mergeEdgesLeft = mergeWith(mergeLeft);
-export const selectEdgeFromStack = (fromType, from, toType, stack, state) => {
-    if (!state) {
-        return undefined;
-    }
-
-    let acc;
-    for (let i = 0; i < stack.length; i += 1) {
-        const graphName = stack[i];
-        const val = state[graphName]?.graph?.edges?.[fromType]?.[from]?.[toType];
-        if (val !== undefined) {
-            acc = mergeEdgesLeft(val)(acc);
-        }
-    }
-    return acc;
-};
-
-const mergeNodeLeft = mergeLeft;
-export const selectNodeFromStack = (nodeId, stack, state) => {
-    if (!state) {
-        return undefined;
-    }
-
-    let acc;
-    for (let i = 0; i < stack.length; i += 1) {
-        const graphName = stack[i];
-        const val = state[graphName]?.graph?.nodes?.[nodeId];
-        if (val !== undefined) {
-            acc = mergeNodeLeft(val)(acc);
-        }
-    }
-    return acc;
-};
 
 const getAnyStack = (fnSelect) => (state, stack) => {
     let acc = [];

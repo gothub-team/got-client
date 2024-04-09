@@ -707,24 +707,6 @@ export declare const selectEdgeIds: (graph: Graph) => GetEdgeToIdsFn;
  */
 export declare const createSuccessAndErrorGraphs: (pushedGraph: Graph, apiResult: PushResult) => [Graph, ErrorGraph];
 
-/**
- * Selects the nodes edges view in a given stack from the state.
- * Elements found at the given path in every layer of the stack will be merged prioritizing data higher up the stack.
- */
-export declare const selectEdgeFromStack: (
-    fromType: string,
-    from: string,
-    toType: string,
-    stack: string[],
-    state: State,
-) => NodeEdgesView;
-
-/**
- * Selects a node in a given stack from the state.
- * Elements found at the given path in every layer of the stack will be merged prioritizing data higher up the stack.
- */
-export declare const selectNodeFromStack: (nodeId: string, stack: string[], state: State) => any;
-
 type NodeStack = Array<Nodes<Node>>;
 type EdgeStack = Array<Edges<EdgeMetadataView | boolean>>;
 type IndexStack = Array<Edges<boolean>>;
