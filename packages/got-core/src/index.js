@@ -354,9 +354,7 @@ export const nodeFromNodeStack = (nodeStack, nodeId) => {
     let acc;
     for (let i = 0; i < nodeStack.length; i += 1) {
         const node = nodeStack[i][nodeId];
-        if (node != null) {
-            acc = mergeGraphObjRight(acc, node);
-        }
+        acc = mergeGraphObjRight(acc, node);
     }
     return acc;
 };
@@ -387,9 +385,7 @@ export const metadataFromEdgeStack = (edgeStack, fromType, fromId, toType, toId)
     let acc;
     for (let i = 0; i < edgeStack.length; i += 1) {
         const node = edgeStack[i][fromType]?.[fromId]?.[toType]?.[toId];
-        if (node != null) {
-            acc = mergeGraphObjRight(acc, node);
-        }
+        acc = mergeGraphObjRight(acc, node);
     }
     return acc;
 };
@@ -398,9 +394,7 @@ export const rightFromRightStack = (rightStack, nodeId) => {
     let acc;
     for (let i = 0; i < rightStack.length; i += 1) {
         const node = rightStack[i][nodeId];
-        if (node != null) {
-            acc = mergeDeepRight(acc, node);
-        }
+        acc = mergeDeepRight(acc, node);
     }
     return acc;
 };
@@ -409,9 +403,7 @@ export const filesFromFileStack = (fileStack, nodeId) => {
     let acc;
     for (let i = 0; i < fileStack.length; i += 1) {
         const node = fileStack[i][nodeId];
-        if (node != null) {
-            acc = mergeGraphObjRight(acc, node);
-        }
+        acc = mergeGraphObjRight(acc, node);
     }
     return acc;
 };
