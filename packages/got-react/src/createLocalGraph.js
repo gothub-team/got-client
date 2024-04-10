@@ -31,7 +31,7 @@ const createLocalState = (initialState = {}) => {
     };
 };
 
-export const createDummyGraph = (initialState = {}) => {
+export const createLocalGraph = (initialState = {}) => {
     const { store, getState } = createLocalState(initialState);
 
     const createGraph = configureCreateGraph(store);
