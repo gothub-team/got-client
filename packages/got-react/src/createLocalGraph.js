@@ -37,6 +37,6 @@ export const createLocalGraph = (initialState = {}) => {
     const createGraph = configureCreateGraph(store);
     const graphFns = createGraph('main', 'edit');
 
-    const getGraph = (graphName = 'edit') => R.pathOr({}, [graphName, 'graph'], getState());
+    const getGraph = (graphName = 'edit') => getState()?.[graphName]?.graph || {};
     return { ...graphFns, store, getState, getGraph };
 };
