@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-atom",
-    "version": "0.23.6",
+    "version": "0.23.7",
     "workspaces": [
         "packages/*"
     ],
