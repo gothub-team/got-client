@@ -2,6 +2,7 @@ import { useEffect, useMemo, useReducer, useRef } from 'react';
 import equals from 'fast-deep-equal';
 import { type FnOrValue, type Atom, type Subscriber, type Selector, type Fn } from './types';
 
+export { type Atom } from './types';
 export { persistAtom } from './persist';
 
 /**

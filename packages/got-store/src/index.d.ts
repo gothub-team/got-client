@@ -393,7 +393,7 @@ export declare type PushObservables = {
          * Starts the upload progress for all pushed files.
          * Progress and completion can be observed by subscribing before or after calling start().
          */
-        start: () => void;
+        start: () => Promise<void>;
     };
 };
 

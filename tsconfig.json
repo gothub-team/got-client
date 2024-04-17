@@ -1,4 +1,38 @@
 {
-    "include": [".eslintrc.cjs", "src", "declare", "packages"],
-    "exclude": ["node_modules", "dist"]
+    "parserOptions": {
+        "project": "./tsconfig.json",
+        "tsconfigRootDir": "./",
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "compilerOptions": {
+        "target": "es2022",
+        "lib": ["dom", "dom.iterable", "es2022"],
+        "allowJs": true,
+        "checkJs": false,
+        "skipLibCheck": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "es2022",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "noUncheckedIndexedAccess": true,
+        "baseUrl": ".",
+        "noImplicitAny": false
+    },
+    "files": [
+        "./packages/got-core/src/index.js",
+        "./packages/got-store/src/index.js",
+        "./packages/got-react/src/index.js",
+        "./packages/got-util/src/index.js"
+    ],
+    "include": [".eslintrc.cjs", "**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs"],
+    "exclude": ["**/dist/**", "**/node_modules/**"]
 }
