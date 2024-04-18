@@ -207,7 +207,8 @@ export declare interface UseGraphHookResult extends CreateGraphResult {
      * @returns Returns the concrete view containing all data that are currently
      * pulled into the local graph.
      */
-    useView: <TRes>(view: View, selector?: (obj: ViewNodeTree) => TRes) => ViewNodeTree | TRes;
+    useView(view: View): ViewNodeTree;
+    useView<TRes>(view: View, selector: (obj: ViewNodeTree) => TRes): TRes;
     /**
      * Defines a React hook which selects a node from the current graph
      * and the graphs stacked below including the remote graph using the given node ID.
