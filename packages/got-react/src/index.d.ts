@@ -22,7 +22,7 @@ import {
     type GetFilesFn,
     type SetRoleRightsFn,
 } from '@gothub-team/got-core';
-import { type GotStore, type PushObservables, type ViewNodeTree } from '@gothub-team/got-store';
+import { type GotStore, type PushObservables, type ViewResult } from '@gothub-team/got-store';
 import { type GotAction } from '@gothub-team/got-store/src/got-action';
 import { type Atom } from '@gothub-team/got-atom';
 
@@ -64,7 +64,7 @@ export declare interface CreateGraphResult {
      * graphs lower in the stack.
      *
      */
-    getView: (view: View) => ViewNodeTree;
+    getView: <TView extends View>(view: TView) => ViewResult<TView>;
     /**
      * If not provided with a `toGraphName` the current graph is merged down to the next
      * graph below in the stack. Otherwise the current graph is merged to `toGraphName`.
@@ -207,8 +207,8 @@ export declare interface UseGraphHookResult extends CreateGraphResult {
      * @returns Returns the concrete view containing all data that are currently
      * pulled into the local graph.
      */
-    useView(view: View): ViewNodeTree;
-    useView<TRes>(view: View, selector: (obj: ViewNodeTree) => TRes): TRes;
+    useView<TView extends View>(this: void, view: TView): ViewResult<TView>;
+    useView<TView extends View, TRes>(this: void, view: TView, selector: (viewRes: ViewResult<TView>) => TRes): TRes;
     /**
      * Defines a React hook which selects a node from the current graph
      * and the graphs stacked below including the remote graph using the given node ID.
