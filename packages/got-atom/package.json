@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-atom",
-    "version": "0.23.8",
+    "version": "0.23.10",
     "workspaces": [
         "packages/*"
     ],
@@ -21,7 +21,7 @@
         "fast-deep-equal": "^3.1.3"
     },
     "peerDependencies": {
-        "react": "^17.0.0"
+        "react": ">=17.0.2"
     },
     "devDependencies": {
         "@types/node": "^20.7.1",

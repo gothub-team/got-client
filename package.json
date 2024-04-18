@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got",
-    "version": "0.23.8",
+    "version": "0.23.11-0",
     "private": true,
     "workspaces": [
         "packages/*"
