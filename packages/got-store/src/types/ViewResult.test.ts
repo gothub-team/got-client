@@ -344,3 +344,67 @@ const includeMetadata = () => {
         >
     >;
 };
+
+const includeRights = () => {
+    type IncludeLevel1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            include: {
+                                rights: true;
+                            };
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                            rights: NodeRightsView;
+                        };
+                    };
+                };
+            }
+        >
+    >;
+    type IncludeLevel2 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            edges: {
+                                'member/appointment': {
+                                    include: {
+                                        rights: true;
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                            'member/appointment': {
+                                [id: string]: {
+                                    nodeId: string;
+                                    rights: NodeRightsView;
+                                };
+                            };
+                        };
+                    };
+                };
+            }
+        >
+    >;
+};
