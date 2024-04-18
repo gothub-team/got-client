@@ -27,6 +27,10 @@ import {
 } from '@gothub-team/got-core';
 import { type Subscriber } from '@gothub-team/got-util';
 import { type GotAction } from './got-action';
+import { type ViewResult } from './types/ViewResult';
+
+export { type ViewResult } from './types/ViewResult';
+
 export declare interface GotStore {
     /**
      * Merges a given source graph into a given target graph. The target graph will
@@ -281,7 +285,7 @@ export declare interface GotStore {
      *
      * @param stack The graph stack to retrieve from.
      */
-    selectView: (...stack: string[]) => (view: View) => StateSelector<ViewNodeTree>;
+    selectView: (...stack: string[]) => <TView extends View>(view: TView) => StateSelector<ViewResult<TView>>;
     /**
      * Returns the view tree for a given view based
      * on the specified graph stack with graphs higher in the stack overriding
@@ -289,7 +293,7 @@ export declare interface GotStore {
      *
      * @param stack The graph stack to retrieve from.
      */
-    getView: (...stack: string[]) => (view: View) => ViewNodeTree;
+    getView: (...stack: string[]) => <TView extends View>(view: TView) => ViewResult<TView>;
 }
 
 /**
