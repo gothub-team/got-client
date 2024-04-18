@@ -303,7 +303,7 @@ export declare type ViewNodeTree = {
     /**
      * The parent nodes ID.
      */
-    id: string;
+    nodeId: string;
     /**
      * The parent node. Remains `undefined` if node is not included in
      * the parent node view.
@@ -326,60 +326,12 @@ export declare type ViewNodeTree = {
      * root node view.
      */
     files?: NodeFilesView;
+} & {
     /**
      * A hashmap of all edgeTypes (e.g. `book/chapter`) pointing from the parent
      * node in this view node tree.
-     * TODO this is not an obj
      */
-    edges?: {
-        [edgeTypes: string]: ViewEdgeTree;
-    };
-};
-
-export declare type ViewTree = {
-    /**
-     * The parent nodes ID.
-     */
-    id: string;
-    /**
-     * The parent node. Remains `undefined` if node is not included in
-     * the parent node view.
-     */
-    node?: Node;
-    /**
-     * A hashmap of user emails holding the (read/write/admin) rights that are given to
-     * the user for the parent root node. Remains `undefined` if rights are not included
-     * in the parent root node view.
-     */
-    rights?: NodeRightsView;
-    /**
-     * A hashmap of property names holding signed urls to the files attached to the parent
-     * root node under the property names. Remains `undefined` if files are not included
-     * in the parent root node view.
-     */
-    files?: NodeFilesView;
-    /**
-     * A hashmap of all edgeTypes (e.g. `book/chapter`) pointing from the parent root
-     * node in this view tree.
-     * TODO this is not an obj
-     */
-    edges?: {
-        [edgeTypesOrAlias: string]: ViewEdgeTree;
-    };
-};
-
-export declare type SelectViewResult<TIndexNames extends string | number | symbol> = {
-    /**
-     * Holds all index functions by name as declared in the `useView` hook.
-     */
-    index: Record<TIndexNames, any>;
-    /**
-     * A hashmap of all root nodes declared in the `useView` hook holding a sub view tree.
-     * TODO this is not an obj
-     */
-    edges?: {
-        [nodeIdOrAlias: string]: ViewTree;
-    };
+    [edgeTypesOrAlias: string]: ViewEdgeTree;
 };
 
 export declare type PushObservables = {
