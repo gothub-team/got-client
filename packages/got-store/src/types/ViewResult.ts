@@ -34,10 +34,9 @@ type ExtractViewEdges<
       }
     : NonNullable<unknown>;
 
-type ExtractIncludeNode<
-    TNodeView extends NodeView | EdgeView,
-    TInclude = TNodeView['include'],
-> = TInclude extends EdgeInclude
+type ExtractIncludeNode<TNodeView extends NodeView | EdgeView, TInclude = TNodeView['include']> = TInclude extends
+    | NodeInclude
+    | EdgeInclude
     ? TInclude['node'] extends true
         ? {
               node: Node;
@@ -56,10 +55,9 @@ type ExtractIncludeMetadata<
         : NonNullable<unknown>
     : NonNullable<unknown>;
 
-type ExtractIncludeRights<
-    TNodeView extends NodeView | EdgeView,
-    TInclude = TNodeView['include'],
-> = TInclude extends EdgeInclude
+type ExtractIncludeRights<TNodeView extends NodeView | EdgeView, TInclude = TNodeView['include']> = TInclude extends
+    | NodeInclude
+    | EdgeInclude
     ? TInclude['rights'] extends true
         ? {
               rights: NodeRightsView;
@@ -67,10 +65,9 @@ type ExtractIncludeRights<
         : NonNullable<unknown>
     : NonNullable<unknown>;
 
-type ExtractIncludeFiles<
-    TNodeView extends NodeView | EdgeView,
-    TInclude = TNodeView['include'],
-> = TInclude extends EdgeInclude
+type ExtractIncludeFiles<TNodeView extends NodeView | EdgeView, TInclude = TNodeView['include']> = TInclude extends
+    | NodeInclude
+    | EdgeInclude
     ? TInclude['files'] extends true
         ? {
               files: NodeFilesView;

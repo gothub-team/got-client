@@ -350,22 +350,13 @@ const includeMetadata = () => {
                 rootBabbeli: {
                     include: {
                         node: true;
-                        metadata: true;
-                    };
-                    edges: {
-                        'root/member': {};
                     };
                 };
             }>,
             {
                 rootBabbeli: {
                     nodeId: string;
-                    'root/member': {
-                        [id: string]: {
-                            nodeId: string;
-                            node: Node;
-                        };
-                    };
+                    node: Node;
                 };
             }
         >

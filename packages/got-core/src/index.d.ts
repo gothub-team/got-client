@@ -140,6 +140,14 @@ export declare type NodeInclude = {
      * Whether or not all files attached to the parent node should be included.
      */
     files?: boolean;
+    /**
+     * Explicitly forbidden on top level
+     */
+    edges?: never;
+    /**
+     * Explicitly forbidden on top level
+     */
+    metadata?: never;
 };
 
 export declare interface NodeView {
