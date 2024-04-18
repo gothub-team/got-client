@@ -20,6 +20,7 @@ const baseViewResultType = () => {
 
     type TestViewResult = {
         rootBabbeli: {
+            nodeId: string;
             'root/member': {
                 [id: string]: {
                     nodeId: string;

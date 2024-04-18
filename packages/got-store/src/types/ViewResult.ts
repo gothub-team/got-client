@@ -16,5 +16,5 @@ type ExtractViewEdges<
     : NonNullable<unknown>;
 
 export type ViewResult<TView extends View> = {
-    [K in keyof TView]: ExtractViewEdges<TView[K]>;
+    [K in keyof TView]: NodeBag<TView[K]>;
 };
