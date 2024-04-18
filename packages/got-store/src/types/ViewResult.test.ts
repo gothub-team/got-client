@@ -40,6 +40,43 @@ const baseViewResultType = () => {
     >;
 };
 
+const aliases = () => {
+    type TestResult = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    as: 'root';
+                    edges: {
+                        'root/member': {
+                            as: 'members';
+                            edges: {
+                                'member/appointment': {
+                                    as: 'appointments';
+                                };
+                            };
+                        };
+                    };
+                };
+            }>,
+            {
+                root: {
+                    nodeId: string;
+                    members: {
+                        [id: string]: {
+                            nodeId: string;
+                            appointments: {
+                                [id: string]: {
+                                    nodeId: string;
+                                };
+                            };
+                        };
+                    };
+                };
+            }
+        >
+    >;
+};
+
 const notIncludeNode = () => {
     type IncludeLevel0 = Expect<
         Equal<
