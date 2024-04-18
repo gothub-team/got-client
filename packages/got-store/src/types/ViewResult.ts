@@ -7,6 +7,7 @@ import {
     type EdgeInclude,
     type Node,
     type Metadata,
+    type NodeRightsView,
 } from '@gothub-team/got-core';
 
 type AliasKey<TView extends View | EdgesView, K extends keyof TView> = TView[K]['as'] extends string
@@ -17,6 +18,7 @@ type NodeBag<TSubView extends NodeView | EdgeView> = {
     nodeId: string;
 } & ExtractIncludeNode<TSubView> &
     ExtractIncludeMetadata<TSubView> &
+    ExtractIncludeRights<TSubView> &
     ExtractViewEdges<TSubView>;
 
 type ExtractViewEdges<
@@ -47,6 +49,17 @@ type ExtractIncludeMetadata<
     ? TInclude['metadata'] extends true
         ? {
               metadata: Metadata;
+          }
+        : NonNullable<unknown>
+    : NonNullable<unknown>;
+
+type ExtractIncludeRights<
+    TNodeView extends NodeView | EdgeView,
+    TInclude = TNodeView['include'],
+> = TInclude extends EdgeInclude
+    ? TInclude['rights'] extends true
+        ? {
+              rights: NodeRightsView;
           }
         : NonNullable<unknown>
     : NonNullable<unknown>;
