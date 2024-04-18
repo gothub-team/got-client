@@ -488,9 +488,9 @@ export declare type NodeRightsView = {
         [email: string]: RightTypes;
     };
 };
-export declare type NodeFilesView = {
-    [propName: string]: NodeFileView | boolean;
-};
+export declare type NodeFilesView<
+    T extends Record<string, NodeFileView | boolean> = Record<string, NodeFileView | boolean>,
+> = T;
 
 export declare type NodeFileView = DownloadNodeFileView | UploadNodeFileView;
 
