@@ -1,7 +1,8 @@
-export declare interface Node {
+export declare type Node<T extends Record<string, unknown> = Record<string, unknown>> = {
     id: string;
-    [key: string]: any;
-}
+} & T;
+
+export declare type Metadata<T extends Record<string, unknown> = Record<string, unknown>> = T | boolean;
 
 export declare type OK = {
     statusCode: 200;
