@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { type Node, type Metadata } from '@gothub-team/got-core';
+import { type Node, type Metadata, type NodeRightsView } from '@gothub-team/got-core';
 import { type Expect } from 'type-testing';
 import { type ViewResult } from './ViewResult';
 
