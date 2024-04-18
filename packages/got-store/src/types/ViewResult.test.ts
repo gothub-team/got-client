@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { type View } from '@gothub-team/got-core';
 import { type TrueCases, type Expect } from 'type-testing';
@@ -7,98 +8,126 @@ type Extends<A, B> = A extends B ? true : false;
 type Equal<A, B> = A extends B ? (B extends A ? true : false) : false;
 
 const baseViewResultType = () => {
-    const view = {
-        rootBabbeli: {
-            edges: {
-                'root/member': {
+    type TestResult = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
                     edges: {
-                        'member/appointment': {},
-                    },
-                },
-            },
-        },
-    } satisfies View;
-
-    type TestViewResult = {
-        rootBabbeli: {
-            nodeId: string;
-            'root/member': {
-                [id: string]: {
-                    nodeId: string;
-                    'member/appointment': {
-                        [id: string]: {
-                            nodeId: string;
+                        'root/member': {
+                            edges: {
+                                'member/appointment': {};
+                            };
                         };
                     };
                 };
-            };
-        };
-    };
-
-    type TestResult = Expect<Equal<ViewResult<typeof view>, TestViewResult>>;
-};
-
-const includeNodeLevel0 = () => {
-    const view = {
-        rootBabbeli: {
-            include: {
-                node: true,
-            },
-        },
-    } satisfies View;
-
-    type TestViewResult = {
-        rootBabbeli: {
-            nodeId: string;
-            node: Node;
-        };
-    };
-
-    type TestResult = Expect<Equal<ViewResult<typeof view>, TestViewResult>>;
-};
-
-const includeNodeLevel1 = () => {
-    const view = {
-        rootBabbeli: {
-            edges: {
-                'root/member': {
-                    include: {
-                        node: true,
-                    },
-                },
-            },
-        },
-    } satisfies View;
-
-    type TestViewResult = {
-        rootBabbeli: {
-            nodeId: string;
-            'root/member': {
-                [id: string]: {
+            }>,
+            {
+                rootBabbeli: {
                     nodeId: string;
-                    node: Node;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                            'member/appointment': {
+                                [id: string]: {
+                                    nodeId: string;
+                                };
+                            };
+                        };
+                    };
                 };
-            };
-        };
-    };
-
-    type TestResult = Expect<Equal<ViewResult<typeof view>, TestViewResult>>;
+            }
+        >
+    >;
 };
 
 const notIncludeNode = () => {
-    const view = {
-        rootBabbeli: {
-            include: {
-                node: false,
-            },
-        },
-    } satisfies View;
+    type IncludeLevel0 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    include: {
+                        node: true;
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    node: Node;
+                };
+            }
+        >
+    >;
 
-    type TestViewResult = {
-        rootBabbeli: {
-            nodeId: string;
-        };
-    };
+    type IncludeLevel1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            include: {
+                                node: true;
+                            };
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                            node: Node;
+                        };
+                    };
+                };
+            }
+        >
+    >;
 
-    type TestResult = Expect<Equal<ViewResult<typeof view>, TestViewResult>>;
+    type NotInclude1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {};
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                };
+            }
+        >
+    >;
+
+    type NotInclude2 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    include: {};
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                };
+            }
+        >
+    >;
+
+    type NotInclude3 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    include: {
+                        node: false;
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                };
+            }
+        >
+    >;
 };
