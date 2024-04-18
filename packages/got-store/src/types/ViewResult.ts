@@ -34,9 +34,10 @@ type ExtractViewEdges<
       }
     : NonNullable<unknown>;
 
-type ExtractIncludeNode<TNodeView extends NodeView | EdgeView, TInclude = TNodeView['include']> = TInclude extends
-    | NodeInclude
-    | EdgeInclude
+type ExtractIncludeNode<
+    TNodeView extends NodeView | EdgeView,
+    TInclude = TNodeView['include'],
+> = TInclude extends EdgeInclude
     ? TInclude['node'] extends true
         ? {
               node: Node;

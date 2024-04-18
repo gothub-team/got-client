@@ -343,9 +343,54 @@ const includeMetadata = () => {
             }
         >
     >;
+
+    type NotIncludeLevel0 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    include: {
+                        node: true;
+                        metadata: true;
+                    };
+                    edges: {
+                        'root/member': {};
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                            node: Node;
+                        };
+                    };
+                };
+            }
+        >
+    >;
 };
 
 const includeRights = () => {
+    type IncludeLevel0 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    include: {
+                        rights: true;
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    rights: NodeRightsView;
+                };
+            }
+        >
+    >;
+
     type IncludeLevel1 = Expect<
         Equal<
             ViewResult<{
@@ -410,6 +455,24 @@ const includeRights = () => {
 };
 
 const includeFiles = () => {
+    type IncludeLevel0 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    include: {
+                        files: true;
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    files: NodeFilesView;
+                };
+            }
+        >
+    >;
+
     type IncludeLevel1 = Expect<
         Equal<
             ViewResult<{
