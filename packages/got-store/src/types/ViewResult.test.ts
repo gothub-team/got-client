@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { type View } from '@gothub-team/got-core';
-import { type TrueCases, type Expect } from 'type-testing';
+import { type Expect } from 'type-testing';
 import { type ViewResult } from './ViewResult';
 
-type Extends<A, B> = A extends B ? true : false;
-type Equal<A, B> = A extends B ? (B extends A ? true : false) : false;
+export type Equal<A, B> = A extends B ? (B extends A ? true : false) : false;
 
 const baseViewResultType = () => {
     type TestResult = Expect<
@@ -41,7 +39,45 @@ const baseViewResultType = () => {
 };
 
 const aliases = () => {
-    type TestResult = Expect<
+    type Level0 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    as: 'root';
+                };
+            }>,
+            {
+                root: {
+                    nodeId: string;
+                };
+            }
+        >
+    >;
+    type Level1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    as: 'root';
+                    edges: {
+                        'root/member': {
+                            as: 'members';
+                        };
+                    };
+                };
+            }>,
+            {
+                root: {
+                    nodeId: string;
+                    members: {
+                        [id: string]: {
+                            nodeId: string;
+                        };
+                    };
+                };
+            }
+        >
+    >;
+    type Level2 = Expect<
         Equal<
             ViewResult<{
                 rootBabbeli: {
