@@ -5,33 +5,35 @@ import { type ViewResult } from './ViewResult';
 
 type Extends<A, B> = A extends B ? true : false;
 
-export const view = {
-    rootBabbeli: {
-        edges: {
-            'root/member': {
-                edges: {
-                    'member/appointment': {},
+const baseViewResultType = () => {
+    const view = {
+        rootBabbeli: {
+            edges: {
+                'root/member': {
+                    edges: {
+                        'member/appointment': {},
+                    },
                 },
             },
         },
-    },
-} satisfies View;
+    } satisfies View;
 
-type TestViewResult = {
-    rootBabbeli: {
-        'root/member': {
-            [id: string]: {
-                nodeId: string;
-                'member/appointment': {
-                    [id: string]: {
-                        nodeId: string;
+    type TestViewResult = {
+        rootBabbeli: {
+            'root/member': {
+                [id: string]: {
+                    nodeId: string;
+                    'member/appointment': {
+                        [id: string]: {
+                            nodeId: string;
+                        };
                     };
                 };
             };
         };
     };
-};
 
-type BaseViewAssembly = TrueCases<
-    [Extends<ViewResult<typeof view>, TestViewResult>, Extends<TestViewResult, ViewResult<typeof view>>]
->;
+    type TestResult = TrueCases<
+        [Extends<ViewResult<typeof view>, TestViewResult>, Extends<TestViewResult, ViewResult<typeof view>>]
+    >;
+};
