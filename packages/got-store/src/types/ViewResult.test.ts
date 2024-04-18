@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { type Node, type Metadata } from '@gothub-team/got-core';
 import { type Expect } from 'type-testing';
 import { type ViewResult } from './ViewResult';
 
@@ -199,6 +200,142 @@ const notIncludeNode = () => {
             {
                 rootBabbeli: {
                     nodeId: string;
+                };
+            }
+        >
+    >;
+};
+const includeMetadata = () => {
+    type IncludeLevel1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            include: {
+                                metadata: true;
+                            };
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                            metadata: Metadata;
+                        };
+                    };
+                };
+            }
+        >
+    >;
+
+    type IncludeLevel2 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            edges: {
+                                'member/appointment': {
+                                    include: {
+                                        metadata: true;
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                            'member/appointment': {
+                                [id: string]: {
+                                    nodeId: string;
+                                    metadata: Metadata;
+                                };
+                            };
+                        };
+                    };
+                };
+            }
+        >
+    >;
+
+    type NotInclude1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {};
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                        };
+                    };
+                };
+            }
+        >
+    >;
+
+    type NotInclude2 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            include: {};
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                        };
+                    };
+                };
+            }
+        >
+    >;
+
+    type NotInclude3 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            include: {
+                                metadata: false;
+                            };
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                        };
+                    };
                 };
             }
         >
