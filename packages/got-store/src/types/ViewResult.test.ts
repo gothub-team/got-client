@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { type Node, type Metadata, type NodeRightsView } from '@gothub-team/got-core';
+import { type Node, type Metadata, type NodeRightsView, type NodeFilesView } from '@gothub-team/got-core';
 import { type Expect } from 'type-testing';
 import { type ViewResult } from './ViewResult';
 
@@ -399,6 +399,70 @@ const includeRights = () => {
                                 [id: string]: {
                                     nodeId: string;
                                     rights: NodeRightsView;
+                                };
+                            };
+                        };
+                    };
+                };
+            }
+        >
+    >;
+};
+
+const includeFiles = () => {
+    type IncludeLevel1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            include: {
+                                files: true;
+                            };
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                            files: NodeFilesView;
+                        };
+                    };
+                };
+            }
+        >
+    >;
+    type IncludeLevel2 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            edges: {
+                                'member/appointment': {
+                                    include: {
+                                        files: true;
+                                    };
+                                };
+                            };
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                            'member/appointment': {
+                                [id: string]: {
+                                    nodeId: string;
+                                    files: NodeFilesView;
                                 };
                             };
                         };
