@@ -84,3 +84,21 @@ const includeNodeLevel1 = () => {
 
     type TestResult = Expect<Equal<ViewResult<typeof view>, TestViewResult>>;
 };
+
+const notIncludeNode = () => {
+    const view = {
+        rootBabbeli: {
+            include: {
+                node: false,
+            },
+        },
+    } satisfies View;
+
+    type TestViewResult = {
+        rootBabbeli: {
+            nodeId: string;
+        };
+    };
+
+    type TestResult = Expect<Equal<ViewResult<typeof view>, TestViewResult>>;
+};
