@@ -7,6 +7,10 @@ import {
     type EdgeInclude,
 } from '@gothub-team/got-core';
 
+type AliasKey<TView extends View | EdgesView, K extends keyof TView> = TView[K]['as'] extends string
+    ? TView[K]['as']
+    : K;
+
 type NodeBag<TSubView extends NodeView | EdgeView> = {
     nodeId: string;
 } & ExtractIncludeNode<TSubView> &
@@ -17,7 +21,7 @@ type ExtractViewEdges<
     TEdgesView = TNodeView['edges'],
 > = TEdgesView extends EdgesView
     ? {
-          [K in keyof TEdgesView]: {
+          [K in keyof TEdgesView as AliasKey<TEdgesView, K>]: {
               [id: string]: NodeBag<TEdgesView[K]>;
           };
       }
@@ -34,5 +38,5 @@ type ExtractIncludeNode<TNodeView extends NodeView | EdgeView, TInclude = TNodeV
     : NonNullable<unknown>;
 
 export type ViewResult<TView extends View> = {
-    [K in keyof TView]: NodeBag<TView[K]>;
+    [K in keyof TView as AliasKey<TView, K>]: NodeBag<TView[K]>;
 };
