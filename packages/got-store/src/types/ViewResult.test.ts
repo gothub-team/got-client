@@ -114,7 +114,7 @@ const aliases = () => {
     >;
 };
 
-const notIncludeNode = () => {
+const includeNode = () => {
     type IncludeLevel0 = Expect<
         Equal<
             ViewResult<{
@@ -205,6 +205,7 @@ const notIncludeNode = () => {
         >
     >;
 };
+
 const includeMetadata = () => {
     type IncludeLevel1 = Expect<
         Equal<
