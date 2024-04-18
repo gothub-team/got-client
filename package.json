@@ -68,6 +68,7 @@
         "react-scripts": "5.0.1",
         "ts-jest": "^29.1.2",
         "ts-node": "^10.9.2",
+        "type-testing": "^0.2.0",
         "typescript": "^5.4.5"
     },
     "packageManager": "yarn@3.2.1"
