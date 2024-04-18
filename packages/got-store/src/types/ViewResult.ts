@@ -1,8 +1,16 @@
-import { type EdgesView, type View, type EdgeView, type NodeView } from '@gothub-team/got-core';
+import {
+    type EdgesView,
+    type View,
+    type EdgeView,
+    type NodeView,
+    type NodeInclude,
+    type EdgeInclude,
+} from '@gothub-team/got-core';
 
 type NodeBag<TSubView extends NodeView | EdgeView> = {
     nodeId: string;
-} & ExtractViewEdges<TSubView>;
+} & ExtractIncludeNode<TSubView> &
+    ExtractViewEdges<TSubView>;
 
 type ExtractViewEdges<
     TNodeView extends NodeView | EdgeView,
@@ -13,6 +21,16 @@ type ExtractViewEdges<
               [id: string]: NodeBag<TEdgesView[K]>;
           };
       }
+    : NonNullable<unknown>;
+
+type ExtractIncludeNode<TNodeView extends NodeView | EdgeView, TInclude = TNodeView['include']> = TInclude extends
+    | NodeInclude
+    | EdgeInclude
+    ? TInclude['node'] extends true
+        ? {
+              node: Node;
+          }
+        : NonNullable<unknown>
     : NonNullable<unknown>;
 
 export type ViewResult<TView extends View> = {
