@@ -114,6 +114,125 @@ const aliases = () => {
     >;
 };
 
+const includeNothing = () => {
+    type NotInclude1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {};
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                };
+            }
+        >
+    >;
+
+    type NotInclude2 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    include: {};
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                };
+            }
+        >
+    >;
+
+    type NotInclude3 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    include: {
+                        node: false;
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                };
+            }
+        >
+    >;
+
+    type NotInclude1Level1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {};
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                        };
+                    };
+                };
+            }
+        >
+    >;
+
+    type NotInclude2Level1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            include: {};
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                        };
+                    };
+                };
+            }
+        >
+    >;
+
+    type NotInclude3Level1 = Expect<
+        Equal<
+            ViewResult<{
+                rootBabbeli: {
+                    edges: {
+                        'root/member': {
+                            include: {
+                                node: false;
+                            };
+                        };
+                    };
+                };
+            }>,
+            {
+                rootBabbeli: {
+                    nodeId: string;
+                    'root/member': {
+                        [id: string]: {
+                            nodeId: string;
+                        };
+                    };
+                };
+            }
+        >
+    >;
+};
+
 const includeNode = () => {
     type IncludeLevel0 = Expect<
         Equal<
@@ -155,51 +274,6 @@ const includeNode = () => {
                             node: Node;
                         };
                     };
-                };
-            }
-        >
-    >;
-
-    type NotInclude1 = Expect<
-        Equal<
-            ViewResult<{
-                rootBabbeli: {};
-            }>,
-            {
-                rootBabbeli: {
-                    nodeId: string;
-                };
-            }
-        >
-    >;
-
-    type NotInclude2 = Expect<
-        Equal<
-            ViewResult<{
-                rootBabbeli: {
-                    include: {};
-                };
-            }>,
-            {
-                rootBabbeli: {
-                    nodeId: string;
-                };
-            }
-        >
-    >;
-
-    type NotInclude3 = Expect<
-        Equal<
-            ViewResult<{
-                rootBabbeli: {
-                    include: {
-                        node: false;
-                    };
-                };
-            }>,
-            {
-                rootBabbeli: {
-                    nodeId: string;
                 };
             }
         >
@@ -263,78 +337,6 @@ const includeMetadata = () => {
                                     metadata: Metadata;
                                 };
                             };
-                        };
-                    };
-                };
-            }
-        >
-    >;
-
-    type NotInclude1 = Expect<
-        Equal<
-            ViewResult<{
-                rootBabbeli: {
-                    edges: {
-                        'root/member': {};
-                    };
-                };
-            }>,
-            {
-                rootBabbeli: {
-                    nodeId: string;
-                    'root/member': {
-                        [id: string]: {
-                            nodeId: string;
-                        };
-                    };
-                };
-            }
-        >
-    >;
-
-    type NotInclude2 = Expect<
-        Equal<
-            ViewResult<{
-                rootBabbeli: {
-                    edges: {
-                        'root/member': {
-                            include: {};
-                        };
-                    };
-                };
-            }>,
-            {
-                rootBabbeli: {
-                    nodeId: string;
-                    'root/member': {
-                        [id: string]: {
-                            nodeId: string;
-                        };
-                    };
-                };
-            }
-        >
-    >;
-
-    type NotInclude3 = Expect<
-        Equal<
-            ViewResult<{
-                rootBabbeli: {
-                    edges: {
-                        'root/member': {
-                            include: {
-                                metadata: false;
-                            };
-                        };
-                    };
-                };
-            }>,
-            {
-                rootBabbeli: {
-                    nodeId: string;
-                    'root/member': {
-                        [id: string]: {
-                            nodeId: string;
                         };
                     };
                 };
