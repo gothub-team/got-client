@@ -3201,6 +3201,7 @@ __metadata:
     react-scripts: 5.0.1
     ts-jest: ^29.1.2
     ts-node: ^10.9.2
+    type-testing: ^0.2.0
     typescript: ^5.4.5
   languageName: unknown
   linkType: soft
@@ -16217,6 +16218,13 @@ __metadata:
     media-typer: 0.3.0
     mime-types: ~2.1.24
   checksum: 2c8e47675d55f8b4e404bcf529abdf5036c537a04c2b20177bcf78c9e3c1da69da3942b1346e6edb09e823228c0ee656ef0e033765ec39a70d496ef601a0c657
+  languageName: node
+  linkType: hard
+
+"type-testing@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "type-testing@npm:0.2.0"
+  checksum: 5e4118ff719585e50b5f6ee0b9a3aeadc31fcb55355dec7da1f4ebc2f2a77ef3b9d20f2dd646348c46adf8f2154ff0912223ce8c737e884c6edfb0facd1b44c0
   languageName: node
   linkType: hard
 

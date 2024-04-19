@@ -1,7 +1,8 @@
-export declare interface Node {
+export declare type Node<T extends Record<string, unknown> = Record<string, unknown>> = {
     id: string;
-    [key: string]: any;
-}
+} & T;
+
+export declare type Metadata<T extends Record<string, unknown> = Record<string, unknown>> = T | boolean;
 
 export declare type OK = {
     statusCode: 200;
@@ -139,6 +140,14 @@ export declare type NodeInclude = {
      * Whether or not all files attached to the parent node should be included.
      */
     files?: boolean;
+    /**
+     * Explicitly forbidden on top level
+     */
+    edges?: never;
+    /**
+     * Explicitly forbidden on top level
+     */
+    metadata?: never;
 };
 
 export declare interface NodeView {
@@ -487,9 +496,9 @@ export declare type NodeRightsView = {
         [email: string]: RightTypes;
     };
 };
-export declare type NodeFilesView = {
-    [propName: string]: NodeFileView | boolean;
-};
+export declare type NodeFilesView<
+    T extends Record<string, NodeFileView | boolean> = Record<string, NodeFileView | boolean>,
+> = T;
 
 export declare type NodeFileView = DownloadNodeFileView | UploadNodeFileView;
 
