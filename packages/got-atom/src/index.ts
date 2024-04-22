@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useReducer, useRef } from 'react';
-import equals from 'fast-deep-equal';
+import _equals from 'fast-deep-equal';
 import { type FnOrValue, type Atom, type Subscriber, type Selector, type Fn } from './types';
 
+const equals = _equals as unknown as <R>(a: R | undefined, b: R | undefined) => boolean;
 export { type Atom } from './types';
 export { persistAtom } from './persist';
 
@@ -55,10 +56,7 @@ export const useCreateAtom = <T>(initialValue: T) => useMemo(() => atom<T>(initi
 export const useAtom = <T, R = T>(
     { value, subscribe, unsubscribe }: Atom<T>,
     selector: Selector<T, R> = (s) => s as unknown as R,
-    fnEquals: (a: R | undefined, b: R | undefined) => boolean = equals as unknown as (
-        a: R | undefined,
-        b: R | undefined,
-    ) => boolean,
+    fnEquals: (a: R | undefined, b: R | undefined) => boolean = equals<R>,
 ) => {
     const localValue = useRef<R>();
     if (localValue.current === undefined) {
@@ -71,8 +69,6 @@ export const useAtom = <T, R = T>(
     if (selector !== selectorRef.current) {
         selectorRef.current = selector;
         const updatedValue = selector(value.current);
-        // TODO: fix this eslint-disable
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         if (!fnEquals(updatedValue, localValue.current)) {
             localValue.current = updatedValue;
         }
@@ -82,8 +78,6 @@ export const useAtom = <T, R = T>(
         const subscriber = {
             next: (newValue: T) => {
                 const updatedValue = selectorRef.current(newValue);
-                // TODO: fix this eslint-disable
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 if (!fnEquals(updatedValue, localValue.current)) {
                     localValue.current = updatedValue;
                     forceUpdate();
@@ -109,10 +103,7 @@ export const useAtom = <T, R = T>(
 export const useAtomAsync = <T, R = T>(
     { value, subscribe, unsubscribe }: Atom<T>,
     selector: Selector<T, R> = (s) => s as unknown as R,
-    fnEquals: (a: R | undefined, b: R | undefined) => boolean = equals as unknown as (
-        a: R | undefined,
-        b: R | undefined,
-    ) => boolean,
+    fnEquals: (a: R | undefined, b: R | undefined) => boolean = equals<R>,
 ) => {
     const localValue = useRef<R | undefined>();
     if (localValue.current === undefined) {
