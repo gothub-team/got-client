@@ -778,4 +778,28 @@ describe('redux', () => {
     runTestsWith(createTestComponentRedux, 'Redux');
 });
 
-// TODO: write test to check if update batching is working
+describe('useAtomAsync update batching', () => {});
+test('should call selectView only once when view relevant data change multiple times in same cycle', async () => {
+    const { TestComponent, store, mockStore, renderPayloads } = createTestComponentAtomAsync(
+        ({ useGraph, onRender }) => {
+            const { useView } = useGraph(...basicStack);
+            const viewRes = useView(basicView);
+            onRender(viewRes);
+            return <div data-testid="element" />;
+        },
+    );
+
+    store.mergeGraph(basicGraph, 'main');
+
+    render(<TestComponent />);
+
+    await waitFor(() => expect(renderPayloads.length).toBeGreaterThanOrEqual(1));
+    expect(mockStore.selectView).toHaveBeenCalledTimes(1);
+
+    await act(() => store.setNode('main')({ id: 'node1', prop: 'secondValue' }));
+    await act(() => store.setNode('main')({ id: 'node1', prop: 'thirdValue' }));
+    await act(() => store.setNode('main')({ id: 'node1', prop: 'fourthValue' }));
+
+    await delay(100);
+    expect(mockStore.selectView).toHaveBeenCalledTimes(2);
+});
