@@ -2,7 +2,12 @@
     "name": "typescript-util",
     "type": "module",
     "devDependencies": {
-        "@types/bun": "latest"
+        "@eslint/js": "^9.1.1",
+        "@types/bun": "latest",
+        "eslint": "^9.1.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-utils": "^3.0.0",
+        "typescript-eslint": "^7.7.0"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"

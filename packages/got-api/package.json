@@ -1,13 +1,15 @@
 {
     "name": "got-api",
     "type": "module",
+    "scripts": {
+        "lint": "eslint ."
+    },
     "devDependencies": {
-        "@types/bun": "latest"
+        "@types/bun": "latest",
+        "typescript-util": "workspace:*"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"
     },
-    "dependencies": {
-        "eslint": "^9.1.0"
-    }
+    "dependencies": {}
 }

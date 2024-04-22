@@ -4,6 +4,8 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "always"
     },
+    "eslint.workingDirectories": [{ "pattern": "./packages/*" }, "./packages/got-api-core"],
+    "eslint.experimental.useFlatConfig": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[typescript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
