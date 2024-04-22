@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useReducer, useRef } from 'react';
-import equals from 'fast-deep-equal';
+import _equals from 'fast-deep-equal';
 import { type FnOrValue, type Atom, type Subscriber, type Selector, type Fn } from './types';
 
+const equals = _equals as unknown as <R>(a: R | undefined, b: R | undefined) => boolean;
 export { type Atom } from './types';
 export { persistAtom } from './persist';
 
@@ -55,24 +56,19 @@ export const useCreateAtom = <T>(initialValue: T) => useMemo(() => atom<T>(initi
 export const useAtom = <T, R = T>(
     { value, subscribe, unsubscribe }: Atom<T>,
     selector: Selector<T, R> = (s) => s as unknown as R,
-    fnEquals: (a: R | undefined, b: R | undefined) => boolean = equals as unknown as (
-        a: R | undefined,
-        b: R | undefined,
-    ) => boolean,
+    fnEquals: (a: R | undefined, b: R | undefined) => boolean = equals<R>,
 ) => {
     const localValue = useRef<R>();
-
     if (localValue.current === undefined) {
         localValue.current = selector(value.current);
     }
+
     const [, forceUpdate] = useReducer(() => ({}), {});
 
     const selectorRef = useRef<Selector<T, R>>(selector);
     if (selector !== selectorRef.current) {
         selectorRef.current = selector;
         const updatedValue = selector(value.current);
-        // TODO: fix this eslint-disable
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         if (!fnEquals(updatedValue, localValue.current)) {
             localValue.current = updatedValue;
         }
@@ -82,11 +78,62 @@ export const useAtom = <T, R = T>(
         const subscriber = {
             next: (newValue: T) => {
                 const updatedValue = selectorRef.current(newValue);
-                // TODO: fix this eslint-disable
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                 if (!fnEquals(updatedValue, localValue.current)) {
                     localValue.current = updatedValue;
                     forceUpdate();
+                }
+            },
+        };
+        subscribe(subscriber);
+        return () => unsubscribe(subscriber);
+    }, [subscribe, unsubscribe]);
+
+    return localValue.current;
+};
+
+/**
+ * Hook to subscribe to an atom. Will update when the atom's value changes.
+ * Intakes a selector function to select a value from the atom's state to be checked for equality and returned.
+ * This is a version of {@link useAtom} that will batch updates to the atom's value and update after using setTimeout.
+ * @typeParam T The type of the value that the atom holds.
+ * @typeParam R The type of the value that the hook returns.
+ * @param atom The atom to be subscribed to.
+ * @param selector A function that receives the atom's value and returns a value of type R.
+ */
+export const useAtomAsync = <T, R = T>(
+    { value, subscribe, unsubscribe }: Atom<T>,
+    selector: Selector<T, R> = (s) => s as unknown as R,
+    fnEquals: (a: R | undefined, b: R | undefined) => boolean = equals<R>,
+) => {
+    const localValue = useRef<R | undefined>();
+    if (localValue.current === undefined) {
+        localValue.current = selector(value.current);
+    }
+    const selectorRef = useRef<Selector<T, R>>(selector);
+
+    const scheduledForUpdate = useRef(false);
+    const [, forceRerender] = useReducer(() => ({}), {});
+
+    const update = (rerender: boolean = true) => {
+        scheduledForUpdate.current = false;
+        const updatedValue = selectorRef.current(value.current);
+        if (!fnEquals(localValue.current, updatedValue)) {
+            localValue.current = updatedValue;
+            rerender && forceRerender();
+        }
+    };
+
+    if (selector !== selectorRef.current) {
+        selectorRef.current = selector;
+        update(false);
+    }
+
+    useEffect(() => {
+        const subscriber = {
+            next: () => {
+                if (!scheduledForUpdate.current) {
+                    scheduledForUpdate.current = true;
+                    setTimeout(update, 0);
                 }
             },
         };
