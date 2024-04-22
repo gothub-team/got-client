@@ -58,49 +58,49 @@ export declare type Graph = GraphLayer<
     NodeFileView
 >;
 
-export declare interface GraphLayer<TNode, TEdge, TReverseEdge, TRight, TInheritRights, TFile> {
-    nodes?: {
-        [nodeId: string]: TNode;
-    };
-    edges?: {
-        [fromType: string]: {
-            [fromId: string]: {
-                [toType: string]: {
-                    [toId: string]: TEdge;
-                };
-            };
-        };
-    };
-    index?: {
-        reverseEdges?: {
+declare type Nodes<TNode> = {
+    [nodeId: string]: TNode;
+};
+
+declare type Edges<TEdge> = {
+    [fromType: string]: {
+        [fromId: string]: {
             [toType: string]: {
-                [toId: string]: {
-                    [fromType: string]: {
-                        [fromId: string]: TReverseEdge;
-                    };
-                };
+                [toId: string]: TEdge;
             };
         };
     };
-    rights?: {
-        [nodeId: string]: {
-            user?: {
-                [email: string]: {
-                    read: TRight;
-                    write: TRight;
-                    admin: TRight;
-                };
-            };
-            inherit?: {
-                from: TInheritRights;
+};
+
+declare type Rights<TRight, TInheritRights> = {
+    [nodeId: string]: {
+        user?: {
+            [email: string]: {
+                read: TRight;
+                write: TRight;
+                admin: TRight;
             };
         };
-    };
-    files?: {
-        [nodeId: string]: {
-            [prop: string]: TFile;
+        inherit?: {
+            from: TInheritRights;
         };
     };
+};
+
+declare type Files<TFile> = {
+    [nodeId: string]: {
+        [prop: string]: TFile;
+    };
+};
+
+export declare interface GraphLayer<TNode, TEdge, TReverseEdge, TRight, TInheritRights, TFile> {
+    nodes?: Nodes<TNode>;
+    edges?: Edges<TEdge>;
+    index?: {
+        reverseEdges?: Edges<TReverseEdge>;
+    };
+    rights?: Rights<TRight, TInheritRights>;
+    files?: Files<TFile>;
 }
 
 export declare interface GraphState {
@@ -716,20 +716,69 @@ export declare const selectEdgeIds: (graph: Graph) => GetEdgeToIdsFn;
  */
 export declare const createSuccessAndErrorGraphs: (pushedGraph: Graph, apiResult: PushResult) => [Graph, ErrorGraph];
 
-/**
- * Selects the nodes edges view in a given stack from the state.
- * Elements found at the given path in every layer of the stack will be merged prioritizing data higher up the stack.
- */
-export declare const selectEdgeFromStack: (
-    fromType: string,
-    from: string,
-    toType: string,
-    stack: string[],
-    state: State,
-) => NodeEdgesView;
+type NodeStack = Array<Nodes<Node>>;
+type EdgeStack = Array<Edges<EdgeMetadataView | boolean>>;
+type IndexStack = Array<Edges<boolean>>;
+type RightStack = Array<Rights<boolean, string>>;
+type FileStack = Array<Files<NodeFilesView>>;
 
 /**
- * Selects a node in a given stack from the state.
- * Elements found at the given path in every layer of the stack will be merged prioritizing data higher up the stack.
+ * Selects the array of exsiting node objects in a given stack from the state.
  */
-export declare const selectNodeFromStack: (nodeId: string, stack: string[], state: State) => any;
+export declare const getNodeStack: (state: State, stack: string[]) => NodeStack;
+
+/**
+ * Selects the array of exsiting edge objects in a given stack from the state.
+ */
+export declare const getEdgeStack: (state: State, stack: string[]) => EdgeStack;
+
+/**
+ * Selects the array of exsiting reverse edge objects in a given stack from the state.
+ */
+export declare const getReverseEdgeStack: (state: State, stack: string[]) => EdgeStack;
+
+/**
+ * Selects the array of exsiting rights objects in a given stack from the state.
+ */
+export declare const getRightStack: (state: State, stack: string[]) => RightStack;
+
+/**
+ * Selects the array of exsiting file objects in a given stack from the state.
+ */
+export declare const getFileStack: (state: State, stack: string[]) => FileStack;
+
+/**
+ * Selects a node from an array of node objects.
+ */
+export declare const nodeFromNodeStack: (nodeStack: NodeStack, nodeId: string) => Node;
+
+/**
+ * Selects an edge from an array of edge objects.
+ */
+export declare const edgeFromEdgeStack: (
+    edgeStack: EdgeStack,
+    fromType: string,
+    fromId: string,
+    toType: string,
+) => Record<string, EdgeMetadataView | boolean>;
+
+/**
+ * Selects the metadata of an edge from an array of edge objects.
+ */
+export declare const metadataFromEdgeStack: (
+    edgeStack: EdgeStack,
+    fromType: string,
+    fromId: string,
+    toType: string,
+    toId: string,
+) => EdgeMetadataView | boolean;
+
+/**
+ * Selects the rights of a node from an array of rights objects.
+ */
+export declare const rightFromRightStack: (rightStack: RightStack, nodeId: string) => NodeRightsView;
+
+/**
+ * Selects the files of a node from an array of file objects.
+ */
+export declare const filesFromFileStack: (fileStack: FileStack, nodeId: string) => NodeFilesView;
