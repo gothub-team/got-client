@@ -1,0 +1,4 @@
+{
+    "extends": "typescript-util/tsconfig-backend.json",
+    "include": ["**/*.ts"]
+}

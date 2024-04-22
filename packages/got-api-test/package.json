@@ -1,0 +1,14 @@
+{
+    "name": "got-api-test",
+    "type": "module",
+    "devDependencies": {
+        "@types/bun": "latest",
+        "typescript-util": "*"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "eslint": "^9.1.0"
+    }
+}

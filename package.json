@@ -1,10 +1,10 @@
 {
-  "name": "@gothub-team/got",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "dependencies": {
-    "prettier": "^3.2.5"
-  }
+    "name": "got",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "dependencies": {
+        "prettier": "^3.2.5"
+    }
 }
