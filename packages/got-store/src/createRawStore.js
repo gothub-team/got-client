@@ -2,14 +2,22 @@
 /* eslint-disable consistent-return */
 import * as R from 'ramda';
 import * as RA from 'ramda-adjunct';
-import { forEachCondObj, mergeDeepLeft, mergeLeft, mergeWith, useSubscriber, useResult } from '@gothub-team/got-util';
+import { forEachCondObj, mergeLeft, useSubscriber, useResult } from '@gothub-team/got-util';
 import {
     createSuccessAndErrorGraphs,
     selectPathFromStack,
     pickMapGraph,
-    selectNodeFromStack,
-    selectEdgeFromStack,
     mergeGraphsRight,
+    getNodeStack,
+    nodeFromNodeStack,
+    getEdgeStack,
+    metadataFromEdgeStack,
+    edgeFromEdgeStack,
+    getReverseEdgeStack,
+    getRightStack,
+    rightFromRightStack,
+    getFileStack,
+    filesFromFileStack,
 } from '@gothub-team/got-core';
 import {
     GOT_ACTION_ADD,
@@ -88,7 +96,10 @@ export const createRawStore = ({ api, dispatch, select }) => {
         });
     };
 
-    const selectNode = (stack, nodeId, state) => selectNodeFromStack(nodeId, stack, state);
+    const selectNode = (stack, nodeId, state) => {
+        const nodeStack = getNodeStack(state, stack);
+        return nodeFromNodeStack(nodeStack, nodeId);
+    };
     const getNode = (stack, nodeId) => select((state) => selectNode(stack, nodeId, state));
     const setNode = (graphName, node) => {
         dispatch({
@@ -102,38 +113,38 @@ export const createRawStore = ({ api, dispatch, select }) => {
 
     const selectMetadata = (stack, edgeTypes, fromId, toId, state) => {
         const [fromType, toType] = R.split('/', edgeTypes);
-        return selectPathFromStack(['graph', 'edges', fromType, fromId, toType, toId], stack, mergeLeft, state);
+        const edgeStack = getEdgeStack(state, stack);
+        return metadataFromEdgeStack(edgeStack, fromType, fromId, toType, toId);
     };
     const getMetadata = (stack, edgeTypes, fromId, toId) =>
         select((state) => selectMetadata(stack, edgeTypes, fromId, toId, state));
 
     const selectEdge = (stack, edgeTypes, fromId, state) => {
         const [fromType, toType] = R.split('/', edgeTypes);
-        const edgeIds = selectEdgeFromStack(fromType, fromId, toType, stack, state);
 
-        return R.pickBy(RA.isTruthy, edgeIds);
+        const edgeStack = getEdgeStack(state, stack);
+        return edgeFromEdgeStack(edgeStack, fromType, fromId, toType);
     };
     const getEdge = (stack, edgeTypes, fromId) => select((state) => selectEdge(stack, edgeTypes, fromId, state));
 
     const selectReverseEdge = (stack, edgeTypes, toId, state) => {
         const [fromType, toType] = R.split('/', edgeTypes);
-        const [getResult, setResult] = useResult({});
 
-        const edgeIds = selectPathFromStack(
-            ['graph', 'index', 'reverseEdges', toType, toId, fromType],
-            stack,
-            mergeWith(mergeLeft),
-            state,
-        );
-        R.compose(
-            R.forEachObjIndexed((val, fromId) => {
-                if (val) {
-                    const metadata = selectMetadata(stack, edgeTypes, fromId, toId, state);
-                    metadata && setResult(R.assoc(fromId, metadata));
-                }
-            }),
-        )(edgeIds);
-        return getResult();
+        const reverseEdgeStack = getReverseEdgeStack(state, stack);
+        const edgeStack = getEdgeStack(state, stack);
+
+        const fromIds = Object.keys(edgeFromEdgeStack(reverseEdgeStack, toType, toId, fromType));
+
+        const edge = {};
+        for (let i = 0; i < fromIds.length; i += 1) {
+            const fromId = fromIds[i];
+            const metadata = metadataFromEdgeStack(edgeStack, fromType, fromId, toType, toId);
+            if (metadata) {
+                edge[fromId] = metadata;
+            }
+        }
+
+        return edge;
     };
     const getReverseEdge = (stack, edgeTypes, toId) =>
         select((state) => selectReverseEdge(stack, edgeTypes, toId, state));
@@ -193,8 +204,10 @@ export const createRawStore = ({ api, dispatch, select }) => {
         });
     };
 
-    const selectRights = (stack, nodeId, state) =>
-        selectPathFromStack(['graph', 'rights', nodeId], stack, mergeDeepLeft, state);
+    const selectRights = (stack, nodeId, state) => {
+        const rightStack = getRightStack(state, stack);
+        return rightFromRightStack(rightStack, nodeId);
+    };
     const getRights = (stack, nodeId) => select((state) => selectRights(stack, nodeId, state));
     const setRights = (graphName, nodeId, email, rights) => {
         dispatch({
@@ -229,8 +242,10 @@ export const createRawStore = ({ api, dispatch, select }) => {
         });
     };
 
-    const selectFiles = (stack, nodeId, state) =>
-        selectPathFromStack(['graph', 'files', nodeId], stack, mergeLeft, state);
+    const selectFiles = (stack, nodeId, state) => {
+        const fileStack = getFileStack(state, stack);
+        return filesFromFileStack(fileStack, nodeId);
+    };
     const getFiles = (stack, nodeId) => select((state) => selectFiles(stack, nodeId, state));
     const setFile = (graphName, nodeId, prop, filename, file) => {
         dispatch({
@@ -369,8 +384,15 @@ export const createRawStore = ({ api, dispatch, select }) => {
 
         return apiResult;
     };
+
     const selectView = (stack, view, state) => {
-        const queryNode = (queryObj, nodeId, metadata) => {
+        const nodeStack = getNodeStack(state, stack);
+        const edgeStack = getEdgeStack(state, stack);
+        const reverseEdgeStack = getReverseEdgeStack(state, stack);
+        const fileStack = getFileStack(state, stack);
+        const rightStack = getRightStack(state, stack);
+
+        const queryNode = (queryObj, nodeId, node, metadata) => {
             const bag = { nodeId };
             const { include } = queryObj;
 
@@ -379,13 +401,13 @@ export const createRawStore = ({ api, dispatch, select }) => {
                 bag.metadata = metadata;
             }
             if (include?.node) {
-                bag.node = selectNode(stack, nodeId, state);
+                bag.node = node;
             }
             if (include?.rights) {
-                bag.rights = selectRights(stack, nodeId, state);
+                bag.rights = rightFromRightStack(rightStack, nodeId);
             }
             if (include?.files) {
-                bag.files = selectFiles(stack, nodeId, state);
+                bag.files = filesFromFileStack(fileStack, nodeId);
             }
 
             // include edges
@@ -394,9 +416,11 @@ export const createRawStore = ({ api, dispatch, select }) => {
                 const keys = Object.keys(edges);
                 for (let i = 0; i < keys.length; i += 1) {
                     const edgeTypes = keys[i];
-                    const edgeAlias = edges[edgeTypes].as ?? edgeTypes;
+                    const subQueryObj = edges[edgeTypes];
+                    if (!subQueryObj) continue;
+                    const edgeAlias = subQueryObj.as ?? edgeTypes;
 
-                    bag[edgeAlias] = queryEdge(edges[edgeTypes], edgeTypes, nodeId);
+                    bag[edgeAlias] = queryEdge(subQueryObj, edgeTypes, nodeId);
                 }
             }
 
@@ -404,40 +428,44 @@ export const createRawStore = ({ api, dispatch, select }) => {
         };
 
         const queryEdge = (queryObj, edgeTypes, nodeId) => {
-            const [fromType, toType] = R.split('/', edgeTypes);
+            const [fromType, toType] = edgeTypes.split('/');
             const edgeIds = queryObj.reverse
-                ? selectPathFromStack(
-                      ['graph', 'index', 'reverseEdges', toType, nodeId, fromType],
-                      stack,
-                      mergeWith(mergeLeft),
-                      state,
-                  )
-                : selectEdgeFromStack(fromType, nodeId, toType, stack, state);
+                ? edgeFromEdgeStack(reverseEdgeStack, toType, nodeId, fromType)
+                : edgeFromEdgeStack(edgeStack, fromType, nodeId, toType);
 
             if (!edgeIds) return;
 
             const edgeBag = {};
             const keys = Object.keys(edgeIds);
-            const values = Object.values(edgeIds);
             for (let i = 0; i < keys.length; i += 1) {
                 const toId = keys[i];
-                const metadata = queryObj.reverse ? selectMetadata(stack, edgeTypes, toId, nodeId, state) : values[i];
+                const metadata = queryObj.reverse
+                    ? metadataFromEdgeStack(edgeStack, fromType, toId, toType, nodeId)
+                    : edgeIds[toId];
                 if (!metadata) continue;
 
-                if (metadata) {
-                    edgeBag[toId] = queryNode(queryObj, toId, metadata);
-                }
+                const toNode = nodeFromNodeStack(nodeStack, toId);
+                if (!toNode) continue;
+
+                edgeBag[toId] = queryNode(queryObj, toId, toNode, metadata);
             }
 
             return edgeBag;
         };
 
         const result = {};
-        R.forEachObjIndexed((nestedQueryObj, nodeId) => {
-            const nodeAlias = nestedQueryObj.as ?? nodeId;
+        const rootIds = Object.keys(view);
+        for (let i = 0; i < rootIds.length; i += 1) {
+            const nodeId = rootIds[i];
+            const queryObj = view[nodeId];
+            if (!queryObj) continue;
 
-            result[nodeAlias] = queryNode(nestedQueryObj, nodeId);
-        }, view);
+            const nodeAlias = queryObj?.as ?? nodeId;
+            const node = nodeFromNodeStack(nodeStack, nodeId);
+            if (!node) continue;
+
+            result[nodeAlias] = queryNode(queryObj, nodeId, node);
+        }
 
         return result;
     };

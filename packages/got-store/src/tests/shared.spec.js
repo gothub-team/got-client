@@ -104,7 +104,7 @@ export const generateRandomTestData = (numParents, numChildren, numChildrenChild
     return {
         stateId: 12345,
         main: { graph },
-        //   temp: { graph }
+        temp: { graph },
     };
 };
 

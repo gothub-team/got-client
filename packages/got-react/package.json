@@ -1,6 +1,6 @@
 {
     "name": "@gothub-team/got-react",
-    "version": "0.23.8",
+    "version": "0.24.0",
     "description": "React hooks to interact with local (in-memory) got graphs and sync them with remote got providers.",
     "main": "dist/cjs/index.js",
     "module": "dist/module/index.js",

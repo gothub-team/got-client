@@ -1,6 +1,6 @@
-import { getPathOr, assocPathMutate, mergeRight, getPath } from './index.js';
+import { getPathOr, assocPathMutate, mergeRight, getPath, mergeGraphObjRight } from './index.js';
 
-describe('mergeRight', () => {
+const testWith = (mergeFn) => {
     test('should merge two objects correctly', () => {
         const obj1 = {
             value1: 1,
@@ -19,7 +19,7 @@ describe('mergeRight', () => {
             value7: 'someValue',
         };
 
-        const result = mergeRight(obj1, obj2);
+        const result = mergeFn(obj1, obj2);
         const expected = {
             value1: 2,
             value2: false,
@@ -43,10 +43,48 @@ describe('mergeRight', () => {
         };
         const obj2 = undefined;
 
-        const result = mergeRight(obj1, obj2);
+        const result = mergeFn(obj1, obj2);
 
         expect(result).toEqual(obj1);
     });
+    test('should overwrite with null', () => {
+        const obj1 = {
+            value1: 1,
+            value2: true,
+            value3: 'babel',
+            value4: 'someValue',
+            value5: 'someValue',
+            value6: 'someValue',
+        };
+        const obj2 = null;
+
+        const result = mergeFn(obj1, obj2);
+
+        expect(result).toEqual(null);
+    });
+    test('should overwrite null', () => {
+        const obj1 = null;
+        const obj2 = {
+            value1: 1,
+            value2: true,
+            value3: 'babel',
+            value4: 'someValue',
+            value5: 'someValue',
+            value6: 'someValue',
+        };
+
+        const result = mergeFn(obj1, obj2);
+
+        expect(result).toEqual(obj2);
+    });
+};
+
+describe('mergeRight', () => {
+    testWith(mergeRight);
+});
+
+describe('mergeGraphObjRight', () => {
+    testWith(mergeGraphObjRight);
 });
 
 describe('getPath', () => {
