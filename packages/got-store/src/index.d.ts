@@ -27,6 +27,10 @@ import {
 } from '@gothub-team/got-core';
 import { type Subscriber } from '@gothub-team/got-util';
 import { type GotAction } from './got-action';
+import { type ViewResult } from './types/ViewResult';
+
+export { type ViewResult } from './types/ViewResult';
+
 export declare interface GotStore {
     /**
      * Merges a given source graph into a given target graph. The target graph will
@@ -281,7 +285,7 @@ export declare interface GotStore {
      *
      * @param stack The graph stack to retrieve from.
      */
-    selectView: (...stack: string[]) => (view: View) => StateSelector<ViewNodeTree>;
+    selectView: (...stack: string[]) => <TView extends View>(view: TView) => StateSelector<ViewResult<TView>>;
     /**
      * Returns the view tree for a given view based
      * on the specified graph stack with graphs higher in the stack overriding
@@ -289,7 +293,7 @@ export declare interface GotStore {
      *
      * @param stack The graph stack to retrieve from.
      */
-    getView: (...stack: string[]) => (view: View) => ViewNodeTree;
+    getView: (...stack: string[]) => <TView extends View>(view: TView) => ViewResult<TView>;
 }
 
 /**
@@ -303,7 +307,7 @@ export declare type ViewNodeTree = {
     /**
      * The parent nodes ID.
      */
-    id: string;
+    nodeId: string;
     /**
      * The parent node. Remains `undefined` if node is not included in
      * the parent node view.
@@ -326,60 +330,12 @@ export declare type ViewNodeTree = {
      * root node view.
      */
     files?: NodeFilesView;
+} & {
     /**
      * A hashmap of all edgeTypes (e.g. `book/chapter`) pointing from the parent
      * node in this view node tree.
-     * TODO this is not an obj
      */
-    edges?: {
-        [edgeTypes: string]: ViewEdgeTree;
-    };
-};
-
-export declare type ViewTree = {
-    /**
-     * The parent nodes ID.
-     */
-    id: string;
-    /**
-     * The parent node. Remains `undefined` if node is not included in
-     * the parent node view.
-     */
-    node?: Node;
-    /**
-     * A hashmap of user emails holding the (read/write/admin) rights that are given to
-     * the user for the parent root node. Remains `undefined` if rights are not included
-     * in the parent root node view.
-     */
-    rights?: NodeRightsView;
-    /**
-     * A hashmap of property names holding signed urls to the files attached to the parent
-     * root node under the property names. Remains `undefined` if files are not included
-     * in the parent root node view.
-     */
-    files?: NodeFilesView;
-    /**
-     * A hashmap of all edgeTypes (e.g. `book/chapter`) pointing from the parent root
-     * node in this view tree.
-     * TODO this is not an obj
-     */
-    edges?: {
-        [edgeTypesOrAlias: string]: ViewEdgeTree;
-    };
-};
-
-export declare type SelectViewResult<TIndexNames extends string | number | symbol> = {
-    /**
-     * Holds all index functions by name as declared in the `useView` hook.
-     */
-    index: Record<TIndexNames, any>;
-    /**
-     * A hashmap of all root nodes declared in the `useView` hook holding a sub view tree.
-     * TODO this is not an obj
-     */
-    edges?: {
-        [nodeIdOrAlias: string]: ViewTree;
-    };
+    [edgeTypesOrAlias: string]: ViewEdgeTree;
 };
 
 export declare type PushObservables = {
