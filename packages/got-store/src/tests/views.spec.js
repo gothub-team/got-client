@@ -939,9 +939,9 @@ describe('store:Views', () => {
                 }
 
                 console.log(
-                    `${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in ${
+                    `${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in ${(
                         totalTime / runTimes
-                    }ms, max ${expectedTime} ms`,
+                    ).toFixed(2)}ms, max ${expectedTime} ms`,
                 );
 
                 expect(totalTime / runTimes).toBeLessThanOrEqual(expectedTime);
