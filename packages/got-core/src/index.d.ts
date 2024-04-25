@@ -76,9 +76,9 @@ declare type Rights<TRight, TInheritRights> = {
     [nodeId: string]: {
         user?: {
             [email: string]: {
-                read: TRight;
-                write: TRight;
-                admin: TRight;
+                read?: TRight;
+                write?: TRight;
+                admin?: TRight;
             };
         };
         inherit?: {
