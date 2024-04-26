@@ -123,7 +123,27 @@ export const createRawStore = ({ api, dispatch, select }) => {
         const [fromType, toType] = R.split('/', edgeTypes);
 
         const edgeStack = getEdgeStack(state, stack);
-        return edgeFromEdgeStack(edgeStack, fromType, fromId, toType);
+        const nodeStack = getNodeStack(state, stack);
+
+        if (!nodeFromNodeStack(nodeStack, fromId)) return {};
+
+        const toEdges = edgeFromEdgeStack(edgeStack, fromType, fromId, toType);
+        const toIds = Object.keys(toEdges);
+
+        const edge = {};
+        for (let i = 0; i < toIds.length; i += 1) {
+            const toId = toIds[i];
+
+            const node = nodeFromNodeStack(nodeStack, toId);
+            if (!node) continue;
+
+            const metadata = toEdges[toId];
+            if (!metadata) continue;
+
+            edge[toId] = metadata;
+        }
+
+        return edge;
     };
     const getEdge = (stack, edgeTypes, fromId) => select((state) => selectEdge(stack, edgeTypes, fromId, state));
 
@@ -132,16 +152,23 @@ export const createRawStore = ({ api, dispatch, select }) => {
 
         const reverseEdgeStack = getReverseEdgeStack(state, stack);
         const edgeStack = getEdgeStack(state, stack);
+        const nodeStack = getNodeStack(state, stack);
+
+        if (!nodeFromNodeStack(nodeStack, toId)) return {};
 
         const fromIds = Object.keys(edgeFromEdgeStack(reverseEdgeStack, toType, toId, fromType));
 
         const edge = {};
         for (let i = 0; i < fromIds.length; i += 1) {
             const fromId = fromIds[i];
+
+            const node = nodeFromNodeStack(nodeStack, fromId);
+            if (!node) continue;
+
             const metadata = metadataFromEdgeStack(edgeStack, fromType, fromId, toType, toId);
-            if (metadata) {
-                edge[fromId] = metadata;
-            }
+            if (!metadata) continue;
+
+            edge[fromId] = metadata;
         }
 
         return edge;

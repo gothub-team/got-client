@@ -1408,9 +1408,9 @@ describe('store:mergeOverwriteGraph', () => {
                 }
 
                 console.log(
-                    `${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in `,
-                    totalTime / runTimes,
-                    'ms',
+                    `${numParents} parent, ${numChildren} children each and ${numChildrenChildren} childchildren (${totalNum} nodes) ran in ${(
+                        totalTime / runTimes
+                    ).toFixed(2)}ms, max ${expectedTime} ms`,
                 );
 
                 expect(totalTime / runTimes).toBeLessThanOrEqual(expectedTime);
