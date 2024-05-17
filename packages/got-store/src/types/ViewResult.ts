@@ -76,5 +76,5 @@ type ExtractIncludeFiles<TNodeView extends NodeView | EdgeView, TInclude = TNode
     : NonNullable<unknown>;
 
 export type ViewResult<TView extends View> = {
-    [K in keyof TView as AliasKey<TView, K>]: NodeBag<TView[K]>;
+    [K in keyof TView as AliasKey<TView, K>]?: NodeBag<TView[K]>;
 };
