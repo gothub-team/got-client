@@ -21,7 +21,7 @@ const baseViewResultType = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
@@ -48,7 +48,7 @@ const aliases = () => {
                 };
             }>,
             {
-                root: {
+                root?: {
                     nodeId: string;
                 };
             }
@@ -67,7 +67,7 @@ const aliases = () => {
                 };
             }>,
             {
-                root: {
+                root?: {
                     nodeId: string;
                     members: {
                         [id: string]: {
@@ -96,7 +96,7 @@ const aliases = () => {
                 };
             }>,
             {
-                root: {
+                root?: {
                     nodeId: string;
                     members: {
                         [id: string]: {
@@ -121,7 +121,7 @@ const includeNothing = () => {
                 rootBabbeli: {};
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                 };
             }
@@ -136,7 +136,7 @@ const includeNothing = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                 };
             }
@@ -153,7 +153,7 @@ const includeNothing = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                 };
             }
@@ -170,7 +170,7 @@ const includeNothing = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
@@ -194,7 +194,7 @@ const includeNothing = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
@@ -220,7 +220,7 @@ const includeNothing = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
@@ -244,7 +244,7 @@ const includeNode = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     node: Node;
                 };
@@ -266,7 +266,7 @@ const includeNode = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
@@ -295,7 +295,7 @@ const includeMetadata = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
@@ -326,7 +326,7 @@ const includeMetadata = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
@@ -354,7 +354,7 @@ const includeMetadata = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     node: Node;
                 };
@@ -374,7 +374,7 @@ const includeRights = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     rights: NodeRightsView;
                 };
@@ -396,7 +396,7 @@ const includeRights = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
@@ -426,7 +426,7 @@ const includeRights = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
@@ -456,7 +456,7 @@ const includeFiles = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     files: NodeFilesView;
                 };
@@ -478,7 +478,7 @@ const includeFiles = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
@@ -508,7 +508,7 @@ const includeFiles = () => {
                 };
             }>,
             {
-                rootBabbeli: {
+                rootBabbeli?: {
                     nodeId: string;
                     'root/member': {
                         [id: string]: {
