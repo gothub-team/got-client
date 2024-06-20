@@ -29,6 +29,7 @@ export const setup = ({
     onWarn = console.warn,
     adminMode = false,
     sessionExpireTime,
+    sessionStore,
 }) => {
     if (!reduxStore && !atom) {
         onError('You must provide either a Redux store or an Atom');
@@ -41,7 +42,7 @@ export const setup = ({
     const api = createApi({
         host,
         adminMode,
-        sessionStore: getLocalStorageSessionStore(`got-auth_${host}`),
+        sessionStore: sessionStore || getLocalStorageSessionStore(`got-auth_${host}`),
         sessionExpireTime,
     });
     const dispatch = atom ? (action) => atom.set(gotReducer(atom.get(), action)) : reduxStore.dispatch;
