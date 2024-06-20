@@ -1,4 +1,4 @@
-import { type GotApi } from '@gothub-team/got-api';
+import { type SessionStore, type GotApi } from '@gothub-team/got-api';
 import {
     type State,
     type SetEdgeFn,
@@ -422,6 +422,11 @@ export declare interface SetupOptions {
      * The time in miliseconds after which the session will expire. Defaults to 28 days.
      */
     sessionExpireTime?: number;
+    /**
+     * Optional session store to be used by the got hooks instead of creating a default
+     * store that uses the browsers local storage.
+     */
+    sessionStore?: SessionStore;
 }
 
 /**
